@@ -27,7 +27,7 @@ Abstract
 
    In addition, this document defines a new OAuth error code,
    insufficient_authorization_details, enabling resource servers to
-   return actionable authorization details objects to clients.t
+   return actionable authorization details objects to clients.
 
 About This Document
 
