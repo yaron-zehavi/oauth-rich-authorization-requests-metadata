@@ -20,7 +20,7 @@ venue:
   type: "Working Group"
   mail: "oauth@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/oauth/"
-  github: "/yaron-zehavi/oauth-rich-authorization-requests-metadata"
+  github: "yaron-zehavi/oauth-rich-authorization-requests-metadata"
   latest: "https://yaron-zehavi.github.io/oauth-rich-authorization-requests-metadata/draft-zehavi-oauth-rar-metadata.html"
 
 author:
