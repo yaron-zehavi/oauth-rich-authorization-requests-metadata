@@ -27,7 +27,7 @@ Abstract
 
    In addition, this document defines a new OAuth error code,
    insufficient_authorization_details, enabling resource servers to
-   return actionable authorization details objects to clients.
+   return actionable authorization details objects to clients.t
 
 About This Document
 
@@ -45,8 +45,8 @@ About This Document
    Subscribe at https://www.ietf.org/mailman/listinfo/oauth/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/https://github.com/yaron-zehavi/oauth-rich-
-   authorization-requests-metadata.
+   https://github.com/yaron-zehavi/oauth-rich-authorization-requests-
+   metadata.
 
 Status of This Memo
 
