@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-08T02:19:42.085444+00:00",
+  "timestamp": "2026-01-11T02:30:20.290270+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -49,6 +49,69 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOQ1ZTTM7iSJdn",
+      "title": "Move supported autorization details types into a separate endpoint",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/1",
+      "state": "OPEN",
+      "author": "runegri",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "An AS may support a large number of structures, this would make the metadata document very large. Even though this document normally is cached on the web server, there is the issue of network traffic and the load of parsing the metadata.\n\nI suggest that instead of including the structures in the metadata document we reference a separate endpoint that serves the supported types. This way the metadata document will only indicate that the feature is supported (which is useful for discovery) by supplying the url of the endpoint. \n\nThe content served from the new endpoint would be similar to the current specification.",
+      "createdAt": "2026-01-09T10:27:46Z",
+      "updatedAt": "2026-01-09T12:01:45Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "body": "I see your point and agree. Let me discuss this further and consider positively",
+          "createdAt": "2026-01-09T12:01:45Z",
+          "updatedAt": "2026-01-09T12:01:45Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOQ1ZTTM7iSPdY",
+      "title": "We need a better explanation of the use cases for the insufficient_authorization_details signal",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/2",
+      "state": "OPEN",
+      "author": "runegri",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I am having trouble understanding the use case for the insufficient_authorization_details signal where the Resource Server indicates the authorization details structure that sould be included in the request. \n\nIf the RS knows what data should be included in the request I don't see the need for this feature. And in the other case, where the RS does not know the data, then I don't see how this feature can be used. So there is something I don't understand here :-)",
+      "createdAt": "2026-01-09T10:35:06Z",
+      "updatedAt": "2026-01-09T20:26:42Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "body": "Thanks for the feedback,\nLet me try and explain. Imagine client attempts a state changing RS call (PUT / POST etc + body).\nRS requires end-user's approval BUT the RAR object is not simply 1:1 the HTTP request body.\nMaybe it's structured differently, maybe it requires information available to RS but not to client, such as a calculated risk_score, or risk_ticket_id with which AS can retrieve additional instructions as to required challenges.\n\nSo this option is a step-up mechanism, with which client doesn't need to learn how to construct a RAR object but gets from RS a ready made one, which may include ephemeral data as described here.",
+          "createdAt": "2026-01-09T11:51:10Z",
+          "updatedAt": "2026-01-09T11:51:10Z"
+        },
+        {
+          "author": "runegri",
+          "authorAssociation": "NONE",
+          "body": "But would the RS be able to supply that information? I can imagine that th RS could request the \"step-up\" and even indicate that it needs the information supplied in a given RAR type, but I am having trouble seeing how the RS could know how to build the complete RAR object. \n\nIn my ecosystem (The Norwegian health sector) we use several different RAR structures to supply extended information about the user context that the RS needs. Without that information all the RS can do is to reject the request and possibly specify the information that is missing.",
+          "createdAt": "2026-01-09T12:36:51Z",
+          "updatedAt": "2026-01-09T12:36:51Z"
+        },
+        {
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "body": "We have such use-cases in banking (payment approvals, trading approvals: Stocks, Crypto, FX) where the RS enforces the RAR-containing access token and so knows what the valid RAR object should look like for a specific request and can provide it in a WWW-Authenticate header.\n\nI assume there will be 2 emerging patters, both valid:\n- Expose metadata so client can figure out how to craft RAR objects\n- AS provides ready to use RAR objects",
+          "createdAt": "2026-01-09T20:26:42Z",
+          "updatedAt": "2026-01-09T20:26:42Z"
+        }
+      ]
+    }
+  ],
   "pulls": []
 }
