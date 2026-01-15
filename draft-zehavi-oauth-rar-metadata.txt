@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                          7 January 2026
-Expires: 11 July 2026
+Intended status: Standards Track                         15 January 2026
+Expires: 19 July 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -22,12 +22,16 @@ Abstract
 
    This document defines a machine-readable metadata structure for
    advertising authorization details type documentation and JSON Schema
-   [JSON.Schema] definitions via OAuth Authorization Server Metadata
-   [RFC8414] and OAuth Resource Server Metadata [RFC9728].
+   [JSON.Schema] definitions by authorization servers and via OAuth
+   Resource Server Metadata [RFC9728].
 
-   In addition, this document defines a new OAuth error code,
+   This document also defines a new WWW-Authenticate OAuth error code,
    insufficient_authorization_details, enabling resource servers to
-   return actionable authorization details objects to clients.
+   indicate inadequate authorization details as the cause of failure.
+   It also defines an OPTIONAL response body which MAY be returned
+   alongside the insufficient_authorization_details error, providing an
+   authorization details object, which may serve as an example or be
+   used directly in a subsequent OAuth request.
 
 About This Document
 
@@ -63,7 +67,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 July 2026.
+   This Internet-Draft will expire on 19 July 2026.
 
 Copyright Notice
 
@@ -85,7 +89,7 @@ Table of Contents
    2.  Conventions and Definitions
    3.  Protocol Overview
      3.1.  Client learns to construct valid authorization details
-           objects from metadata
+           objects using metadata
      3.2.  Client obtains authorization details object from resource
            server's error response
    4.  Authorization Details Type Metadata
@@ -125,48 +129,47 @@ Table of Contents
 
    OAuth 2.0 Rich Authorization Requests (RAR) [RFC9396] allows OAuth
    clients to request structured, fine-grained authorization, beyond the
-   coarse-grained access offered by simple scopes.  This has enabled
+   coarse-grained access offered by simple scopes, which has enabled
    advanced authorization models across domains, such as open banking &
-   API marketplaces, and is well positioned for authorizing AI agents to
-   perform state-changing actions.
+   API marketplaces.
 
-   However, RAR [RFC9396] does not specify how a client discovers the
-   structure of supported authorization_detail types and how to
-   construct syntactically valid authorization details.
-
-   As a result, clients must rely on out-of-band documentation or static
+   However, RAR [RFC9396] does not specify how a client learns how to
+   construct syntactically valid authorization details objects.  As a
+   result, clients must rely on out-of-band documentation or static
    ecosystem profiles, limiting interoperability and preventing dynamic
    client behavior.
 
    This document addresses this gap by defining:
 
    *  A metadata structure for authorization details types, containing
-      both human-readable documentation as well as embedded JSON Schema
-      [JSON.Schema] definitions.
+      human-readable documentation as well as embedded JSON Schema
+      definitions [JSON.Schema].
 
-   *  Discovery through Authorization Server Metadata [RFC8414], as well
-      as via OAuth 2.0 Protected Resource Metadata [RFC9728].
+   *  Discovery through a new rar_types_metadata_endpoint authorization
+      endpoint, as well as via OAuth 2.0 Protected Resource Metadata
+      [RFC9728].
 
-   *  A standardized error signaling mechanism, allowing resource
-      servers to return an authorization details object, to be included
-      in a new Auth request, in order to accomplish a specific request.
+   *  A standardized error signaling mechanism based on WWW-Authenticate
+      response header, allowing resource servers to specify
+      insufficient_authorization_details as the cause of error, as well
+      as an OPTIONAL response body enabling resource servers to provide
+      an informative authorization details object, whose inclusion in a
+      new OAuth request shall result in a token satisfying the
+      endpoint's requirements.
 
-   It is up to implementers to decide if their clients MUST learn to
-   construct valid authorization details objects, and if so whether
-   authorization details types metadata should be provided by
-   authorization servers, resource servers or both.
+   The OPTIONAL solution pattern in which resource server returns an
+   actionable authorization details object offers:
 
-   This document also outlines a solution pattern relieving clients from
-   having to learn how to construct valid authorization details objects,
-   instead providing clients the required authorization_details objects
-   in resource servers' error responses.  Clients then include the
-   provided authorization details objects in subsequent OAuth requests.
+   *  High interoperability and simplification by relieving clients from
+      having to figure out how to construct valid authorization details
+      objects, instead providing them the required authorization_details
+      object, to be included in a subsequent OAuth request.
 
-   This latter option is especially useful, as it enables resource
-   servers to include ephemeral, interaction-specific details in the
-   authorization details object, which are part of the resource domain,
-   such as a risk score, risk profile or an internal interaction
-   identifier.
+   *  Support for including ephemeral, interaction-specific details in
+      the authorization details object, such as for example a risk
+      score, a risk profile or an internal interaction identifier.  This
+      enables resource servers to guide the authorization server as to
+      the required authentication strength and consent flow.
 
 2.  Conventions and Definitions
 
@@ -178,20 +181,16 @@ Table of Contents
 
 3.  Protocol Overview
 
-   There are two main proposed flows, either of them or both may be
-   offered in parallel:
+   There are two main proposed flows:
 
    *  Client learns to construct valid authorization details objects
-      from authorization details types metadata provided by
-      authorization servers, resource servers or both.
+      using authorization details types metadata.
 
-   *  Client obtains authorization details object from resource server's
-      error response, providing an actionable authorization details
-      object, whose inclusion in subsequent OAuth requests is required
-      to accomplish a specific request.
+   *  Client obtains an actionable authorization details object from
+      resource server's error response.
 
 3.1.  Client learns to construct valid authorization details objects
-      from metadata
+      using metadata
 
                                                   +--------------------+
                                                   |  Authorization or  |
@@ -317,21 +316,37 @@ Table of Contents
 
 4.1.  Overview
 
-   This document defines a new metadata attribute,
-   authorization_details_types_metadata, which provides documentation
-   and validation information for authorization details types used with
-   Rich Authorization Requests [RFC9396].
+   This document defines:
 
-   The new metadata property MAY be published by OAuth authorization
-   servers using Authorization Server Metadata [RFC8414] as well as by
-   Resource Servers using Protected Resource Metadata [RFC9728].
+   *  A new metadata structure: authorization_details_types_metadata,
+      detailing documentation and schema of authorization details types
+      used with Rich Authorization Requests [RFC9396].
 
-   Clients MAY use this metadata to dynamically construct valid
-   authorization_details objects.
+   *  A new authorization server metadata endpoint:
+      rar_types_metadata_endpoint which returns the
+      authorization_details_types_metadata structure.
 
-   This document also proposes the existing
-   authorization_details_types_supported metadata attributed defined by
-   RAR [RFC9396], be included in Protected Resource Metadata [RFC9728].
+   *  A new WWW-Authenticate response header error code:
+      insufficient_authorization_details, which resource servers MAY use
+      as a normative indication to client, that the token used to call
+      the endpoint was insufficient because it lacked or contained
+      otherwise inadequate authorization_details.
+
+   *  An OPTIONAL response body which resource servers MAY use, in
+      addition to the WWW-Authenticate response header, to provide an
+      actionable authorization details *object*, whose inclusion in a
+      subsequent OAuth request, shall result in an access token
+      satisfying the endpoint's requirements.
+
+   This document also proposes:
+
+   *  The existing authorization_details_types_supported metadata
+      attributed defined by RAR [RFC9396]
+
+   *  As well as the herein defined authorization_details_types_metadata
+
+   Shall both be included as OPTIONAL response attributes in Protected
+   Resource Metadata [RFC9728].
 
 4.2.  Metadata Location
 
