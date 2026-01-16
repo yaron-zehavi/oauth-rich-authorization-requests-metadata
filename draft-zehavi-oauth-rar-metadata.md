@@ -218,10 +218,10 @@ The following authorization server metadata parameter {{RFC8414}} is introduced 
 
 ## Authorization Details Type Metadata Endpoint Response
 
-The Authorization Details Type Metadata endpoint's response is a JSON object whose keys are authorization details type identifiers. Each value is an object describing a single authorization details type.
+The Authorization Details Type Metadata endpoint's response is a JSON document with the key `authorization_details_types_metadata` whose attributes are authorization details type identifiers. Each key is an object describing a single authorization details type.
 
     {
-    "authorization_details_types_metadata": {
+      "authorization_details_types_metadata": {
         "type": {
         "version": "...",
         "description": "...",
@@ -230,7 +230,7 @@ The Authorization Details Type Metadata endpoint's response is a JSON object who
         "schema_uri": "...",
         "examples": [ ]
         }
-    }
+      }
     }
 
 Attributes definition:
@@ -267,7 +267,7 @@ In case resource server accepts token from several authorization servers, intero
 HTTP response body definition:
 
 "authorization_details":
-: OPTIONAL. JSON of authorization details object.
+: OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
 
@@ -279,7 +279,7 @@ Example resource server response with OPTIONAL authorization_details:
     Cache-Control: no-store
 
     {
-      "authorization_details": {
+      "authorization_details": [{
         "type": "payment_initiation",
         "instructedAmount": {
           "currency": "EUR",
@@ -288,7 +288,7 @@ Example resource server response with OPTIONAL authorization_details:
         "creditorAccount": {
           "iban": "DE02120300000000202051"
         }
-      }
+      }]
     }
 
 # Processing Rules
@@ -312,13 +312,18 @@ Example resource server response with OPTIONAL authorization_details:
 
 # Security Considerations {#security-considerations}
 
+## Cacheability and Intermediaries
+
+HTTP 403 responses with response bodies may be cached or replayed in unexpected contexts.
+Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` response header.
+
 # IANA Considerations
 
 ## OAuth 2.0 Bearer Token Error Registry
 
 | Error Code | Description |
 |------------|-------------|
-| insufficient_authorization_details | The request is missing required authorization details or the provided authorization details are insufficient. The resource server SHOULD include the required `authorization_details` |
+| insufficient_authorization_details | The request is missing required authorization details or the provided authorization details are insufficient. |
 
 ## OAuth Metadata Attribute Registration
 
@@ -332,10 +337,12 @@ This section provides non-normative examples of how this specification may be us
 
 ## Metadata Examples
 
-### Example RAR Metadata: Payment Initiation
+### Example authorization_details_types_metadata_endpoint response with Payment Initiation
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
 
     {
-        "authorization_details_types_supported": ["payment_initiation"],
         "authorization_details_types_metadata": {
             "payment_initiation": {
                 "version": "1.0",
@@ -435,36 +442,37 @@ Client uses access token obtained at login to call payment initiation API
         }
     }
 
-### Resource server signals insufficient_authorization_details
+### Resource server signals insufficient_authorization_details with actionable RAR object
 
 Resource server requires payment approval and responds with:
 
     HTTP/1.1 403 Forbidden
     WWW-Authenticate: Bearer error="insufficient_authorization_details",
-        resource_metadata="https://server.example.com/.well-known/oauth-protected-resource/payments",
-        authorization_details=W3sKICAgICJ0eXBlIjogInBheW1lbnRfaW5pdGlhdGlvbiIsCiAgICAibG9jYXRpb25zIjogWwogICAgICAgICJodHRwczovL2V4YW1wbGUuY29tL3BheW1lbnRzIgogICAgXSwKICAgICJpbnN0cnVjdGVkQW1vdW50IjogewogICAgICAgICJjdXJyZW5jeSI6ICJFVVIiLAogICAgICAgICJhbW91bnQiOiAiMTIzLjUwIgogICAgfSwKICAgICJjcmVkaXRvck5hbWUiOiAiTWVyY2hhbnQgQSIsCiAgICAiY3JlZGl0b3JBY2NvdW50IjogewogICAgICAgICJiaWMiOiAiQUJDSURFRkZYWFgiLAogICAgICAgICJpYmFuIjogIkRFMDIxMDAxMDAxMDkzMDcxMTg2MDMiCiAgICB9LAogICAgImludGVyYWN0aW9uSWQiOiAiZjgxZDRmYWUtN2RlYy0xMWQwLWE3NjUtMDBhMGM5MWU2YmY2IiwKCSJyaXNrUHJvZmlsZSI6ICJCLTcxIgp9XQ==
+        resource_metadata="https://server.example.com/.well-known/oauth-protected-resource/payments"
+    Content-Type: application/json
+    Cache-Control: no-store
 
-The base64 encoded authorization_details decodes to:
-
-    [{
-        "type": "payment_initiation",
-        "locations": [
-            "https://example.com/payments"
-        ],
-        "instructedAmount": {
-            "currency": "EUR",
-            "amount": "123.50"
-        },
-        "creditorName": "Merchant A",
-        "creditorAccount": {
-            "bic": "ABCIDEFFXXX",
-            "iban": "DE02100100109307118603"
-        },
-        "interactionId": "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
-        "riskProfile": "B-71"
+    {
+        "authorization_details": [{
+          "type": "payment_initiation",
+          "locations": [
+              "https://example.com/payments"
+          ],
+          "instructedAmount": {
+              "currency": "EUR",
+              "amount": "123.50"
+          },
+          "creditorName": "Merchant A",
+          "creditorAccount": {
+              "bic": "ABCIDEFFXXX",
+              "iban": "DE02100100109307118603"
+          },
+          "interactionId": "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+          "riskProfile": "B-71"
     }]
+    }
 
-Note the resource server has added the ephemeral attributes: `interactionId`, `riskProfile`.
+Note: the resource server has added the ephemeral attributes: `interactionId`, `riskProfile`.
 
 ### Client initiates OAuth flow using the provided authorization_details object
 
