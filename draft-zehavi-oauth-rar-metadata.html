@@ -7,10 +7,10 @@
 <title>OAuth 2.0 RAR Metadata and Error Signaling</title>
 <meta content="Yaron Zehavi" name="author">
 <meta content="
-       OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , enables clients to request fine-grained authorization using structured JSON objects. While RAR   standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types. 
+       OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , enables requesting fine-grained authorization using structured JSON objects. While RAR   standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types. 
        This document defines a machine-readable metadata structure for advertising authorization details type documentation and JSON Schema   definitions by authorization servers, with additional discovery support through OAuth Resource Server Metadata  . 
-       This document also defines a new WWW-Authenticate normative OAuth error code,  insufficient_authorization_details , enabling resource servers to indicate inadequate authorization details as the cause of failure.
-It also defines an  OPTIONAL  response body which  MAY  be returned alongside the  insufficient_authorization_details  error, providing an actionable authorization details object, which may be used directly in a subsequent OAuth request. 
+       This document also defines a new WWW-Authenticate normative OAuth error code,  insufficient_authorization_details , enabling resource servers to indicate inadequate authorization details as the cause of failure. 
+       It also defines an  OPTIONAL  response body which  MAY  be returned alongside the  insufficient_authorization_details  error, providing an actionable authorization details object, which may be used directly in a subsequent OAuth request. 
     " name="description">
 <meta content="xml2rfc 3.31.0" name="generator">
 <meta content="RAR" name="keyword">
@@ -1083,10 +1083,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">OAuth 2.0 RAR Metadata and Error Signaling</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, enables clients to request fine-grained authorization using structured JSON objects. While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, enables requesting fine-grained authorization using structured JSON objects. While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">This document defines a machine-readable metadata structure for advertising authorization details type documentation and JSON Schema <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> definitions by authorization servers, with additional discovery support through OAuth Resource Server Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">This document also defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure.
-It also defines an <span class="bcp14">OPTIONAL</span> response body which <span class="bcp14">MAY</span> be returned alongside the <code>insufficient_authorization_details</code> error, providing an actionable authorization details object, which may be used directly in a subsequent OAuth request.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">This document also defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">It also defines an <span class="bcp14">OPTIONAL</span> response body which <span class="bcp14">MAY</span> be returned alongside the <code>insufficient_authorization_details</code> error, providing an actionable authorization details object, which may be used directly in a subsequent OAuth request.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1195,10 +1195,7 @@ It also defines an <span class="bcp14">OPTIONAL</span> response body which <span
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-client-processing-rules" class="internal xref">Client Processing Rules</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
-                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-authorization-server-proces" class="internal xref">Authorization Server Processing Rules</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-resource-server-processing-" class="internal xref">Resource Server Processing Rules</a></p>
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-resource-server-processing-" class="internal xref">Resource Server Processing Rules</a></p>
 </li>
             </ul>
 </li>
@@ -1576,33 +1573,29 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-resource-server-error-signa">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-resource-server-error-signa" class="section-name selfRef">Resource Server Error Signaling of Inadequate authorization_details</a>
       </h2>
-<p id="section-6-1">This document defines a new normative OAuth error code, <code>insufficient_authorization_details</code>, for use when access is denied due to missing or insufficient authorization details.
-The error code <span class="bcp14">SHALL</span> be conveyed using the <code>WWW-Authenticate</code> header.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-6-2.1">
-          <p id="section-6-2.1.1">An <span class="bcp14">OPTIONAL</span> response body which resource servers <span class="bcp14">MAY</span> use, in addition to the WWW-Authenticate response header, to provide an actionable authorization details <strong>object</strong>, whose inclusion in a subsequent OAuth request, shall result in an access token satisfying the endpoint's requirements.<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
+<p id="section-6-1">This document defines a new normative OAuth error code, <code>insufficient_authorization_details</code>, which resource servers <span class="bcp14">SHALL</span> return using the <code>WWW-Authenticate</code> header, to signal access is denied due to missing or insufficient authorization details.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div id="optional-authorizationdetails-in-response-body">
 <section id="section-6.1">
         <h3 id="name-optional-authorization_deta">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-optional-authorization_deta" class="section-name selfRef">OPTIONAL authorization_details in response body</a>
         </h3>
-<p id="section-6.1-1">Authorization server <span class="bcp14">MAY</span> return alongside the <code>insufficient_authorization_details</code> error also an informative response body, of content type application/json, containing the required authorization details to satisfy the currently failing request. Definition:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-6.1-2">
-          <dt id="section-6.1-2.1">"authorization_details":</dt>
-          <dd style="margin-left: 1.5em" id="section-6.1-2.2">
-            <p id="section-6.1-2.2.1"><span class="bcp14">OPTIONAL</span>. JSON of authorization details object.<a href="#section-6.1-2.2.1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">Resource server <span class="bcp14">MAY</span> provide alongside the <code>insufficient_authorization_details</code> error, an HTTP response body of content type application/json, containing the required authorization details to satisfy the currently failing request.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">An authorization_details object provided by a resource server in an error response, is intended for use with authorization servers advertised in the Resource Server’s metadata.
+In case resource server accepts token from several authorization servers, interoperability is maintained as client can discover per authorization server its <code>authorization_details_types_supported</code>.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">HTTP response body definition:<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1-4">
+          <dt id="section-6.1-4.1">"authorization_details":</dt>
+          <dd style="margin-left: 1.5em" id="section-6.1-4.2">
+            <p id="section-6.1-4.2.1"><span class="bcp14">OPTIONAL</span>. JSON of authorization details object.<a href="#section-6.1-4.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-6.1-3">Example:<a href="#section-6.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.1-4">
+<p id="section-6.1-5">Clients <span class="bcp14">MAY</span> use the provided <code>authorization_details</code> in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+<p id="section-6.1-6">Example resource server response with <span class="bcp14">OPTIONAL</span> authorization_details:<a href="#section-6.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.1-7">
 <pre>
 HTTP/1.1 403 Forbidden
-WWW-Authenticate: Bearer
-  error="insufficient_authorization_details"
-
+WWW-Authenticate: Bearer error="insufficient_authorization_details"
 Content-Type: application/json
 Cache-Control: no-store
 
@@ -1618,9 +1611,8 @@ Cache-Control: no-store
     }
   }
 }
-</pre><a href="#section-6.1-4" class="pilcrow">¶</a>
+</pre><a href="#section-6.1-7" class="pilcrow">¶</a>
 </div>
-<p id="section-6.1-5">Clients <span class="bcp14">MAY</span> use the provided authorization_details in a subsequent OAuth request.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1637,58 +1629,48 @@ Cache-Control: no-store
         </h3>
 <ul class="normal">
 <li class="normal" id="section-7.1-1.1">
-            <p id="section-7.1-1.1.1">Fetch authorization_details_types_metadata from the authorization or resource server's metadata endpoints.<a href="#section-7.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="section-7.1-1.1.1">If encountering error <code>insufficient_authorization_details</code>, check if body.authorization_details exists and if provided <span class="bcp14">MAY</span> include in subsequent OAuth request.<a href="#section-7.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.1-1.2">
-            <p id="section-7.1-1.2.1">Locate schema or retrieve schema_uri.<a href="#section-7.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.1-1.2.1">Otherwise consult metadata:<a href="#section-7.1-1.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.1-1.2.2.1">
+                <p id="section-7.1-1.2.2.1.1">Fetch resource metadata to discover accepted authorization servers and supported <strong>accepted authorization_details types</strong>.<a href="#section-7.1-1.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-7.1-1.2.2.2">
+                <p id="section-7.1-1.2.2.2.1">Fetch authorization server metadata to discover <code>authorization_details_types_supported</code>.<a href="#section-7.1-1.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-7.1-1.2.2.3">
+                <p id="section-7.1-1.2.2.3.1">Fetch authorization server's <code>authorization_details_types_metadata_endpoint</code> to obtain metadata and schema<a href="#section-7.1-1.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-7.1-1.2.2.4">
+                <p id="section-7.1-1.2.2.4.1">Locate schema or retrieve schema_uri.<a href="#section-7.1-1.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
 </li>
           <li class="normal" id="section-7.1-1.3">
-            <p id="section-7.1-1.3.1">Construct authorization details conforming to the schema.<a href="#section-7.1-1.3.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-7.1-1.4">
-            <p id="section-7.1-1.4.1">If resource server returns error insufficient_authorization_details, use provided authorization_details in subsequent OAuth request, then provide the obtained token to resource server.<a href="#section-7.1-1.4.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-</section>
-</div>
-<div id="authorization-server-processing-rules">
-<section id="section-7.2">
-        <h3 id="name-authorization-server-proces">
-<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-authorization-server-proces" class="section-name selfRef">Authorization Server Processing Rules</a>
-        </h3>
-<ul class="normal">
-<li class="normal" id="section-7.2-1.1">
-            <p id="section-7.2-1.1.1">Advertise authorization_details_types_metadata in metadata.<a href="#section-7.2-1.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-7.2-1.2">
-            <p id="section-7.2-1.2.1">Validate each authorization detail against schema.<a href="#section-7.2-1.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-7.2-1.3">
-            <p id="section-7.2-1.3.1">Enforce additional semantic checks.<a href="#section-7.2-1.3.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-7.2-1.4">
-            <p id="section-7.2-1.4.1">Reject missing or invalid details with standard OAuth error semantics.<a href="#section-7.2-1.4.1" class="pilcrow">¶</a></p>
+            <p id="section-7.1-1.3.1">Construct authorization details conforming to the schema and include in subsequent OAuth request.<a href="#section-7.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="resource-server-processing-rules">
-<section id="section-7.3">
+<section id="section-7.2">
         <h3 id="name-resource-server-processing-">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-resource-server-processing-" class="section-name selfRef">Resource Server Processing Rules</a>
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-resource-server-processing-" class="section-name selfRef">Resource Server Processing Rules</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="section-7.3-1.1">
-            <p id="section-7.3-1.1.1">Advertise authorization_details_types_metadata.<a href="#section-7.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-7.2-1.1">
+            <p id="section-7.2-1.1.1">Advertise in resource metadata <code>authorization_details_types_supported</code>, where relevant.<a href="#section-7.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.3-1.2">
-            <p id="section-7.3-1.2.1">Verify tokens against required authorization details.<a href="#section-7.3-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-7.2-1.2">
+            <p id="section-7.2-1.2.1">Verify access tokens against required authorization details.<a href="#section-7.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.3-1.3">
-            <p id="section-7.3-1.3.1">If insufficient, return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".<a href="#section-7.3-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-7.2-1.3">
+            <p id="section-7.2-1.3.1">If insufficient, return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".<a href="#section-7.2-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.3-1.4">
-            <p id="section-7.3-1.4.1">Do not reveal additional sensitive information.<a href="#section-7.3-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-7.2-1.4">
+            <p id="section-7.2-1.4.1">OPTIONALLY provide also an HTTP body with an informative actionable authorization_details object.<a href="#section-7.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1735,7 +1717,7 @@ Cache-Control: no-store
         <h3 id="name-oauth-metadata-attribute-re">
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-oauth-metadata-attribute-re" class="section-name selfRef">OAuth Metadata Attribute Registration</a>
         </h3>
-<p id="section-9.2-1">The metadata attribute <code>authorization_details_types_metadata</code> is defined for OAuth authorization and resource server metadata, as a JSON object mapping authorization details types to documentation, schema, and examples.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.2-1">The metadata attribute <code>authorization_details_types_metadata_endpoint</code> is defined for OAuth authorization server metadata as a URL.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
