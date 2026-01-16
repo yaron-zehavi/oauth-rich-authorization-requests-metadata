@@ -66,7 +66,7 @@ However, RAR {{RFC9396}} does not specify how a client learns how to construct s
 This document addresses this gap by defining:
 
 * A metadata structure for authorization details types, containing human-readable documentation as well as embedded JSON Schema definitions {{JSON.Schema}}.
-* Discovery through a new `rar_types_metadata_endpoint` authorization endpoint, as well as via OAuth 2.0 Protected Resource Metadata {{RFC9728}}.
+* Discovery through a new authorization server `rar_types_metadata_endpoint`, as well as via OAuth 2.0 Protected Resource Metadata {{RFC9728}}.
 * A standardized error signaling mechanism based on WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of error, as well as an OPTIONAL response body enabling resource servers to provide an informative authorization details object, whose inclusion in a new OAuth request shall result in a token satisfying the endpoint's requirements.
 
 The OPTIONAL solution pattern in which resource server returns an actionable authorization details object offers:
@@ -89,49 +89,60 @@ There are two main proposed flows:
 
 ~~~ ascii-art
                                                 +--------------------+
-                                                |  Authorization or  |
-             +----------+ (B) Metadata Request  |  Resource Server   |
-(A) User +---|          |---------------------->|+------------------+|
-   Starts|   |          |                       ||    Metadata      ||
-   Flow  +-->|  Client  |<----------------------||    Endpoint      ||
-             |          | (C) Metadata Response |+------------------+|
+             +----------+ (B) API Request       |                    |
+             |          |---------------------->|      Resource      |
+(A) User +---|          |                       |       Server       |
+   Starts|   |          |<----------------------|                    |
+   Flow  +-->|          | (C) 403 Forbidden     +--------------------+
+             |          |     WWW-Authenticate
+             |          |     error="insufficient_authorization_details"
+             |          |        :
              |          |        :              +--------------------+
-             |          | (D) Construct RAR
+             |          |        :              |  Authorization or  |
+             |          | (D) Metadata Request  |  Resource Server   |
+             |          |---------------------->|+------------------+|
+             |          |                       ||    Metadata      ||
+             |  Client  |<----------------------||    Endpoint      ||
+             |          | (E) Metadata Response |+------------------+|
+             |          |        :              +--------------------+
+             |          | (F) Construct RAR
              |          |     Using Metadata
              |          |        :              +--------------------+
-             |          | (E) Authorization     |   Authorization    |
+             |          | (G) Authorization     |   Authorization    |
              |          |     Request + RAR     |      Server        |
              |          |---------------------->|+------------------+|
              |          |                       ||  Authorization   ||
              |          |<----------------------||    Endpoint      ||
-             |          | (F) Authorization Code||                  ||
+             |          | (H) Authorization Code||                  ||
              |          |        :              |+------------------+|
              |          |        :              |                    |
-             |          | (G) Token Request     |+------------------+|
+             |          | (I) Token Request     |+------------------+|
              |          |---------------------->||                  ||
              |          |                       || Token Endpoint   ||
              |          |<----------------------||                  ||
-             |          | (H) Access Token      |+------------------+|
+             |          | (J) Access Token      |+------------------+|
              |          |        :              +--------------------+
              |          |        :
-             |          | (I) API Call with
+             |          | (K) API Call with
              |          |     Access Token      +--------------------+
              |          |---------------------->|                    |
              |          |                       |   Resource Server  |
              |          |<----------------------|                    |
-             |          | (J) 200 OK + Resource +--------------------+
+             |          | (L) 200 OK + Resource +--------------------+
              |          |
              +----------+
 ~~~
 Figure: Client learns to construct valid authorization details objects from metadata
 
 - (A) The user starts the flow.
-- (B-C) The client discovers authorization details type metadata from Authorization Server Metadata {{RFC8414}}, or from resource server Protected Resource Metadata {{RFC9728}}
-- (D-E) The client constructs a valid authorization details object and makes an OAuth + RAR {{RFC9396}} request.
-- (F) Authorization server returns authorization code.
-- (G-H) The client exchanges authorization code for access token.
-- (I) The client makes API request with access token.
-- (J) Resource server validates access token and returns successful response.
+- (B) The client calls an API with an access token.
+- (C) Resource server returns HTTP 403 forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details`.
+- (D-E) The client consumes authorization details type metadata from authorization server's `rar_types_metadata_endpoint`, or from resource server Protected Resource Metadata {{RFC9728}}.
+- (F-G) The client constructs a valid authorization details object and makes an OAuth + RAR {{RFC9396}} request.
+- (H) Authorization server returns authorization code.
+- (I-J) The client exchanges authorization code for access token.
+- (K) The client makes API request with access token.
+- (L) Resource server validates access token and returns successful response.
 
 ## Client obtains authorization details object from resource server's error response
 
@@ -144,7 +155,7 @@ Figure: Client learns to construct valid authorization details objects from meta
    Flow  +-->|  Client  | (C) 403 Forbidden     +--------------------+
              |          |     WWW-Authenticate
              |          |     error="insufficient_authorization_details"
-             |          |     + authorization_details
+             |          |     + **authorization_details**
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
