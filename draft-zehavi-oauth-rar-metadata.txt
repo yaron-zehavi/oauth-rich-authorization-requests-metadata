@@ -471,7 +471,7 @@ Table of Contents
    *  Otherwise consult metadata:
 
       -  Fetch resource metadata to discover accepted authorization
-         servers and supported *accepted authorization_details types*.
+         servers and supported *authorization_details types*.
 
       -  Fetch authorization server metadata to discover
          authorization_details_types_supported.
@@ -717,8 +717,8 @@ Cache-Control: no-store
 }]
 }
 
-   Note: the resource server has added the ephemeral attributes:
-   interactionId, riskProfile.
+   Note: the resource server has added the ephemeral attributes
+   interactionId and riskProfile.
 
 A.2.3.  Client initiates OAuth flow using the provided
         authorization_details object
