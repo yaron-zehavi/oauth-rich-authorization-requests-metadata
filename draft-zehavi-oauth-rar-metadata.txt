@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                         15 January 2026
-Expires: 19 July 2026
+Intended status: Standards Track                         16 January 2026
+Expires: 20 July 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -67,7 +67,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 July 2026.
+   This Internet-Draft will expire on 20 July 2026.
 
 Copyright Notice
 
@@ -145,9 +145,9 @@ Table of Contents
       human-readable documentation as well as embedded JSON Schema
       definitions [JSON.Schema].
 
-   *  Discovery through a new rar_types_metadata_endpoint authorization
-      endpoint, as well as via OAuth 2.0 Protected Resource Metadata
-      [RFC9728].
+   *  Discovery through a new authorization server
+      rar_types_metadata_endpoint, as well as via OAuth 2.0 Protected
+      Resource Metadata [RFC9728].
 
    *  A standardized error signaling mechanism based on WWW-Authenticate
       response header, allowing resource servers to specify
@@ -192,60 +192,75 @@ Table of Contents
 3.1.  Client learns to construct valid authorization details objects
       using metadata
 
-                                                  +--------------------+
-                                                  |  Authorization or  |
-               +----------+ (B) Metadata Request  |  Resource Server   |
-  (A) User +---|          |---------------------->|+------------------+|
-     Starts|   |          |                       ||    Metadata      ||
-     Flow  +-->|  Client  |<----------------------||    Endpoint      ||
-               |          | (C) Metadata Response |+------------------+|
-               |          |        :              +--------------------+
-               |          | (D) Construct RAR
-               |          |     Using Metadata
-               |          |        :              +--------------------+
-               |          | (E) Authorization     |   Authorization    |
-               |          |     Request + RAR     |      Server        |
-               |          |---------------------->|+------------------+|
-               |          |                       ||  Authorization   ||
-               |          |<----------------------||    Endpoint      ||
-               |          | (F) Authorization Code||                  ||
-               |          |        :              |+------------------+|
-               |          |        :              |                    |
-               |          | (G) Token Request     |+------------------+|
-               |          |---------------------->||                  ||
-               |          |                       || Token Endpoint   ||
-               |          |<----------------------||                  ||
-               |          | (H) Access Token      |+------------------+|
-               |          |        :              +--------------------+
-               |          |        :
-               |          | (I) API Call with
-               |          |     Access Token      +--------------------+
-               |          |---------------------->|                    |
-               |          |                       |   Resource Server  |
-               |          |<----------------------|                    |
-               |          | (J) 200 OK + Resource +--------------------+
-               |          |
-               +----------+
+                                                +--------------------+
+             +----------+ (B) API Request       |                    |
+             |          |---------------------->|      Resource      |
+(A) User +---|          |                       |       Server       |
+   Starts|   |          |<----------------------|                    |
+   Flow  +-->|          | (C) 403 Forbidden     +--------------------+
+             |          |     WWW-Authenticate
+             |          |     error="insufficient_authorization_details"
+             |          |        :
+             |          |        :              +--------------------+
+             |          |        :              |  Authorization or  |
+             |          | (D) Metadata Request  |  Resource Server   |
+             |          |---------------------->|+------------------+|
+             |          |                       ||    Metadata      ||
+             |  Client  |<----------------------||    Endpoint      ||
+             |          | (E) Metadata Response |+------------------+|
+             |          |        :              +--------------------+
+             |          | (F) Construct RAR
+             |          |     Using Metadata
+             |          |        :              +--------------------+
+             |          | (G) Authorization     |   Authorization    |
+             |          |     Request + RAR     |      Server        |
+             |          |---------------------->|+------------------+|
+             |          |                       ||  Authorization   ||
+             |          |<----------------------||    Endpoint      ||
+             |          | (H) Authorization Code||                  ||
+             |          |        :              |+------------------+|
+             |          |        :              |                    |
+             |          | (I) Token Request     |+------------------+|
+             |          |---------------------->||                  ||
+             |          |                       || Token Endpoint   ||
+             |          |<----------------------||                  ||
+             |          | (J) Access Token      |+------------------+|
+             |          |        :              +--------------------+
+             |          |        :
+             |          | (K) API Call with
+             |          |     Access Token      +--------------------+
+             |          |---------------------->|                    |
+             |          |                       |   Resource Server  |
+             |          |<----------------------|                    |
+             |          | (L) 200 OK + Resource +--------------------+
+             |          |
+             +----------+
 
    Figure: Client learns to construct valid authorization details
    objects from metadata
 
    *  (A) The user starts the flow.
 
-   *  (B-C) The client discovers authorization details type metadata
-      from Authorization Server Metadata [RFC8414], or from resource
-      server Protected Resource Metadata [RFC9728]
+   *  (B) The client calls an API with an access token.
 
-   *  (D-E) The client constructs a valid authorization details object
+   *  (C) Resource server returns HTTP 403 forbidden including a WWW-
+      Authenticate header with error code
+      insufficient_authorization_details.
+
+   *  (D-E) The client consumes authorization details type metadata from
+      authorization server's rar_types_metadata_endpoint, or from
+      resource server Protected Resource Metadata [RFC9728].
+
+   *  (F-G) The client constructs a valid authorization details object
       and makes an OAuth + RAR [RFC9396] request.
 
-   *  (F) Authorization server returns authorization code.
+   *  (H) Authorization server returns authorization code.
 
-   *  (G-H) The client exchanges authorization code for access token.
+   *  (I-J) The client exchanges authorization code for access token.
 
-   *  (I) The client makes API request with access token.
+   *  (K) The client makes API request with access token.
 
-   *  (J) Resource server validates access token and returns successful
+   *  (L) Resource server validates access token and returns successful
       response.
 
 3.2.  Client obtains authorization details object from resource server's
@@ -259,7 +274,7 @@ Table of Contents
    Flow  +-->|  Client  | (C) 403 Forbidden     +--------------------+
              |          |     WWW-Authenticate
              |          |     error="insufficient_authorization_details"
-             |          |     + authorization_details
+             |          |     + **authorization_details**
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
