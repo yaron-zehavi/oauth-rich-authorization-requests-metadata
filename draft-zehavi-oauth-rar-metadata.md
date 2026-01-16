@@ -144,6 +144,8 @@ Figure: Client learns to construct valid authorization details objects from meta
 - (K) The client makes API request with access token.
 - (L) Resource server validates access token and returns successful response.
 
+Note - client MAY start the flow in step (D) to figure how to construct valid authorization details objects before calling resource server.
+
 ## Client obtains authorization details object from resource server's error response
 
 ~~~ ascii-art
@@ -155,7 +157,7 @@ Figure: Client learns to construct valid authorization details objects from meta
    Flow  +-->|  Client  | (C) 403 Forbidden     +--------------------+
              |          |     WWW-Authenticate
              |          |     error="insufficient_authorization_details"
-             |          |     + **authorization_details**
+             |          |     + authorization_details
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
@@ -188,7 +190,7 @@ Figure: Client obtains authorization details object from resource server's error
 
 - (A) The user starts the flow.
 - (B) The client calls an API with an access token.
-- (C) Resource server returns HTTP 403 forbidden because the access token does not contain required authorization details. Resource server's response includes a WWW-Authenticate header with the authorization details object requiring approval.
+- (C) Resource server returns HTTP 403 forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body **includes the authorization details object requiring approval**.
 - (D) The client uses the obtained authorization details object in a new OAuth + RAR {{RFC9396}} request.
 - (E) Authorization server returns authorization code.
 - (G-H) The client exchanges authorization code for access token.
@@ -208,7 +210,7 @@ This document defines:
 
 This document also proposes:
 
-* The existing `authorization_details_types_supported` metadata attributed defined by RAR {{RFC9396}}
+* That the existing `authorization_details_types_supported` metadata attributed defined by RAR {{RFC9396}}
 * As well as the herein defined `authorization_details_types_metadata`
 
 Shall both be included as OPTIONAL response attributes in Protected Resource Metadata {{RFC9728}}.
