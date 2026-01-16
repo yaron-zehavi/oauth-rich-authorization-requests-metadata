@@ -7,10 +7,11 @@
 <title>OAuth 2.0 RAR Metadata and Error Signaling</title>
 <meta content="Yaron Zehavi" name="author">
 <meta content="
-       OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , enables requesting fine-grained authorization using structured JSON objects. While RAR   standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types. 
-       This document defines a machine-readable metadata structure for advertising authorization details type documentation and JSON Schema   definitions by authorization servers, with additional discovery support through OAuth Resource Server Metadata  . 
+       OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , enables fine-grained authorization requests, using structured JSON objects. 
+       While RAR   standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types. 
+       This document defines a machine-readable metadata format for authorization servers to provide authorization details type documentation and JSON Schema   definitions, as well as interoperable discovery via OAuth Resource Server Metadata  . 
        This document also defines a new WWW-Authenticate normative OAuth error code,  insufficient_authorization_details , enabling resource servers to indicate inadequate authorization details as the cause of failure. 
-       It also defines an  OPTIONAL  response body which  MAY  be returned alongside the  insufficient_authorization_details  error, providing an actionable authorization details object, which may be used directly in a subsequent OAuth request. 
+       It also defines an  OPTIONAL  response body which  MAY  be returned alongside the  insufficient_authorization_details  error, providing an informative yet actionable authorization details object, which can be used directly in a subsequent OAuth request. 
     " name="description">
 <meta content="xml2rfc 3.31.0" name="generator">
 <meta content="RAR" name="keyword">
@@ -1083,10 +1084,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">OAuth 2.0 RAR Metadata and Error Signaling</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, enables requesting fine-grained authorization using structured JSON objects. While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This document defines a machine-readable metadata structure for advertising authorization details type documentation and JSON Schema <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> definitions by authorization servers, with additional discovery support through OAuth Resource Server Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">This document also defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
-<p id="section-abstract-4">It also defines an <span class="bcp14">OPTIONAL</span> response body which <span class="bcp14">MAY</span> be returned alongside the <code>insufficient_authorization_details</code> error, providing an actionable authorization details object, which may be used directly in a subsequent OAuth request.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, enables fine-grained authorization requests, using structured JSON objects.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">This document defines a machine-readable metadata format for authorization servers to provide authorization details type documentation and JSON Schema <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> definitions, as well as interoperable discovery via OAuth Resource Server Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">This document also defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
+<p id="section-abstract-5">It also defines an <span class="bcp14">OPTIONAL</span> response body which <span class="bcp14">MAY</span> be returned alongside the <code>insufficient_authorization_details</code> error, providing an informative yet actionable authorization details object, which can be used directly in a subsequent OAuth request.<a href="#section-abstract-5" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1272,7 +1274,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> allows OAuth clients to request structured, fine-grained authorization, beyond the coarse-grained access offered by simple scopes, which has enabled advanced authorization models across domains, such as open banking &amp; API marketplaces.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> allows OAuth clients to request structured, fine-grained authorization, beyond the coarse-grained access offered by simple scopes, which has enabled advanced authorization models across many domains, such as open banking &amp; API marketplaces.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">However, RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> does not specify how a client learns how to construct syntactically valid authorization details objects. As a result, clients must rely on out-of-band documentation or static ecosystem profiles, limiting interoperability and preventing dynamic client behavior.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document addresses this gap by defining:<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1280,13 +1282,16 @@ svg :is([fill="white"], [fill^="#fff"]) {
           <p id="section-1-4.1.1">A new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including human-readable documentation as well as embedded JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.2">
-          <p id="section-1-4.2.1">Adding <em>expected authorization details types</em> to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response, enabling their discovery.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.2.1">Adding accepted authorization details types to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response, facilitating RAR metadata discovery.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">A standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error, as well as an <span class="bcp14">OPTIONAL</span> response body providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.3.1">A standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-4.4">
+          <p id="section-1-4.4.1">An <span class="bcp14">OPTIONAL</span> response body included with an <code>insufficient_authorization_details</code> error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-5">The <span class="bcp14">OPTIONAL</span> solution pattern whereby resource server returns an actionable authorization details object enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">The <span class="bcp14">OPTIONAL</span> providing of actionable authorization details object by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-6.1">
           <p id="section-1-6.1.1">High interoperability and simplification by relieving clients from having to figure out how to construct valid authorization details objects, instead providing them with required authorization_details object, to be included in a subsequent OAuth request.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
