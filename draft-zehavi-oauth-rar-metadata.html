@@ -1279,28 +1279,28 @@ svg :is([fill="white"], [fill^="#fff"]) {
       </h2>
 <p id="section-1-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> allows OAuth clients to request structured, fine-grained authorization, beyond the coarse-grained access offered by simple scopes, which has enabled advanced authorization models across many domains, such as open banking &amp; API marketplaces.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">However, RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> does not specify how a client learns how to construct syntactically valid authorization details objects. As a result, clients must rely on out-of-band documentation or static ecosystem profiles, limiting interoperability and preventing dynamic client behavior.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">This document addresses this gap by defining:<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3">This document addresses this gap by:<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-4.1">
-          <p id="section-1-4.1.1">A new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including human-readable documentation as well as embedded JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.1.1">Defining a new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including human-readable documentation as well as embedded JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.2">
           <p id="section-1-4.2.1">Adding accepted authorization details types to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response, facilitating RAR metadata discovery.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">A standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.3.1">Defining a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.4">
-          <p id="section-1-4.4.1">An <span class="bcp14">OPTIONAL</span> response body included with an <code>insufficient_authorization_details</code> error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.4.1">Defining an <span class="bcp14">OPTIONAL</span> response body, included with an <code>insufficient_authorization_details</code> error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-5">The <span class="bcp14">OPTIONAL</span> providing of actionable authorization details object by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">The <span class="bcp14">OPTIONAL</span> providing of actionable authorization details objects by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-6.1">
           <p id="section-1-6.1.1">High interoperability and simplification by relieving clients from having to figure out how to construct valid authorization details objects, instead providing them with required authorization_details object, to be included in a subsequent OAuth request.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-6.2">
-          <p id="section-1-6.2.1">Support for including ephemeral, interaction-specific details in the authorization details object, such as for example a risk score, a risk profile or an internal interaction identifier. This enables resource servers to guide the authorization server as to the required authentication strength and consent flow.<a href="#section-1-6.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-6.2.1">Support for including ephemeral, interaction-specific details originating from the resource domain, in the authorization details object, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers <span class="bcp14">MAY</span> use this to guide authorization servers as to the required authentication strength and consent flow.<a href="#section-1-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1324,10 +1324,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3-1">There are two main proposed flows:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1">Client learns to construct valid authorization details objects using authorization details types metadata.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.1.1">Client <strong>learns</strong> to construct valid authorization details objects using authorization details types metadata.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">Client obtains an actionable authorization details object from resource server's error response.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Client <strong>obtains an actionable authorization details object</strong> from resource server's error response.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="client-learns-to-construct-valid-authorization-details-objects-using-metadata">
@@ -1345,7 +1345,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
    Flow  +--&gt;|          | (C) 403 Forbidden     +---------------------+
              |          |     WWW-Authenticate: Bearer
              |          |     error="insufficient_authorization_details",
-             |          |     resource_metadata="...url"
+             |          |     resource_metadata="https://resource.example.com/.well-known/oauth-protected-resource"
              |          |           :
              |          |        Resource       +---------------------+
              |          | (D) Metadata Request  |   Resource Server   |
@@ -1441,7 +1441,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
    Flow  +--&gt;|  Client  | (C) 403 Forbidden     +--------------------+
              |          |     WWW-Authenticate: Bearer
              |          |     error="insufficient_authorization_details",
-             |          |     resource_metadata="...url"
+             |          |     resource_metadata="https://resource.example.com/.well-known/oauth-protected-resource"
              |          |     + HTTP body contains authorization_details
              |          |        :
              |          |        :              +--------------------+
@@ -1903,14 +1903,14 @@ Content-Type: application/json
 <div class="alignLeft art-text artwork" id="appendix-A.2.1-2">
 <pre>
 POST /payments HTTP/1.1
-Host: server.example.com
+Host: resource.example.com
 Content-Type: application/json
 Authorization: Bearer eyj... (access token from login)
 
 {
     "type": "payment_initiation",
     "locations": [
-        "https://server.example.com/payments"
+        "https://resource.example.com/payments"
     ],
     "instructedAmount": {
         "currency": "EUR",
@@ -1936,7 +1936,7 @@ Authorization: Bearer eyj... (access token from login)
 <pre>
 HTTP/1.1 403 Forbidden
 WWW-Authenticate: Bearer error="insufficient_authorization_details",
-    resource_metadata="https://server.example.com/.well-known/oauth-protected-resource/payments"
+    resource_metadata="https://resource.example.com/.well-known/oauth-protected-resource/payments"
 </pre><a href="#appendix-A.2.2-2" class="pilcrow">¶</a>
 </div>
 </section>
@@ -1951,7 +1951,7 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details",
 <pre>
 HTTP/1.1 403 Forbidden
 WWW-Authenticate: Bearer error="insufficient_authorization_details",
-    resource_metadata="https://server.example.com/.well-known/oauth-protected-resource/payments"
+    resource_metadata="https://resource.example.com/.well-known/oauth-protected-resource/payments"
 Content-Type: application/json
 Cache-Control: no-store
 
@@ -1995,14 +1995,14 @@ Cache-Control: no-store
 <div class="alignLeft art-text artwork" id="appendix-A.2.5-1">
 <pre>
 POST /payments HTTP/1.1
-Host: server.example.com
+Host: resource.example.com
 Content-Type: application/json
 Authorization: Bearer eyj... (payment approval access token)
 
 {
     "type": "payment_initiation",
     "locations": [
-        "https://server.example.com/payments"
+        "https://resource.example.com/payments"
     ],
     "instructedAmount": {
         "currency": "EUR",
