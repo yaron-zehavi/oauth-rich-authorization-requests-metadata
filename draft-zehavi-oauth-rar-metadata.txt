@@ -296,7 +296,8 @@ Table of Contents
              |          |     WWW-Authenticate: Bearer
              |          |     error="insufficient_authorization_details",
              |          |     resource_metadata="[resource metadata url]"
-             |          |     + HTTP body contains authorization_details
+             |          |        +
+             |          |     HTTP body provides authorization_details
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
