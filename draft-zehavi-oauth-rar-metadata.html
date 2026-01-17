@@ -1053,7 +1053,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Zehavi</td>
-<td class="center">Expires 20 July 2026</td>
+<td class="center">Expires 21 July 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1066,12 +1066,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-zehavi-oauth-rar-metadata-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-01-16" class="published">16 January 2026</time>
+<time datetime="2026-01-17" class="published">17 January 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-07-20">20 July 2026</time></dd>
+<dd class="expires"><time datetime="2026-07-21">21 July 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1125,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 July 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1241,16 +1241,19 @@ svg :is([fill="white"], [fill^="#fff"]) {
                     <p id="section-toc.1-1.11.2.2.2.1.1"><a href="#appendix-A.2.1" class="auto internal xref">A.2.1</a>.  <a href="#name-client-initiates-api-reques" class="internal xref">Client initiates API request</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.2">
-                    <p id="section-toc.1-1.11.2.2.2.2.1"><a href="#appendix-A.2.2" class="auto internal xref">A.2.2</a>.  <a href="#name-resource-server-signals-ins" class="internal xref">Resource server signals insufficient_authorization_details with actionable RAR object</a></p>
+                    <p id="section-toc.1-1.11.2.2.2.2.1"><a href="#appendix-A.2.2" class="auto internal xref">A.2.2</a>.  <a href="#name-resource-server-signals-ins" class="internal xref">Resource server signals insufficient_authorization_details</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.3">
-                    <p id="section-toc.1-1.11.2.2.2.3.1"><a href="#appendix-A.2.3" class="auto internal xref">A.2.3</a>.  <a href="#name-client-initiates-oauth-flow" class="internal xref">Client initiates OAuth flow using the provided authorization_details object</a></p>
+                    <p id="section-toc.1-1.11.2.2.2.3.1"><a href="#appendix-A.2.3" class="auto internal xref">A.2.3</a>.  <a href="#name-resource-server-signals-insu" class="internal xref">Resource server signals insufficient_authorization_details with actionable RAR object</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.4">
-                    <p id="section-toc.1-1.11.2.2.2.4.1"><a href="#appendix-A.2.4" class="auto internal xref">A.2.4</a>.  <a href="#name-client-re-attempts-api-requ" class="internal xref">Client re-attempts API request</a></p>
+                    <p id="section-toc.1-1.11.2.2.2.4.1"><a href="#appendix-A.2.4" class="auto internal xref">A.2.4</a>.  <a href="#name-client-initiates-oauth-flow" class="internal xref">Client initiates OAuth flow using the provided authorization_details object</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.5">
-                    <p id="section-toc.1-1.11.2.2.2.5.1"><a href="#appendix-A.2.5" class="auto internal xref">A.2.5</a>.  <a href="#name-resource-server-authorizes-" class="internal xref">Resource server authorizes the request</a></p>
+                    <p id="section-toc.1-1.11.2.2.2.5.1"><a href="#appendix-A.2.5" class="auto internal xref">A.2.5</a>.  <a href="#name-client-re-attempts-api-requ" class="internal xref">Client re-attempts API request</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2.2.6">
+                    <p id="section-toc.1-1.11.2.2.2.6.1"><a href="#appendix-A.2.6" class="auto internal xref">A.2.6</a>.  <a href="#name-resource-server-authorizes-" class="internal xref">Resource server authorizes the request</a></p>
 </li>
                 </ul>
 </li>
@@ -1340,8 +1343,9 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 (A) User +---|          |                       |       Server        |
    Starts|   |          |&lt;----------------------|                     |
    Flow  +--&gt;|          | (C) 403 Forbidden     +---------------------+
-             |          |     WWW-Authenticate
-             |          |     error="insufficient_authorization_details"
+             |          |     WWW-Authenticate: Bearer
+             |          |     error="insufficient_authorization_details",
+             |          |     resource_metadata="...url"
              |          |           :
              |          |        Resource       +---------------------+
              |          | (D) Metadata Request  |   Resource Server   |
@@ -1435,9 +1439,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 (A) User +---|          |                       |       Server       |
    Starts|   |          |&lt;----------------------|                    |
    Flow  +--&gt;|  Client  | (C) 403 Forbidden     +--------------------+
-             |          |     WWW-Authenticate
-             |          |     error="insufficient_authorization_details"
-             |          |     + authorization_details
+             |          |     WWW-Authenticate: Bearer
+             |          |     error="insufficient_authorization_details",
+             |          |     resource_metadata="...url"
+             |          |     + HTTP body contains authorization_details
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
@@ -1921,13 +1926,28 @@ Authorization: Bearer eyj... (access token from login)
 </div>
 </section>
 </div>
-<div id="resource-server-signals-insufficientauthorizationdetails-with-actionable-rar-object">
+<div id="resource-server-signals-insufficientauthorizationdetails">
 <section id="appendix-A.2.2">
           <h4 id="name-resource-server-signals-ins">
-<a href="#appendix-A.2.2" class="section-number selfRef">A.2.2. </a><a href="#name-resource-server-signals-ins" class="section-name selfRef">Resource server signals insufficient_authorization_details with actionable RAR object</a>
+<a href="#appendix-A.2.2" class="section-number selfRef">A.2.2. </a><a href="#name-resource-server-signals-ins" class="section-name selfRef">Resource server signals insufficient_authorization_details</a>
           </h4>
 <p id="appendix-A.2.2-1">Resource server requires payment approval and responds with:<a href="#appendix-A.2.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.2.2-2">
+<pre>
+HTTP/1.1 403 Forbidden
+WWW-Authenticate: Bearer error="insufficient_authorization_details",
+    resource_metadata="https://server.example.com/.well-known/oauth-protected-resource/payments"
+</pre><a href="#appendix-A.2.2-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="resource-server-signals-insufficientauthorizationdetails-with-actionable-rar-object">
+<section id="appendix-A.2.3">
+          <h4 id="name-resource-server-signals-insu">
+<a href="#appendix-A.2.3" class="section-number selfRef">A.2.3. </a><a href="#name-resource-server-signals-insu" class="section-name selfRef">Resource server signals insufficient_authorization_details with actionable RAR object</a>
+          </h4>
+<p id="appendix-A.2.3-1">Resource server requires payment approval and responds with:<a href="#appendix-A.2.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="appendix-A.2.3-2">
 <pre>
 HTTP/1.1 403 Forbidden
 WWW-Authenticate: Bearer error="insufficient_authorization_details",
@@ -1954,25 +1974,25 @@ Cache-Control: no-store
       "riskProfile": "B-71"
 }]
 }
-</pre><a href="#appendix-A.2.2-2" class="pilcrow">¶</a>
+</pre><a href="#appendix-A.2.3-2" class="pilcrow">¶</a>
 </div>
-<p id="appendix-A.2.2-3">Note: the resource server has added the ephemeral attributes <code>interactionId</code> and <code>riskProfile</code>.<a href="#appendix-A.2.2-3" class="pilcrow">¶</a></p>
+<p id="appendix-A.2.3-3">Note: the resource server has added the ephemeral attributes <code>interactionId</code> and <code>riskProfile</code>.<a href="#appendix-A.2.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="client-initiates-oauth-flow-using-the-provided-authorizationdetails-object">
-<section id="appendix-A.2.3">
+<section id="appendix-A.2.4">
           <h4 id="name-client-initiates-oauth-flow">
-<a href="#appendix-A.2.3" class="section-number selfRef">A.2.3. </a><a href="#name-client-initiates-oauth-flow" class="section-name selfRef">Client initiates OAuth flow using the provided authorization_details object</a>
+<a href="#appendix-A.2.4" class="section-number selfRef">A.2.4. </a><a href="#name-client-initiates-oauth-flow" class="section-name selfRef">Client initiates OAuth flow using the provided authorization_details object</a>
           </h4>
-<p id="appendix-A.2.3-1">After user approves the request, client obtains single-use access token representing the approved payment<a href="#appendix-A.2.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2.4-1">After user approves the request, client obtains single-use access token representing the approved payment<a href="#appendix-A.2.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="client-re-attempts-api-request">
-<section id="appendix-A.2.4">
+<section id="appendix-A.2.5">
           <h4 id="name-client-re-attempts-api-requ">
-<a href="#appendix-A.2.4" class="section-number selfRef">A.2.4. </a><a href="#name-client-re-attempts-api-requ" class="section-name selfRef">Client re-attempts API request</a>
+<a href="#appendix-A.2.5" class="section-number selfRef">A.2.5. </a><a href="#name-client-re-attempts-api-requ" class="section-name selfRef">Client re-attempts API request</a>
           </h4>
-<div class="alignLeft art-text artwork" id="appendix-A.2.4-1">
+<div class="alignLeft art-text artwork" id="appendix-A.2.5-1">
 <pre>
 POST /payments HTTP/1.1
 Host: server.example.com
@@ -1994,16 +2014,16 @@ Authorization: Bearer eyj... (payment approval access token)
         "iban": "DE02100100109307118603"
     }
 }
-</pre><a href="#appendix-A.2.4-1" class="pilcrow">¶</a>
+</pre><a href="#appendix-A.2.5-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="resource-server-authorizes-the-request">
-<section id="appendix-A.2.5">
+<section id="appendix-A.2.6">
           <h4 id="name-resource-server-authorizes-">
-<a href="#appendix-A.2.5" class="section-number selfRef">A.2.5. </a><a href="#name-resource-server-authorizes-" class="section-name selfRef">Resource server authorizes the request</a>
+<a href="#appendix-A.2.6" class="section-number selfRef">A.2.6. </a><a href="#name-resource-server-authorizes-" class="section-name selfRef">Resource server authorizes the request</a>
           </h4>
-<div class="alignLeft art-text artwork" id="appendix-A.2.5-1">
+<div class="alignLeft art-text artwork" id="appendix-A.2.6-1">
 <pre>
 HTTP/1.1 201 Accepted
 Content-Type: application/json
@@ -2013,7 +2033,7 @@ Cache-Control: no-store
     "paymentId": "a81bc81b-dead-4e5d-abff-90865d1e13b1",
     "status": "accepted"
 }
-</pre><a href="#appendix-A.2.5-1" class="pilcrow">¶</a>
+</pre><a href="#appendix-A.2.6-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
