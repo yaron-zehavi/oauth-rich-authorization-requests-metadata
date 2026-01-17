@@ -357,10 +357,10 @@ Table of Contents
    shall be included as an OPTIONAL response attributes in Protected
    Resource Metadata [RFC9728].
 
-   In case resource server accepts access tokens _from several
+   Note: When resource servers accept access tokens _from several
    authorization servers_, interoperability is maintained as client can
-   discover per authorization server, its supported authorization
-   details types.
+   discover per authorization server its supported authorization details
+   types.
 
 5.  Authorization Details Types Metadata Endpoint
 
@@ -447,13 +447,12 @@ Table of Contents
    content type application/json, containing the required authorization
    details to satisfy the currently failing request.
 
-   An authorization_details object provided by a resource server in an
-   error response, is intended for use with authorization servers
-   advertised in the Resource Server’s metadata as trusted.
-
-   Note - Resource servers SHALL provide authorization_details objects,
-   only in case *all* trusted authorization servers accept the
-   *authorization details type*.
+   Note: * Authorization details objects provided by a resource server
+   in an error response, are intended for its trusted authorization
+   servers, as advertised by the Resource Server’s metadata endpoint. *
+   Resource servers SHALL provide authorization_details objects, only in
+   case *all* trusted authorization servers accept the *authorization
+   details type*.
 
    HTTP response body definition:
 
