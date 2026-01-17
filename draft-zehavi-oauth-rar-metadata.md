@@ -170,7 +170,8 @@ Figure: Client learns to construct valid authorization details objects from meta
              |          |     WWW-Authenticate: Bearer
              |          |     error="insufficient_authorization_details",
              |          |     resource_metadata="[resource metadata url]"
-             |          |     + HTTP body contains authorization_details
+             |          |        +
+             |          |     HTTP body provides authorization_details
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
