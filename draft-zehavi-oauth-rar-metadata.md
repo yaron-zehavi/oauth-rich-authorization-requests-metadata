@@ -538,6 +538,11 @@ After user approves the request, client obtains single-use access token represen
 
 # Document History
 
+-01
+
+* Authorization details moved to HTTP body and made OPTIONAL
+* Metadata pointer from resource metadata url, full authorization details types metadata on authorization server new endpoint
+
 -00
 
 * Document creation
