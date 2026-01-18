@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-15T02:19:18.476316+00:00",
+  "timestamp": "2026-01-18T02:28:48.719851+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -86,7 +86,7 @@
       "labels": [],
       "body": "I am having trouble understanding the use case for the insufficient_authorization_details signal where the Resource Server indicates the authorization details structure that sould be included in the request. \n\nIf the RS knows what data should be included in the request I don't see the need for this feature. And in the other case, where the RS does not know the data, then I don't see how this feature can be used. So there is something I don't understand here :-)",
       "createdAt": "2026-01-09T10:35:06Z",
-      "updatedAt": "2026-01-09T20:26:42Z",
+      "updatedAt": "2026-01-16T14:00:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -109,6 +109,20 @@
           "body": "We have such use-cases in banking (payment approvals, trading approvals: Stocks, Crypto, FX) where the RS enforces the RAR-containing access token and so knows what the valid RAR object should look like for a specific request and can provide it in a WWW-Authenticate header.\n\nI assume there will be 2 emerging patters, both valid:\n- Expose metadata so client can figure out how to craft RAR objects\n- AS provides ready to use RAR objects",
           "createdAt": "2026-01-09T20:26:42Z",
           "updatedAt": "2026-01-09T20:26:42Z"
+        },
+        {
+          "author": "runegri",
+          "authorAssociation": "NONE",
+          "body": "This is interesting! I would love to hear more about the use cases :-)\n\nI imagine we would want to describe a third case where the AS returns the type of RAR object it expects without supplying the actual object. Then it would be up to the client to craft the correct structure based on the templates found in the metadata.",
+          "createdAt": "2026-01-16T13:43:15Z",
+          "updatedAt": "2026-01-16T13:43:15Z"
+        },
+        {
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "body": "So I'm leaning towards RS always failing with WWW-Authenticate + error=\"insufficient_authorization_details\".\nAnd OPTIONALLY it can also provide in the body the required authorization_details object.\n\nIn the metadata discovery path, resource metadata endpoint shall name the rar_types expected by the resource, but not provide the schema. Client will get that from the new `authorization_details_types_metadata_endpoint`.\n\nStandby for next version of the spec, work in progress",
+          "createdAt": "2026-01-16T14:00:43Z",
+          "updatedAt": "2026-01-16T14:00:43Z"
         }
       ]
     }
