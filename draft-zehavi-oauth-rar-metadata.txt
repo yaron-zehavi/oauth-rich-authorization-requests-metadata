@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                         17 January 2026
-Expires: 21 July 2026
+Intended status: Standards Track                         18 January 2026
+Expires: 22 July 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 July 2026.
+   This Internet-Draft will expire on 22 July 2026.
 
 Copyright Notice
 
@@ -791,6 +791,13 @@ A.2.5.  Resource server authorizes the request
    }
 
 Appendix B.  Document History
+
+   -01
+
+   *  Authorization details moved to HTTP body and made OPTIONAL
+
+   *  Metadata pointer from resource metadata url, full authorization
+      details types metadata on authorization server new endpoint
 
    -00
 
