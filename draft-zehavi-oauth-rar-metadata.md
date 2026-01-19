@@ -108,8 +108,8 @@ There are two main proposed flows:
              |          |                       || Resource Metadata ||
              |  Client  |<----------------------||    Endpoint       ||
              |          | (E) Metadata Response |+-------------------+|
-             |          |    (Discover expected +---------------------+
-             |          |     RAR types)
+             |          |    (Discover also     +---------------------+
+             |          |     expected RAR types)
              |          |           :           +---------------------+
              |          |        RAR Types      |    Authorization    |
              |          | (F) Metadata Request  |       Server        |
@@ -216,6 +216,27 @@ Figure: Client obtains authorization details object from resource server's error
 This document specifies that the metadata attribute: `authorization_details_types_supported`, defined by RAR {{RFC9396}}, shall be included as an OPTIONAL response attributes in Protected Resource Metadata {{RFC9728}}.
 
 Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained as client can discover each authorization server' supported authorization details types.
+
+The following is a non-normative example response:
+
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+
+  {
+    "resource":
+    "https://resource.example.com",
+    "authorization_servers":
+      ["https://as1.example.com",
+       "https://as2.example.net"],
+    "bearer_methods_supported":
+      ["header", "body"],
+    "scopes_supported":
+      ["profile", "email", "phone"],
+    "resource_documentation":
+      "https://resource.example.com/resource_documentation.html",
+    "authorization_details_types_supported": ["payment_initiation"]
+  }
+
 
 # Authorization Details Types Metadata Endpoint
 
