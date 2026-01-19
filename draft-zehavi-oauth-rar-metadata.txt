@@ -380,7 +380,8 @@ Table of Contents
        ["profile", "email", "phone"],
      "resource_documentation":
        "https://resource.example.com/resource_documentation.html",
-     "authorization_details_types_supported": ["payment_initiation"]
+     "authorization_details_types_supported":
+       ["payment_initiation"]
    }
 
 5.  Authorization Details Types Metadata Endpoint
