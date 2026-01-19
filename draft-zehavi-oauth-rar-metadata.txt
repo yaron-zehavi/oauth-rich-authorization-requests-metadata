@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                         18 January 2026
-Expires: 22 July 2026
+Intended status: Standards Track                         19 January 2026
+Expires: 23 July 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 July 2026.
+   This Internet-Draft will expire on 23 July 2026.
 
 Copyright Notice
 
@@ -359,7 +359,7 @@ Table of Contents
 
    Note: When resource servers accept access tokens _from several
    authorization servers_, interoperability is maintained as client can
-   discover per authorization server its supported authorization details
+   discover each authorization server' supported authorization details
    types.
 
 5.  Authorization Details Types Metadata Endpoint
@@ -450,12 +450,12 @@ Table of Contents
    Note:
 
    *  Authorization details objects provided by a resource server in an
-      error response, are intended for its trusted authorization
-      servers, as advertised by the Resource Server’s metadata endpoint.
+      error response are intended for its trusted authorization servers,
+      as advertised by the Resource Server’s metadata endpoint.
 
-   *  Resource servers SHALL provide authorization_details objects, only
-      in case *all* trusted authorization servers accept the
-      *authorization details type*.
+   *  Resource servers SHALL provide authorization_details objects only
+      if *all* trusted authorization servers accept the *authorization
+      details type* used.
 
    HTTP response body definition:
 
