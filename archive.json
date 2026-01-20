@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-18T02:28:48.719851+00:00",
+  "timestamp": "2026-01-20T02:21:13.276102+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -55,15 +55,15 @@
       "id": "I_kwDOQ1ZTTM7iSJdn",
       "title": "Move supported autorization details types into a separate endpoint",
       "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "runegri",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "An AS may support a large number of structures, this would make the metadata document very large. Even though this document normally is cached on the web server, there is the issue of network traffic and the load of parsing the metadata.\n\nI suggest that instead of including the structures in the metadata document we reference a separate endpoint that serves the supported types. This way the metadata document will only indicate that the feature is supported (which is useful for discovery) by supplying the url of the endpoint. \n\nThe content served from the new endpoint would be similar to the current specification.",
       "createdAt": "2026-01-09T10:27:46Z",
-      "updatedAt": "2026-01-09T12:01:45Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-19T13:44:01Z",
+      "closedAt": "2026-01-19T13:44:01Z",
       "comments": [
         {
           "author": "yaron-zehavi",
@@ -79,15 +79,15 @@
       "id": "I_kwDOQ1ZTTM7iSPdY",
       "title": "We need a better explanation of the use cases for the insufficient_authorization_details signal",
       "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "runegri",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "I am having trouble understanding the use case for the insufficient_authorization_details signal where the Resource Server indicates the authorization details structure that sould be included in the request. \n\nIf the RS knows what data should be included in the request I don't see the need for this feature. And in the other case, where the RS does not know the data, then I don't see how this feature can be used. So there is something I don't understand here :-)",
       "createdAt": "2026-01-09T10:35:06Z",
-      "updatedAt": "2026-01-16T14:00:43Z",
-      "closedAt": null,
+      "updatedAt": "2026-01-19T13:50:27Z",
+      "closedAt": "2026-01-19T13:50:27Z",
       "comments": [
         {
           "author": "yaron-zehavi",
