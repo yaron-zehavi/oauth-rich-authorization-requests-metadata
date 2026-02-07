@@ -604,7 +604,8 @@ This section provides non-normative examples of how this specification may be us
             },
             {
                 "$schema": "http://json-schema.org/draft-07/schema#",
-                "title": "Complete Tillitsrammeverk structure",
+                "description": "Complete Trust Framework structure",
+                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd",
                 "type": "object",
                 "properties": {
                     "type": {
