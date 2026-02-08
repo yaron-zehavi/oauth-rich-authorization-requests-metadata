@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-05T02:44:11.529355+00:00",
+  "timestamp": "2026-02-08T03:23:40.154224+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -127,5 +127,32 @@
       ]
     }
   ],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 3,
+      "id": "PR_kwDOQ1ZTTM7CMPF8",
+      "title": "Adds some norwegian examples and a mechanism for the RS to signal with types of authorization details it needs",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/pull/3",
+      "state": "OPEN",
+      "author": "runegri",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Adds a few json schema examples from the Norwegian Health Sector (HelseID). The structures are documented here https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd and here https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd. \r\n\r\nThis PR also adds an alternative signaling mechanism that allows the RS to indicate which types of autorization details objects it requires without specifying the actual contents.",
+      "createdAt": "2026-02-07T15:42:37Z",
+      "updatedAt": "2026-02-07T15:42:37Z",
+      "baseRepository": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
+      "baseRefName": "main",
+      "baseRefOid": "f3d2bb59546c1471cc280da628e8c4a569907290",
+      "headRepository": "runegri/oauth-rich-authorization-requests-metadata",
+      "headRefName": "main",
+      "headRefOid": "7967894c02a20c576e303e9df19368924cb2f461",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
