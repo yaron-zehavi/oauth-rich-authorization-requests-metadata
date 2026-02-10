@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                         19 January 2026
-Expires: 23 July 2026
+Intended status: Standards Track                        10 February 2026
+Expires: 14 August 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -70,7 +70,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 July 2026.
+   This Internet-Draft will expire on 14 August 2026.
 
 Copyright Notice
 
@@ -91,11 +91,13 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  Protocol Overview
-     3.1.  Client learns to construct valid authorization details
-           objects using metadata
+     3.1.  Client obtains metadata of required authorization details
+           types
      3.2.  Client obtains authorization details object from resource
            server's error response
    4.  OAuth 2.0 Protected Resource Metadata RFC9728
+     4.1.  Required types expression syntax
+     4.2.  Example
    5.  Authorization Details Types Metadata Endpoint
      5.1.  Authorization Details Types Metadata Endpoint Response
    6.  Resource Server Error Signaling of Inadequate
@@ -191,14 +193,12 @@ Table of Contents
 
    There are two main proposed flows:
 
-   *  Client *learns* to construct valid authorization details objects
-      using authorization details types metadata.
+   *  Client obtains *metadata* of required authorization details types.
 
-   *  Client *obtains an actionable authorization details object* from
+   *  Client obtains an *actionable authorization details object* from
       resource server's error response.
 
-3.1.  Client learns to construct valid authorization details objects
-      using metadata
+3.1.  Client obtains metadata of required authorization details types
 
                                                 +---------------------+
              +----------+ (B) API Request       |                     |
@@ -352,18 +352,62 @@ Table of Contents
 
 4.  OAuth 2.0 Protected Resource Metadata [RFC9728]
 
-   This document specifies that the metadata attribute:
-   authorization_details_types_supported, defined by RAR [RFC9396],
-   shall be included as an OPTIONAL response attributes in Protected
-   Resource Metadata [RFC9728].
+   This document specifies that a new metadata attribute:
+   required_authorization_details_types, shall be included as an
+   OPTIONAL response attribute in Protected Resource Metadata [RFC9728].
+
+   "required_authorization_details_types":  OPTIONAL.  a JSON object
+      that conforms to the following syntax.
+
+   The JSON syntax Section 4.1 defines a required types expression to
+   declaratively describe permitted combinations of required
+   authorization_details types.  This expression allows selection
+   operators (oneOf, allOf, constraints) and boolean composition (and,
+   or) to be combined in a predictable manner.
 
    Note: When resource servers accept access tokens _from several
-   authorization servers_, interoperability is maintained as client can
+   authorization servers_, interoperability is maintained as clients can
    discover each authorization server' supported authorization details
    types.
 
+4.1.  Required types expression syntax
+
+   required_types = expression
+
+   expression = and_expr / or_expr / oneof_expr / allof_expr /
+   constraints_expr
+
+   and_expr = object ; JSON object with a single member "and" ; whose
+   value is a non-empty array of expression
+
+   or_expr = object ; JSON object with a single member "or" ; whose
+   value is a non-empty array of expression
+
+   oneof_expr = object ; JSON object with a single member "oneOf" ;
+   whose value is a non-empty array of type
+
+   allof_expr = object ; JSON object with a single member "allOf" ;
+   whose value is a non-empty array of type
+
+   constraints_expr = object ; JSON object with a single member
+   "constraints" ; whose value is constraint_object
+
+   constraint_object = object ; JSON object with a required member
+   "types" ; and optional members "min", "max", "exact", and "forbidden"
+
+   types = 1*(string)
+
+   min = positive-integer max = positive-integer exact = positive-
+   integer
+
+   forbidden = 1*( array-of-type )
+
+   array-of-type = 1*(string)
+
+4.2.  Example
+
    The following is a non-normative example response with the added
-   authorization_details_types_supported attribute:
+   required_authorization_details_types attribute:
 
    HTTP/1.1 200 OK
    Content-Type: application/json
@@ -380,7 +424,7 @@ Table of Contents
        ["profile", "email", "phone"],
      "resource_documentation":
        "https://resource.example.com/resource_documentation.html",
-     "authorization_details_types_supported":
+     "required_authorization_details_types":
        ["payment_initiation"]
    }
 
@@ -525,7 +569,7 @@ Table of Contents
          servers and supported *authorization_details types*.
 
       -  Fetch authorization server metadata to discover
-         authorization_details_types_supported.
+         required_authorization_details_types.
 
       -  Fetch authorization server's
          authorization_details_types_metadata_endpoint to obtain
@@ -539,7 +583,7 @@ Table of Contents
 7.2.  Resource Server Processing Rules
 
    *  Advertise in resource metadata
-      authorization_details_types_supported, where relevant.
+      required_authorization_details_types, where relevant.
 
    *  Verify access tokens against required authorization details.
 
@@ -576,7 +620,9 @@ Table of Contents
 9.2.  OAuth Metadata Attribute Registration
 
    The metadata attribute authorization_details_types_metadata_endpoint
-   is defined for OAuth authorization server metadata as a URL.
+   is defined for OAuth 2.0 authorization server metadata as a URL.  The
+   metadata attribute required_authorization_details_types is defined
+   for OAuth 2.0 protected resource metadata.
 
 10.  Normative References
 
