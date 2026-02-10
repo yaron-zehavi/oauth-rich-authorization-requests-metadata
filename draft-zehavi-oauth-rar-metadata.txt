@@ -357,7 +357,8 @@ Table of Contents
    OPTIONAL response attribute in Protected Resource Metadata [RFC9728].
 
    "required_authorization_details_types":  OPTIONAL.  a JSON object
-      that conforms to the syntax Section 4.1 described herein.
+      that conforms to the syntax described in Section 4.1 for a
+      _required types expression_.
 
    Note: When resource servers accept access tokens _from several
    authorization servers_, interoperability is maintained as clients can
@@ -366,49 +367,55 @@ Table of Contents
 
 4.1.  Required types expression syntax
 
-   The following JSON syntax defines a required types expression to
+   The following JSON syntax defines a *required types expression* to
    declaratively describe permitted combinations of required
    authorization_details types.  This expression allows selection
    operators (oneOf, allOf, constraints) and boolean composition (and,
    or) to be combined in a predictable manner.
 
-required_types = expression
+   A _required types expression_ is a JSON object that MUST contain
+   exactly one of the following members:
 
-expression = and_expr / or_expr / oneof_expr / allof_expr / constraints_expr
+   *  and
 
-and_expr = object
-; JSON object with a single member "and"
-; whose value is a non-empty array of expression
+   *  or
 
-or_expr = object
-; JSON object with a single member "or"
-; whose value is a non-empty array of expression
+   *  oneOf
 
-oneof_expr = object
-; JSON object with a single member "oneOf"
-; whose value is a non-empty array of type
+   *  allOf
 
-allof_expr = object
-; JSON object with a single member "allOf"
-; whose value is a non-empty array of type
+   *  constraints
 
-constraints_expr = object
-; JSON object with a single member "constraints"
-; whose value is constraint_object
+   An expression object MUST NOT contain more than one of the above
+   members. members:
 
-constraint_object = object
-; JSON object with a required member "types"
-; and optional members "min", "max", "exact", and "forbidden"
+   "and":  OPTIONAL.  a non-empty JSON array of _required types
+      expressions_. When _and_ is specified, the expression is satisfied
+      if *all* contained expressions are satisfied.
 
-types = 1*(string)
+   "or":  OPTIONAL.  a non-empty JSON array of _required types
+      expressions_. When _or_ is specified, the expression is satisfied
+      if _at least one_ contained expression is satisfied.
 
-min = positive-integer
-max = positive-integer
-exact = positive-integer
+   "oneOf":  OPTIONAL.  a non-empty JSON array of strings identifying
+      authorization_details types.  When _oneOf_ is specified, the
+      expression is satisfied if _exactly one_ of the listed types is
+      present.
 
-forbidden = 1*( array-of-type )
+   "allOf":  OPTIONAL.  a non-empty JSON array of strings identifying
+      authorization_details types.  When _allOf_ is specified, the
+      expression is satisfied if _all_ of the listed types are present.
 
-array-of-type = 1*(string)
+   "constraints":  OPTIONAL.  a JSON object defining cardinality and
+      exclusion constraints over a set of authorization_details types.
+      The object MUST contain the *types* attribute and MAY contain the
+      attributes *min*, *max*, *exact*, and *forbidden*.
+
+"types":
+:    REQUIRED.  a non-empty JSON array of strings identifying the authorization_details types to which the constraints apply.
+
+"min":
+:    OPTIONAL.  a non-negative integer indicating the minimum number of authorization_details types from `types` that MUST be present.
 
 4.2.  Example
 
