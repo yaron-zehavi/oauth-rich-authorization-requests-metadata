@@ -1530,32 +1530,47 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-required-types-expression-s">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-required-types-expression-s" class="section-name selfRef">Required types expression syntax</a>
         </h3>
-<p id="section-4.1-1">required_types = expression<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">expression = and_expr / or_expr / oneof_expr / allof_expr / constraints_expr<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3">and_expr = object
-  ; JSON object with a single member "and"
-  ; whose value is a non-empty array of expression<a href="#section-4.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.1-4">or_expr = object
-  ; JSON object with a single member "or"
-  ; whose value is a non-empty array of expression<a href="#section-4.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.1-5">oneof_expr = object
-  ; JSON object with a single member "oneOf"
-  ; whose value is a non-empty array of type<a href="#section-4.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.1-6">allof_expr = object
-  ; JSON object with a single member "allOf"
-  ; whose value is a non-empty array of type<a href="#section-4.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.1-7">constraints_expr = object
-  ; JSON object with a single member "constraints"
-  ; whose value is constraint_object<a href="#section-4.1-7" class="pilcrow">¶</a></p>
-<p id="section-4.1-8">constraint_object = object
-  ; JSON object with a required member "types"
-  ; and optional members "min", "max", "exact", and "forbidden"<a href="#section-4.1-8" class="pilcrow">¶</a></p>
-<p id="section-4.1-9">types = 1*(string)<a href="#section-4.1-9" class="pilcrow">¶</a></p>
-<p id="section-4.1-10">min = positive-integer
+<div class="alignLeft art-text artwork" id="section-4.1-1">
+<pre>
+required_types = expression
+
+expression = and_expr / or_expr / oneof_expr / allof_expr / constraints_expr
+
+and_expr = object
+; JSON object with a single member "and"
+; whose value is a non-empty array of expression
+
+or_expr = object
+; JSON object with a single member "or"
+; whose value is a non-empty array of expression
+
+oneof_expr = object
+; JSON object with a single member "oneOf"
+; whose value is a non-empty array of type
+
+allof_expr = object
+; JSON object with a single member "allOf"
+; whose value is a non-empty array of type
+
+constraints_expr = object
+; JSON object with a single member "constraints"
+; whose value is constraint_object
+
+constraint_object = object
+; JSON object with a required member "types"
+; and optional members "min", "max", "exact", and "forbidden"
+
+types = 1*(string)
+
+min = positive-integer
 max = positive-integer
-exact = positive-integer<a href="#section-4.1-10" class="pilcrow">¶</a></p>
-<p id="section-4.1-11">forbidden = 1*( array-of-type )<a href="#section-4.1-11" class="pilcrow">¶</a></p>
-<p id="section-4.1-12">array-of-type = 1*(string)<a href="#section-4.1-12" class="pilcrow">¶</a></p>
+exact = positive-integer
+
+forbidden = 1*( array-of-type )
+
+array-of-type = 1*(string)
+</pre><a href="#section-4.1-1" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="example">
