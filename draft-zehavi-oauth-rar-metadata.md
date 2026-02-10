@@ -224,43 +224,43 @@ Note: When resource servers accept access tokens *from several authorization ser
 
 ## Required types expression syntax {#syntax}
 
-required_types = expression
+    required_types = expression
 
-expression = and_expr / or_expr / oneof_expr / allof_expr / constraints_expr
+    expression = and_expr / or_expr / oneof_expr / allof_expr / constraints_expr
 
-and_expr = object
-  ; JSON object with a single member "and"
-  ; whose value is a non-empty array of expression
+    and_expr = object
+    ; JSON object with a single member "and"
+    ; whose value is a non-empty array of expression
 
-or_expr = object
-  ; JSON object with a single member "or"
-  ; whose value is a non-empty array of expression
+    or_expr = object
+    ; JSON object with a single member "or"
+    ; whose value is a non-empty array of expression
 
-oneof_expr = object
-  ; JSON object with a single member "oneOf"
-  ; whose value is a non-empty array of type
+    oneof_expr = object
+    ; JSON object with a single member "oneOf"
+    ; whose value is a non-empty array of type
 
-allof_expr = object
-  ; JSON object with a single member "allOf"
-  ; whose value is a non-empty array of type
+    allof_expr = object
+    ; JSON object with a single member "allOf"
+    ; whose value is a non-empty array of type
 
-constraints_expr = object
-  ; JSON object with a single member "constraints"
-  ; whose value is constraint_object
+    constraints_expr = object
+    ; JSON object with a single member "constraints"
+    ; whose value is constraint_object
 
-constraint_object = object
-  ; JSON object with a required member "types"
-  ; and optional members "min", "max", "exact", and "forbidden"
+    constraint_object = object
+    ; JSON object with a required member "types"
+    ; and optional members "min", "max", "exact", and "forbidden"
 
-types = 1*(string)
+    types = 1*(string)
 
-min = positive-integer
-max = positive-integer
-exact = positive-integer
+    min = positive-integer
+    max = positive-integer
+    exact = positive-integer
 
-forbidden = 1*( array-of-type )
+    forbidden = 1*( array-of-type )
 
-array-of-type = 1*(string)
+    array-of-type = 1*(string)
 
 ## Example
 
