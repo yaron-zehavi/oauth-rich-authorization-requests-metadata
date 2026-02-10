@@ -86,10 +86,10 @@ The OPTIONAL providing of actionable authorization details objects by resource s
 
 There are two main proposed flows:
 
-* Client **learns** to construct valid authorization details objects using authorization details types metadata.
-* Client **obtains an actionable authorization details object** from resource server's error response.
+* Client obtains **metadata** of required authorization details types.
+* Client obtains an **actionable authorization details object** from resource server's error response.
 
-## Client learns to construct valid authorization details objects using metadata
+## Client obtains metadata of required authorization details types
 
 ~~~ ascii-art
                                                 +---------------------+
@@ -213,11 +213,58 @@ Figure: Client obtains authorization details object from resource server's error
 
 # OAuth 2.0 Protected Resource Metadata {{RFC9728}}
 
-This document specifies that the metadata attribute: `authorization_details_types_supported`, defined by RAR {{RFC9396}}, shall be included as an OPTIONAL response attributes in Protected Resource Metadata {{RFC9728}}.
+This document specifies that a new metadata attribute: `required_authorization_details_types`, shall be included as an OPTIONAL response attribute in Protected Resource Metadata {{RFC9728}}.
 
-Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained as client can discover each authorization server' supported authorization details types.
+"required_authorization_details_types":
+:    OPTIONAL.  a JSON object that conforms to the following syntax.
 
-The following is a non-normative example response with the added `authorization_details_types_supported` attribute:
+The JSON syntax {{syntax}} defines a required types expression to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
+
+Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained as clients can discover each authorization server' supported authorization details types.
+
+## Required types expression syntax {#syntax}
+
+required_types = expression
+
+expression = and_expr / or_expr / oneof_expr / allof_expr / constraints_expr
+
+and_expr = object
+  ; JSON object with a single member "and"
+  ; whose value is a non-empty array of expression
+
+or_expr = object
+  ; JSON object with a single member "or"
+  ; whose value is a non-empty array of expression
+
+oneof_expr = object
+  ; JSON object with a single member "oneOf"
+  ; whose value is a non-empty array of type
+
+allof_expr = object
+  ; JSON object with a single member "allOf"
+  ; whose value is a non-empty array of type
+
+constraints_expr = object
+  ; JSON object with a single member "constraints"
+  ; whose value is constraint_object
+
+constraint_object = object
+  ; JSON object with a required member "types"
+  ; and optional members "min", "max", "exact", and "forbidden"
+
+types = 1*(string)
+
+min = positive-integer
+max = positive-integer
+exact = positive-integer
+
+forbidden = 1*( array-of-type )
+
+array-of-type = 1*(string)
+
+## Example
+
+The following is a non-normative example response with the added `required_authorization_details_types` attribute:
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -234,17 +281,16 @@ The following is a non-normative example response with the added `authorization_
         ["profile", "email", "phone"],
       "resource_documentation":
         "https://resource.example.com/resource_documentation.html",
-      "authorization_details_types_supported":
+      "required_authorization_details_types":
         ["payment_initiation"]
     }
-
 
 # Authorization Details Types Metadata Endpoint
 
 The following authorization server metadata {{RFC8414}} parameter is introduced to signal the server's support for Authorization Details Types Metadata:
 
 "authorization_details_types_metadata_endpoint":
-:    OPTIONAL. The URL of the Authorization Details Types Metadata endpoint.
+:    OPTIONAL.  The URL of the Authorization Details Types Metadata endpoint.
 
 ## Authorization Details Types Metadata Endpoint Response
 
@@ -343,14 +389,14 @@ Example resource server response with OPTIONAL authorization_details:
 * If encountering error `insufficient_authorization_details`, check if body.authorization_details exists and if provided MAY include in subsequent OAuth request.
 * Otherwise consult metadata:
     * Fetch resource metadata to discover accepted authorization servers and supported **authorization_details types**.
-    * Fetch authorization server metadata to discover `authorization_details_types_supported`.
+    * Fetch authorization server metadata to discover `required_authorization_details_types`.
     * Fetch authorization server's `authorization_details_types_metadata_endpoint` to obtain metadata and schema
     * Locate schema or retrieve schema_uri.
 * Construct authorization details conforming to the schema and include in subsequent OAuth request.
 
 ## Resource Server Processing Rules
 
-* Advertise in resource metadata `authorization_details_types_supported`, where relevant.
+* Advertise in resource metadata `required_authorization_details_types`, where relevant.
 * Verify access tokens against required authorization details.
 * If insufficient, return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".
 * OPTIONALLY provide also an HTTP body with an informative actionable authorization_details object.
@@ -372,7 +418,8 @@ Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` r
 
 ## OAuth Metadata Attribute Registration
 
-The metadata attribute `authorization_details_types_metadata_endpoint` is defined for OAuth authorization server metadata as a URL.
+The metadata attribute `authorization_details_types_metadata_endpoint` is defined for OAuth 2.0 authorization server metadata as a URL.
+The metadata attribute `required_authorization_details_types` is defined for OAuth 2.0 protected resource metadata.
 
 --- back
 
