@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-08T03:23:40.154224+00:00",
+  "timestamp": "2026-02-10T03:16:42.156974+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -140,7 +140,7 @@
       "labels": [],
       "body": "Adds a few json schema examples from the Norwegian Health Sector (HelseID). The structures are documented here https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd and here https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd. \r\n\r\nThis PR also adds an alternative signaling mechanism that allows the RS to indicate which types of autorization details objects it requires without specifying the actual contents.",
       "createdAt": "2026-02-07T15:42:37Z",
-      "updatedAt": "2026-02-07T15:42:37Z",
+      "updatedAt": "2026-02-09T07:29:16Z",
       "baseRepository": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
       "baseRefName": "main",
       "baseRefOid": "f3d2bb59546c1471cc280da628e8c4a569907290",
@@ -151,8 +151,37 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "runegri",
+          "authorAssociation": "NONE",
+          "body": "Yes I my head the metadata and the required authorization details types may not match 1 to 1. For example in the HelseID we support several types of authorization details, but most APIs only require one of them. So while the `authorization_details_types_supported` endpoint will list several types, the response from the RS may be only one or two of the types. \r\n\r\nSo I'm suggesting we open up the signaling mechanism a bit so that it is more generic. My impression is that in your ecosystem each API will require that the client supplies all supported authorization details types in the request?",
+          "createdAt": "2026-02-09T07:28:48Z",
+          "updatedAt": "2026-02-09T07:28:48Z"
+        },
+        {
+          "author": "runegri",
+          "authorAssociation": "NONE",
+          "body": "Oh, and please do a read through of the examples. I have probably messed up the formatting here and there :)",
+          "createdAt": "2026-02-09T07:29:16Z",
+          "updatedAt": "2026-02-09T07:29:16Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQ1ZTTM7guaMd",
+          "commit": {
+            "abbreviatedOid": "7967894"
+          },
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "Thanks @runegri this is highly appreciated!\nAbout the error signaling + `authorization_details_required`, have you seen I've added to the resource metadata response (https://www.ietf.org/archive/id/draft-zehavi-oauth-rar-metadata-01.html#name-oauth-20-protected-resource) the attribute `authorization_details_types_supported`, which is equivalent to your proposed error signaling?\n\nIf you did, what is the benefit you see in signaling directly via the error response?\nIs it to skip a required HTTP call to resource metadata? Or to focus the client exactly on the required type?",
+          "createdAt": "2026-02-08T19:50:15Z",
+          "updatedAt": "2026-02-08T19:50:15Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
