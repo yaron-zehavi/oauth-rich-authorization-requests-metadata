@@ -218,6 +218,27 @@ This document specifies that a new metadata attribute: `required_authorization_d
 "required_authorization_details_types":
 :    OPTIONAL.  a JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
 
+The following is a non-normative example response with the added `required_authorization_details_types` attribute:
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+      "resource":
+      "https://resource.example.com",
+      "authorization_servers":
+        ["https://as1.example.com",
+         "https://as2.example.net"],
+      "bearer_methods_supported":
+        ["header", "body"],
+      "scopes_supported":
+        ["profile", "email", "phone"],
+      "resource_documentation":
+        "https://resource.example.com/resource_documentation.html",
+      "required_authorization_details_types":
+        "oneOf": ["payment_initiation", "payment_approval", "appoint_beneficiary"]
+    }
+
 Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained as clients can discover each authorization server' supported authorization details types.
 
 ## Required types expression syntax {#syntax}
@@ -250,34 +271,20 @@ members:
 "constraints":
 :    OPTIONAL.  a JSON object defining cardinality and exclusion constraints over a set of authorization_details types. The object MUST contain the **types** attribute and MAY contain the attributes **min**, **max**, **exact**, and **forbidden**.
 
-    "types":
-    :    REQUIRED.  a non-empty JSON array of strings identifying the authorization_details types to which the constraints apply.
+"types":
+:    REQUIRED.  a non-empty JSON array of strings identifying the authorization_details types to which the constraints apply.
 
-    "min":
-    :    OPTIONAL.  a non-negative integer indicating the minimum number of authorization_details types from `types` that MUST be present.
+"min":
+:    OPTIONAL.  a non-negative integer indicating the minimum number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **exact** attribute.
 
-## Example
+"max":
+:    OPTIONAL.  a non-negative integer indicating the maximum number of authorization_details types from `types` that MAY be present. This attribute MUST NOT be used together with the **exact** attribute.
 
-The following is a non-normative example response with the added `required_authorization_details_types` attribute:
+"exact":
+:    OPTIONAL.  a non-negative integer indicating the exact number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **min** or **max** attributes.
 
-    HTTP/1.1 200 OK
-    Content-Type: application/json
-
-    {
-      "resource":
-      "https://resource.example.com",
-      "authorization_servers":
-        ["https://as1.example.com",
-         "https://as2.example.net"],
-      "bearer_methods_supported":
-        ["header", "body"],
-      "scopes_supported":
-        ["profile", "email", "phone"],
-      "resource_documentation":
-        "https://resource.example.com/resource_documentation.html",
-      "required_authorization_details_types":
-        ["payment_initiation"]
-    }
+"forbidden":
+:    OPTIONAL.  a non-empty JSON array, each element of which is an array of authorization_details types identifiers, representing a combination that MUST NOT be present together.
 
 # Authorization Details Types Metadata Endpoint
 
