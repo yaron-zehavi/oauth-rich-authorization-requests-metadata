@@ -357,7 +357,7 @@ Table of Contents
    OPTIONAL response attribute in Protected Resource Metadata [RFC9728].
 
    "required_authorization_details_types":  OPTIONAL.  a JSON object
-      that conforms to the Section 4.1 described herein.
+      that conforms to the syntax Section 4.1 described herein.
 
    Note: When resource servers accept access tokens _from several
    authorization servers_, interoperability is maintained as clients can
