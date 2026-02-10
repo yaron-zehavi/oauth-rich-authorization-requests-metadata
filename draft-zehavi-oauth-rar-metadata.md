@@ -216,13 +216,13 @@ Figure: Client obtains authorization details object from resource server's error
 This document specifies that a new metadata attribute: `required_authorization_details_types`, shall be included as an OPTIONAL response attribute in Protected Resource Metadata {{RFC9728}}.
 
 "required_authorization_details_types":
-:    OPTIONAL.  a JSON object that conforms to the following syntax.
-
-The JSON syntax {{syntax}} defines a required types expression to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
+:    OPTIONAL.  a JSON object that conforms to the {{syntax}} described herein.
 
 Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained as clients can discover each authorization server' supported authorization details types.
 
 ## Required types expression syntax {#syntax}
+
+The following JSON syntax defines a required types expression to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
 
     required_types = expression
 
