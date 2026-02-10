@@ -1519,18 +1519,18 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <span class="break"></span><dl class="dlParallel" id="section-4-2">
         <dt id="section-4-2.1">"required_authorization_details_types":</dt>
         <dd style="margin-left: 1.5em" id="section-4-2.2">
-          <p id="section-4-2.2.1"><span class="bcp14">OPTIONAL</span>.  a JSON object that conforms to the following syntax.<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-4-2.2.1"><span class="bcp14">OPTIONAL</span>.  a JSON object that conforms to the <a href="#syntax" class="auto internal xref">Section 4.1</a> described herein.<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
-<p id="section-4-3">The JSON syntax <a href="#syntax" class="auto internal xref">Section 4.1</a> defines a required types expression to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">Note: When resource servers accept access tokens <em>from several authorization servers</em>, interoperability is maintained as clients can discover each authorization server' supported authorization details types.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-3">Note: When resource servers accept access tokens <em>from several authorization servers</em>, interoperability is maintained as clients can discover each authorization server' supported authorization details types.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <div id="syntax">
 <section id="section-4.1">
         <h3 id="name-required-types-expression-s">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-required-types-expression-s" class="section-name selfRef">Required types expression syntax</a>
         </h3>
-<div class="alignLeft art-text artwork" id="section-4.1-1">
+<p id="section-4.1-1">The following JSON syntax defines a required types expression to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.1-2">
 <pre>
 required_types = expression
 
@@ -1569,7 +1569,7 @@ exact = positive-integer
 forbidden = 1*( array-of-type )
 
 array-of-type = 1*(string)
-</pre><a href="#section-4.1-1" class="pilcrow">¶</a>
+</pre><a href="#section-4.1-2" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
