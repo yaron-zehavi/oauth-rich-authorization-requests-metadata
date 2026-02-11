@@ -395,7 +395,7 @@ Table of Contents
 
    The following JSON syntax defines a *required types expression* to
    declaratively describe permitted combinations of required
-   authorization_details types.  This expression allows selection
+   _authorization_details_ types.  This expression allows selection
    operators (oneOf, allOf, constraints) and boolean composition (and,
    or) to be combined in a predictable manner.
 
@@ -462,14 +462,14 @@ Table of Contents
 
 4.2.1.  Example expression using "and" operator
 
-   Specifies that the selection MUST include c and d, *and* one of a or
-   b.
+   Specifies that the selection MUST include a and b, *and* one of c
+   *or* d.
 
    {
      "required_types": {
        "and": [
-         { "oneOf": ["a", "b"] },
-         { "allOf": ["c", "d"] }
+         { "allOf": ["a", "b"] },
+         { "oneOf": ["c", "d"] }
        ]
      }
    }
@@ -495,14 +495,14 @@ Table of Contents
 
 4.2.2.  Example expression using "or" operator
 
-   Specifies that the selection MUST include either c and d, *or* one of
-   a or b.
+   Specifies that the selection MUST include *either* c *and* d, *or*
+   one of a or b.
 
    {
      "required_types": {
        "or": [
-         { "oneOf": ["a", "b"] },
-         { "allOf": ["c", "d"] }
+         { "allOf": ["c", "d"] },
+         { "oneOf": ["a", "b"] }
        ]
      }
    }

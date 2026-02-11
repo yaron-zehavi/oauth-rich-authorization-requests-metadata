@@ -1564,7 +1564,7 @@ Content-Type: application/json
         <h3 id="name-required-types-expression-s">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-required-types-expression-s" class="section-name selfRef">Required types expression syntax</a>
         </h3>
-<p id="section-4.1-1">The following JSON syntax defines a <strong>required types expression</strong> to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-1">The following JSON syntax defines a <strong>required types expression</strong> to declaratively describe permitted combinations of required <em>authorization_details</em> types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2">A <strong>required types expression</strong> is a JSON object that <span class="bcp14">MUST</span> contain <strong>exactly</strong> one of the following attributes:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-3.1">
@@ -1648,14 +1648,14 @@ Content-Type: application/json
           <h4 id="name-example-expression-using-an">
 <a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-example-expression-using-an" class="section-name selfRef">Example expression using "and" operator</a>
           </h4>
-<p id="section-4.2.1-1">Specifies that the selection <span class="bcp14">MUST</span> include c and d, <strong>and</strong> one of a or b.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-1">Specifies that the selection <span class="bcp14">MUST</span> include a and b, <strong>and</strong> one of c <strong>or</strong> d.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.2.1-2">
 <pre>
 {
   "required_types": {
     "and": [
-      { "oneOf": ["a", "b"] },
-      { "allOf": ["c", "d"] }
+      { "allOf": ["a", "b"] },
+      { "oneOf": ["c", "d"] }
     ]
   }
 }
@@ -1687,14 +1687,14 @@ Content-Type: application/json
           <h4 id="name-example-expression-using-or">
 <a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-example-expression-using-or" class="section-name selfRef">Example expression using "or" operator</a>
           </h4>
-<p id="section-4.2.2-1">Specifies that the selection <span class="bcp14">MUST</span> include either c and d, <strong>or</strong> one of a or b.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.2-1">Specifies that the selection <span class="bcp14">MUST</span> include <strong>either</strong> c <strong>and</strong> d, <strong>or</strong> one of a or b.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.2.2-2">
 <pre>
 {
   "required_types": {
     "or": [
-      { "oneOf": ["a", "b"] },
-      { "allOf": ["c", "d"] }
+      { "allOf": ["c", "d"] },
+      { "oneOf": ["a", "b"] }
     ]
   }
 }
