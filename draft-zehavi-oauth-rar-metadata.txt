@@ -461,8 +461,8 @@ Table of Contents
       present.  This attribute MUST NOT be used together with the *min*
       or *max* attributes.
 
-   "forbidden":  OPTIONAL.  a non-empty JSON array, each element of
-      which is an array of authorization_details types identifiers,
+   "forbidden":  OPTIONAL.  a non-empty JSON array, whose each element
+      is an array of authorization_details types identifiers,
       representing a combination that MUST NOT be present together.
 
 4.2.  Required types expression examples
