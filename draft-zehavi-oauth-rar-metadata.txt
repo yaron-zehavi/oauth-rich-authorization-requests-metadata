@@ -449,8 +449,8 @@ Table of Contents
      the authorization_details types to which the constraints apply.
 
 "min":
-:    OPTIONAL.  a non-negative integer indicating the minimum number
-     of authorization_details types from `types` that MUST be present.
+:    OPTIONAL.  a non-negative integer indicating the minimum number of
+     authorization_details types from `types` that MUST be present.
      This attribute MUST NOT be used together with the **exact** attribute.
 
 "max":
@@ -460,8 +460,9 @@ Table of Contents
 
 "exact":
 :    OPTIONAL.  a non-negative integer indicating the exact number of
-     authorization_details types from `types` that MUST be present. This
-     attribute MUST NOT be used together with the **min** or **max** attributes.
+     authorization_details types from `types` that MUST be present.
+     This attribute MUST NOT be used together
+     with the **min** or **max** attributes.
 
 "forbidden":
 :    OPTIONAL.  a non-empty JSON array, whose each element is an array
