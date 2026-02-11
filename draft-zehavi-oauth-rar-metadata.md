@@ -244,7 +244,7 @@ Note: When resource servers accept access tokens *from several authorization ser
 
 ## Required types expression syntax {#syntax}
 
-The following JSON syntax defines a **required types expression** to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
+The following JSON syntax defines a **required types expression** to declaratively describe permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
 
 A **required types expression** is a JSON object that MUST contain **exactly** one of the following attributes:
 
@@ -253,6 +253,7 @@ A **required types expression** is a JSON object that MUST contain **exactly** o
 * oneOf
 * allOf
 * constraints
+
 
 Attributes definition:
 
@@ -290,13 +291,13 @@ Attributes definition:
 
 ### Example expression using "and" operator
 
-Specifies that the selection MUST include c and d, **and** one of a or b.
+Specifies that the selection MUST include a and b, **and** one of c **or** d.
 
     {
       "required_types": {
         "and": [
-          { "oneOf": ["a", "b"] },
-          { "allOf": ["c", "d"] }
+          { "allOf": ["a", "b"] },
+          { "oneOf": ["c", "d"] }
         ]
       }
     }
@@ -320,13 +321,13 @@ Specifies that the selection MUST include one of a or b, **and** at least one of
 
 ### Example expression using "or" operator
 
-Specifies that the selection MUST include either c and d, **or** one of a or b.
+Specifies that the selection MUST include **either** c **and** d, **or** one of a or b.
 
     {
       "required_types": {
         "or": [
-          { "oneOf": ["a", "b"] },
-          { "allOf": ["c", "d"] }
+          { "allOf": ["c", "d"] },
+          { "oneOf": ["a", "b"] }
         ]
       }
     }
