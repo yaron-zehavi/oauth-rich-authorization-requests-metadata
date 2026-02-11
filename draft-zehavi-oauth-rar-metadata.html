@@ -1252,6 +1252,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1.2.1">
                     <p id="section-toc.1-1.11.2.1.2.1.1"><a href="#appendix-A.1.1" class="auto internal xref">A.1.1</a>.  <a href="#name-example-authorization_detai" class="internal xref">Example authorization_details_types_metadata_endpoint response with Payment Initiation</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1.2.2">
+                    <p id="section-toc.1-1.11.2.1.2.2.1"><a href="#appendix-A.1.2" class="auto internal xref">A.1.2</a>.  <a href="#name-example-authorization_detail" class="internal xref">Example authorization_details_types_metadata_endpoint response for the Norwegian Health Sector (HelseID)</a></p>
+</li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
@@ -2142,6 +2145,281 @@ Content-Type: application/json
 </div>
 </section>
 </div>
+<div id="example-authorizationdetailstypesmetadataendpoint-response-for-the-norwegian-health-sector-helseid">
+<section id="appendix-A.1.2">
+          <h4 id="name-example-authorization_detail">
+<a href="#appendix-A.1.2" class="section-number selfRef">A.1.2. </a><a href="#name-example-authorization_detail" class="section-name selfRef">Example authorization_details_types_metadata_endpoint response for the Norwegian Health Sector (HelseID)</a>
+          </h4>
+<div class="alignLeft art-text artwork" id="appendix-A.1.2-1">
+<pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "authorization_details_types_metadata": {
+        "helseid_authorization": {
+            "version": "1.0",
+            "description": "Allows the OAuth client to pass organization information to HelseID.",
+            "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd",
+            "schema": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "Organization numbers for a multi-tenant client",
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "const": "helseid_autorization",
+                    },
+                    "practitioner_role": {
+                    "type": "object",
+                    "properties": {
+                        "organization": {
+                        "type": "object",
+                        "properties": {
+                            "identifier": {
+                            "type": "object",
+                            "properties": {
+                                "system": {
+                                "type": "string"
+                                },
+                                "type": {
+                                "type": "string"
+                                },
+                                "value": {
+                                "type": "string"
+                                }
+                            },
+                            "required": [
+                                "system",
+                                "type",
+                                "value"
+                            ]
+                            }
+                        },
+                        "required": [
+                            "identifier"
+                        ]
+                        }
+                    },
+                    "required": [
+                        "organization"
+                    ]
+                    }
+                },
+                "required": [
+                    "type",
+                    "practitioner_role"
+                ]
+            }
+        },
+        {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Complete Trust Framework structure",
+            "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd",
+            "type": "object",
+            "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "nhn:tillitsrammeverk:parameters",
+                },
+                "practitioner": {
+                "type": "object",
+                "properties": {
+                    "authorization": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code",
+                        "system"
+                    ]
+                    },
+                    "legal_entity": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "system"
+                    ]
+                    },
+                    "point_of_care": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "system"
+                    ]
+                    },
+                    "department": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "system"
+                    ]
+                    }
+                },
+                "required": [
+                    "authorization",
+                    "legal_entity",
+                    "point_of_care",
+                    "department"
+                ]
+                },
+                "care_relationship": {
+                "type": "object",
+                "properties": {
+                    "healthcare_service": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code",
+                        "system"
+                    ]
+                    },
+                    "purpose_of_use": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code",
+                        "system"
+                    ]
+                    },
+                    "purpose_of_use_details": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                        "type": "string"
+                        },
+                        "system": {
+                        "type": "string"
+                        }
+                    },
+                    "required": [
+                        "code",
+                        "system"
+                    ]
+                    },
+                    "decision_ref": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                        "type": "string"
+                        },
+                        "user_selected": {
+                        "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "user_selected"
+                    ]
+                    }
+                },
+                "required": [
+                    "healthcare_service",
+                    "purpose_of_use",
+                    "purpose_of_use_details",
+                    "decision_ref"
+                ]
+                },
+                "patients": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                    "point_of_care": {
+                        "type": "object",
+                        "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "system": {
+                            "type": "string"
+                        }
+                        },
+                        "required": [
+                        "id",
+                        "system"
+                        ]
+                    },
+                    "department": {
+                        "type": "object",
+                        "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "system": {
+                            "type": "string"
+                        }
+                        },
+                        "required": [
+                        "id",
+                        "system"
+                        ]
+                    }
+                    },
+                    "required": [
+                    "point_of_care",
+                    "department"
+                    ]
+                }
+                }
+            },
+            "required": [
+                "type",
+                "practitioner",
+                "care_relationship",
+                "patients"
+            ]
+            }
+    }
+}
+</pre><a href="#appendix-A.1.2-1" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="payment-initiation-with-rar-error-signaling">
@@ -2287,19 +2565,28 @@ Cache-Control: no-store
       <h2 id="name-document-history">
 <a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-document-history" class="section-name selfRef">Document History</a>
       </h2>
-<p id="appendix-B-1">-01<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-1">-02<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-B-2.1">
-          <p id="appendix-B-2.1.1">Authorization details moved to HTTP body and made <span class="bcp14">OPTIONAL</span><a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.1.1">Defined the required types expression<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.2">
-          <p id="appendix-B-2.2.1">Metadata pointer from resource metadata url, full authorization details types metadata on authorization server new endpoint<a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.2.1">Runes addition of a example from the Norwegian Health Sector (HelseID)<a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="appendix-B-3">-00<a href="#appendix-B-3" class="pilcrow">¶</a></p>
+<p id="appendix-B-3">-01<a href="#appendix-B-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-B-4.1">
-          <p id="appendix-B-4.1.1">Document creation<a href="#appendix-B-4.1.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-4.1.1">Authorization details moved to HTTP body and made <span class="bcp14">OPTIONAL</span><a href="#appendix-B-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-4.2">
+          <p id="appendix-B-4.2.1">Metadata pointer from resource metadata url, full authorization details types metadata on authorization server new endpoint<a href="#appendix-B-4.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="appendix-B-5">-00<a href="#appendix-B-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-6.1">
+          <p id="appendix-B-6.1.1">Document creation<a href="#appendix-B-6.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
