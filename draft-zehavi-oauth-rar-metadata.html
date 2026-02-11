@@ -1526,17 +1526,23 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-oauth-20-protected-resource">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-oauth-20-protected-resource" class="section-name selfRef">OAuth 2.0 Protected Resource Metadata <span class="cite xref">[RFC9728]</span></a>
       </h2>
-<p id="section-4-1">This document specifies a new <span class="bcp14">OPTIONAL</span> metadata attribute: <code>required_authorization_details_types</code>, to be included in the response of OAuth Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">This document specifies a new <span class="bcp14">OPTIONAL</span> metadata attribute: <code>authorization_details_types_supported</code>, to be included in the response of OAuth Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4-2">
-        <dt id="section-4-2.1">"required_authorization_details_types":</dt>
+        <dt id="section-4-2.1">"authorization_details_types_supported":</dt>
         <dd style="margin-left: 1.5em" id="section-4-2.2">
           <p id="section-4-2.2.1"><span class="bcp14">OPTIONAL</span>.  a JSON object that conforms to the syntax described in <a href="#syntax" class="auto internal xref">Section 4.1</a> for a <em>required types expression</em>.<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
 </dd>
       <dd class="break"></dd>
 </dl>
-<p id="section-4-3">The following is a non-normative example response with the added <code>required_authorization_details_types</code> attribute:<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-3">The following is a non-normative example response with the added <code>authorization_details_types_supported</code> attribute:<a href="#section-4-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-4">
 <pre>
+GET /.well-known/oauth-protected-resource/payments HTTP/1.1
+Host: resource.example.com
+
+..
+..
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -1552,7 +1558,7 @@ Content-Type: application/json
     ["profile", "email", "phone"],
   "resource_documentation":
     "https://resource.example.com/resource_documentation.html",
-  "required_authorization_details_types":
+  "authorization_details_types_supported":
     "oneOf": ["payment_initiation", "payment_approval",
               "beneficiary_designation"]
 }
@@ -1671,7 +1677,7 @@ Content-Type: application/json
       {
         "constraints": {
           "types": ["c", "d", "e"],
-          "min": 1,
+          "min": 2,
           "forbidden": [["d", "e"]]
         }
       }
@@ -1902,7 +1908,7 @@ Cache-Control: no-store
                 <p id="section-7.1-1.2.2.1.1">Fetch resource metadata to discover accepted authorization servers and supported <strong>authorization_details types</strong>.<a href="#section-7.1-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-7.1-1.2.2.2">
-                <p id="section-7.1-1.2.2.2.1">Fetch authorization server metadata to discover <code>required_authorization_details_types</code>.<a href="#section-7.1-1.2.2.2.1" class="pilcrow">¶</a></p>
+                <p id="section-7.1-1.2.2.2.1">Fetch authorization server metadata to discover <code>authorization_details_types_supported</code>.<a href="#section-7.1-1.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-7.1-1.2.2.3">
                 <p id="section-7.1-1.2.2.3.1">Fetch authorization server's <code>authorization_details_types_metadata_endpoint</code> to obtain metadata and schema<a href="#section-7.1-1.2.2.3.1" class="pilcrow">¶</a></p>
@@ -1925,7 +1931,7 @@ Cache-Control: no-store
         </h3>
 <ul class="normal">
 <li class="normal" id="section-7.2-1.1">
-            <p id="section-7.2-1.1.1">Advertise in resource metadata <code>required_authorization_details_types</code>, where relevant.<a href="#section-7.2-1.1.1" class="pilcrow">¶</a></p>
+            <p id="section-7.2-1.1.1">Advertise in resource metadata <code>authorization_details_types_supported</code>, where relevant.<a href="#section-7.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.2-1.2">
             <p id="section-7.2-1.2.1">Verify access tokens against required authorization details.<a href="#section-7.2-1.2.1" class="pilcrow">¶</a></p>
@@ -1990,7 +1996,7 @@ Recommended mitigation is resource servers <span class="bcp14">SHALL</span> use 
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-oauth-metadata-attribute-re" class="section-name selfRef">OAuth Metadata Attribute Registration</a>
         </h3>
 <p id="section-9.2-1">The metadata attribute <code>authorization_details_types_metadata_endpoint</code> is defined for OAuth 2.0 authorization server metadata as a URL.
-The metadata attribute <code>required_authorization_details_types</code> is defined for OAuth 2.0 protected resource metadata.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+The metadata attribute <code>authorization_details_types_supported</code> is defined for OAuth 2.0 protected resource metadata.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
