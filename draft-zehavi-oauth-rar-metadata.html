@@ -1548,16 +1548,15 @@ Content-Type: application/json
 
 {
   "resource":
-  "https://resource.example.com",
+  "https://resource.example.com/payments",
   "authorization_servers":
     ["https://as1.example.com",
      "https://as2.example.net"],
   "bearer_methods_supported":
     ["header", "body"],
-  "scopes_supported":
-    ["profile", "email", "phone"],
+  "scopes_supported": ["payment"],
   "resource_documentation":
-    "https://resource.example.com/resource_documentation.html",
+    "https://resource.example.com/payments.html",
   "authorization_details_types_supported":
     "oneOf": ["payment_initiation", "payment_approval",
               "beneficiary_designation"]
