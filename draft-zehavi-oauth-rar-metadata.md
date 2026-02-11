@@ -585,6 +585,273 @@ This section provides non-normative examples of how this specification may be us
         }
     }
 
+### Example authorization_details_types_metadata_endpoint response for the Norwegian Health Sector (HelseID)
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+        "authorization_details_types_metadata": {
+            "helseid_authorization": {
+                "version": "1.0",
+                "description": "Allows the OAuth client to pass organization information to HelseID.",
+                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd",
+                "schema": {
+                    "$schema": "http://json-schema.org/draft-07/schema#",
+                    "title": "Organization numbers for a multi-tenant client",
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "helseid_autorization",
+                        },
+                        "practitioner_role": {
+                        "type": "object",
+                        "properties": {
+                            "organization": {
+                            "type": "object",
+                            "properties": {
+                                "identifier": {
+                                "type": "object",
+                                "properties": {
+                                    "system": {
+                                    "type": "string"
+                                    },
+                                    "type": {
+                                    "type": "string"
+                                    },
+                                    "value": {
+                                    "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "system",
+                                    "type",
+                                    "value"
+                                ]
+                                }
+                            },
+                            "required": [
+                                "identifier"
+                            ]
+                            }
+                        },
+                        "required": [
+                            "organization"
+                        ]
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "practitioner_role"
+                    ]
+                }
+            },
+            {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "description": "Complete Trust Framework structure",
+                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd",
+                "type": "object",
+                "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "nhn:tillitsrammeverk:parameters",
+                    },
+                    "practitioner": {
+                    "type": "object",
+                    "properties": {
+                        "authorization": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "system"
+                        ]
+                        },
+                        "legal_entity": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "system"
+                        ]
+                        },
+                        "point_of_care": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "system"
+                        ]
+                        },
+                        "department": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "system"
+                        ]
+                        }
+                    },
+                    "required": [
+                        "authorization",
+                        "legal_entity",
+                        "point_of_care",
+                        "department"
+                    ]
+                    },
+                    "care_relationship": {
+                    "type": "object",
+                    "properties": {
+                        "healthcare_service": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "system"
+                        ]
+                        },
+                        "purpose_of_use": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "system"
+                        ]
+                        },
+                        "purpose_of_use_details": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                            "type": "string"
+                            },
+                            "system": {
+                            "type": "string"
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "system"
+                        ]
+                        },
+                        "decision_ref": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                            "type": "string"
+                            },
+                            "user_selected": {
+                            "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "user_selected"
+                        ]
+                        }
+                    },
+                    "required": [
+                        "healthcare_service",
+                        "purpose_of_use",
+                        "purpose_of_use_details",
+                        "decision_ref"
+                    ]
+                    },
+                    "patients": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                        "point_of_care": {
+                            "type": "object",
+                            "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "system": {
+                                "type": "string"
+                            }
+                            },
+                            "required": [
+                            "id",
+                            "system"
+                            ]
+                        },
+                        "department": {
+                            "type": "object",
+                            "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "system": {
+                                "type": "string"
+                            }
+                            },
+                            "required": [
+                            "id",
+                            "system"
+                            ]
+                        }
+                        },
+                        "required": [
+                        "point_of_care",
+                        "department"
+                        ]
+                    }
+                    }
+                },
+                "required": [
+                    "type",
+                    "practitioner",
+                    "care_relationship",
+                    "patients"
+                ]
+                }
+        }
+    }
+
 ## Payment initiation with RAR error signaling
 
 ### Client initiates API request
@@ -684,6 +951,11 @@ After user approves the request, client obtains single-use access token represen
     }
 
 # Document History
+
+-02
+
+* Defined the required types expression
+* Runes addition of a example from the Norwegian Health Sector (HelseID)
 
 -01
 
