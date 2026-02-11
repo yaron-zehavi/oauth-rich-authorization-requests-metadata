@@ -290,7 +290,7 @@ Attributes definition:
   :    OPTIONAL.  a non-negative integer indicating the exact number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **min** or **max** attributes.
 
   "forbidden":
-  :    OPTIONAL.  a non-empty JSON array, each element of which is an array of authorization_details types identifiers, representing a combination that MUST NOT be present together.
+  :    OPTIONAL.  a non-empty JSON array, whose each element is an array of authorization_details types identifiers, representing a combination that MUST NOT be present together.
 
 ## Required types expression examples
 
