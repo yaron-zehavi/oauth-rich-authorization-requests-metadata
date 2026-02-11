@@ -213,12 +213,18 @@ Figure: Client obtains authorization details object from resource server's error
 
 # OAuth 2.0 Protected Resource Metadata {{RFC9728}}
 
-This document specifies a new OPTIONAL metadata attribute: `required_authorization_details_types`, to be included in the response of OAuth Protected Resource Metadata {{RFC9728}}.
+This document specifies a new OPTIONAL metadata attribute: `authorization_details_types_supported`, to be included in the response of OAuth Protected Resource Metadata {{RFC9728}}.
 
-"required_authorization_details_types":
+"authorization_details_types_supported":
 :    OPTIONAL.  a JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
 
-The following is a non-normative example response with the added `required_authorization_details_types` attribute:
+The following is a non-normative example response with the added `authorization_details_types_supported` attribute:
+
+    GET /.well-known/oauth-protected-resource/payments HTTP/1.1
+    Host: resource.example.com
+
+    ..
+    ..
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -235,7 +241,7 @@ The following is a non-normative example response with the added `required_autho
         ["profile", "email", "phone"],
       "resource_documentation":
         "https://resource.example.com/resource_documentation.html",
-      "required_authorization_details_types":
+      "authorization_details_types_supported":
         "oneOf": ["payment_initiation", "payment_approval",
                   "beneficiary_designation"]
     }
@@ -311,7 +317,7 @@ Specifies that the selection MUST include one of a or b, **and** at least one of
           {
             "constraints": {
               "types": ["c", "d", "e"],
-              "min": 1,
+              "min": 2,
               "forbidden": [["d", "e"]]
             }
           }
@@ -462,14 +468,14 @@ Example resource server response with OPTIONAL authorization_details:
 * If encountering error `insufficient_authorization_details`, check if body.authorization_details exists and if provided MAY include in subsequent OAuth request.
 * Otherwise consult metadata:
     * Fetch resource metadata to discover accepted authorization servers and supported **authorization_details types**.
-    * Fetch authorization server metadata to discover `required_authorization_details_types`.
+    * Fetch authorization server metadata to discover `authorization_details_types_supported`.
     * Fetch authorization server's `authorization_details_types_metadata_endpoint` to obtain metadata and schema
     * Locate schema or retrieve schema_uri.
 * Construct authorization details conforming to the schema and include in subsequent OAuth request.
 
 ## Resource Server Processing Rules
 
-* Advertise in resource metadata `required_authorization_details_types`, where relevant.
+* Advertise in resource metadata `authorization_details_types_supported`, where relevant.
 * Verify access tokens against required authorization details.
 * If insufficient, return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".
 * OPTIONALLY provide also an HTTP body with an informative actionable authorization_details object.
@@ -492,7 +498,7 @@ Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` r
 ## OAuth Metadata Attribute Registration
 
 The metadata attribute `authorization_details_types_metadata_endpoint` is defined for OAuth 2.0 authorization server metadata as a URL.
-The metadata attribute `required_authorization_details_types` is defined for OAuth 2.0 protected resource metadata.
+The metadata attribute `authorization_details_types_supported` is defined for OAuth 2.0 protected resource metadata.
 
 --- back
 
