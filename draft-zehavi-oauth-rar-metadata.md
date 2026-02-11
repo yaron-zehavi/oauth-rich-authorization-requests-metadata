@@ -275,22 +275,22 @@ Attributes definition:
 :    OPTIONAL.  a non-empty JSON array of strings identifying authorization_details types. When **allOf** is specified, the expression is satisfied if **all** of the listed types are present.
 
 "constraints":
-:    OPTIONAL.  a JSON object defining cardinality and exclusion constraints over a set of authorization_details types. The object MUST contain the **types** attribute and MAY contain the attributes **min**, **max**, **exact**, and **forbidden**.
+:    OPTIONAL.  a JSON object defining cardinality and exclusion constraints over a set of authorization_details types. The object MUST contain the **types** attribute and MAY contain the attributes **min**, **max**, **exact**, and **forbidden**. Constraints attributes definition:
 
-  "types":
-  :    REQUIRED.  a non-empty JSON array of strings identifying the authorization_details types to which the constraints apply.
+    "types":
+    :    REQUIRED.  a non-empty JSON array of strings identifying the authorization_details types to which the constraints apply.
 
-  "min":
-  :    OPTIONAL.  a non-negative integer indicating the minimum number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **exact** attribute.
+    "min":
+    :    OPTIONAL.  a non-negative integer indicating the minimum number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **exact** attribute.
 
-  "max":
-  :    OPTIONAL.  a non-negative integer indicating the maximum number of authorization_details types from `types` that MAY be present. This attribute MUST NOT be used together with the **exact** attribute.
+    "max":
+    :    OPTIONAL.  a non-negative integer indicating the maximum number of authorization_details types from `types` that MAY be present. This attribute MUST NOT be used together with the **exact** attribute.
 
-  "exact":
-  :    OPTIONAL.  a non-negative integer indicating the exact number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **min** or **max** attributes.
+    "exact":
+    :    OPTIONAL.  a non-negative integer indicating the exact number of authorization_details types from `types` that MUST be present. This attribute MUST NOT be used together with the **min** or **max** attributes.
 
-  "forbidden":
-  :    OPTIONAL.  a non-empty JSON array, whose each element is an array of authorization_details types identifiers, representing a combination that MUST NOT be present together.
+    "forbidden":
+    :    OPTIONAL.  a non-empty JSON array, whose each element is an array of authorization_details types identifiers, representing a combination that MUST NOT be present together.
 
 ## Required types expression examples
 
