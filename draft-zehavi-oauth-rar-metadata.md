@@ -213,7 +213,7 @@ Figure: Client obtains authorization details object from resource server's error
 
 # OAuth 2.0 Protected Resource Metadata {{RFC9728}}
 
-This document specifies that a new metadata attribute: `required_authorization_details_types`, shall be included as an OPTIONAL response attribute in Protected Resource Metadata {{RFC9728}}.
+This document specifies a new OPTIONAL metadata attribute: `required_authorization_details_types`, to be included in the response of OAuth Protected Resource Metadata {{RFC9728}}.
 
 "required_authorization_details_types":
 :    OPTIONAL.  a JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
@@ -236,16 +236,17 @@ The following is a non-normative example response with the added `required_autho
       "resource_documentation":
         "https://resource.example.com/resource_documentation.html",
       "required_authorization_details_types":
-        "oneOf": ["payment_initiation", "payment_approval", "appoint_beneficiary"]
+        "oneOf": ["payment_initiation", "payment_approval",
+                  "beneficiary_designation"]
     }
 
-Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained as clients can discover each authorization server' supported authorization details types.
+Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained and confusion is prevented, because clients can discover which authorization details types each authorization server supports.
 
 ## Required types expression syntax {#syntax}
 
 The following JSON syntax defines a **required types expression** to declaratively describe permitted combinations of required authorization_details types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
 
-A *required types expression* is a JSON object that MUST contain exactly one of the following members:
+A **required types expression** is a JSON object that MUST contain **exactly** one of the following attributes:
 
 * and
 * or
@@ -253,20 +254,19 @@ A *required types expression* is a JSON object that MUST contain exactly one of 
 * allOf
 * constraints
 
-An expression object MUST NOT contain more than one of the above members.
-members:
+Attributes definition:
 
 "and":
-:    OPTIONAL.  a non-empty JSON array of *required types expressions*. When *and* is specified, the expression is satisfied if **all** contained expressions are satisfied.
+:    OPTIONAL.  a non-empty JSON array of *required types expressions*. When **and** is specified, the expression is satisfied if **all** contained expressions are satisfied.
 
 "or":
-:    OPTIONAL.  a non-empty JSON array of *required types expressions*. When *or* is specified, the expression is satisfied if *at least one* contained expression is satisfied.
+:    OPTIONAL.  a non-empty JSON array of *required types expressions*. When **or** is specified, the expression is satisfied if **at least one** contained expression is satisfied.
 
 "oneOf":
-:    OPTIONAL.  a non-empty JSON array of strings identifying authorization_details types. When *oneOf* is specified, the expression is satisfied if *exactly one* of the listed types is present.
+:    OPTIONAL.  a non-empty JSON array of strings identifying authorization_details types. When **oneOf** is specified, the expression is satisfied if **exactly one** of the listed types is present.
 
 "allOf":
-:    OPTIONAL.  a non-empty JSON array of strings identifying authorization_details types. When *allOf* is specified, the expression is satisfied if *all* of the listed types are present.
+:    OPTIONAL.  a non-empty JSON array of strings identifying authorization_details types. When **allOf** is specified, the expression is satisfied if **all** of the listed types are present.
 
 "constraints":
 :    OPTIONAL.  a JSON object defining cardinality and exclusion constraints over a set of authorization_details types. The object MUST contain the **types** attribute and MAY contain the attributes **min**, **max**, **exact**, and **forbidden**.
@@ -285,6 +285,77 @@ members:
 
 "forbidden":
 :    OPTIONAL.  a non-empty JSON array, each element of which is an array of authorization_details types identifiers, representing a combination that MUST NOT be present together.
+
+## Required types expression examples
+
+### Example expression using "and" operator
+
+Specifies that the selection MUST include c and d, **and** one of a or b.
+
+    {
+      "required_types": {
+        "and": [
+          { "oneOf": ["a", "b"] },
+          { "allOf": ["c", "d"] }
+        ]
+      }
+    }
+
+Specifies that the selection MUST include one of a or b, **and** at least one of [c,d,e], but the combination of d and e together is forbidden.
+
+    {
+      "required_types": {
+        "and": [
+          { "oneOf": ["a", "b"] },
+          {
+            "constraints": {
+              "types": ["c", "d", "e"],
+              "min": 1,
+              "forbidden": [["d", "e"]]
+            }
+          }
+        ]
+      }
+    }
+
+### Example expression using "or" operator
+
+Specifies that the selection MUST include either c and d, **or** one of a or b.
+
+    {
+      "required_types": {
+        "or": [
+          { "oneOf": ["a", "b"] },
+          { "allOf": ["c", "d"] }
+        ]
+      }
+    }
+
+### Example expression using "constraints" operator
+
+Specifies that at least two of {a,b,c} MUST be present, but the combination of a and c together is forbidden.
+
+    {
+      "required_types": {
+        "constraints": {
+          "types": ["a","b","c"],
+          "min": 2,
+          "forbidden": [ ["a","c"] ]
+        }
+      }
+    }
+
+Specifies that exactly two of {a,b,c} MUST be present.
+
+    {
+      "required_types": {
+        "constraints": {
+          "types": ["a","b","c"],
+          "exact": 2
+        }
+      }
+    }
+
 
 # Authorization Details Types Metadata Endpoint
 
