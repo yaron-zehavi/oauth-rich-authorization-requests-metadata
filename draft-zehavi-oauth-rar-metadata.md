@@ -239,7 +239,7 @@ The following is a non-normative example response with the added `authorization_
         ["header", "body"],
       "scopes_supported": ["payment"],
       "resource_documentation":
-        "https://resource.example.com/payments.html",
+        "https://resource.example.com/docs/payments.html",
       "authorization_details_types_supported":
         "oneOf": ["payment_initiation", "payment_approval",
                   "beneficiary_designation"]
@@ -307,7 +307,7 @@ Specifies that the selection MUST include a and b, **and** one of c **or** d.
       }
     }
 
-Specifies that the selection MUST include one of a or b, **and** at least one of [c,d,e], but the combination of d and e together is forbidden.
+Specifies that the selection MUST include one of a or b, **and** exactly two of [c,d,e], but the combination of d and e together is forbidden.
 
     {
       "required_types": {
@@ -316,7 +316,7 @@ Specifies that the selection MUST include one of a or b, **and** at least one of
           {
             "constraints": {
               "types": ["c", "d", "e"],
-              "min": 2,
+              "exact": 2,
               "forbidden": [["d", "e"]]
             }
           }
