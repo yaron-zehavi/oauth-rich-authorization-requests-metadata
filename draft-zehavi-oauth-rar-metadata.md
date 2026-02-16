@@ -396,12 +396,12 @@ Each identifier is an object describing a single authorization details type.
     {
       "authorization_details_types_metadata": {
         "type": {
-        "version": "...",
-        "description": "...",
-        "documentation_uri": "...",
-        "schema": { },
-        "schema_uri": "...",
-        "examples": [ ]
+          "version": "...",
+          "description": "...",
+          "documentation_uri": "...",
+          "schema": { },
+          "schema_uri": "...",
+          "examples": [ ]
         }
       }
     }
