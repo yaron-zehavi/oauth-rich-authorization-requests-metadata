@@ -1561,9 +1561,10 @@ Content-Type: application/json
   "scopes_supported": ["payment"],
   "resource_documentation":
     "https://resource.example.com/docs/payments.html",
-  "authorization_details_types_supported":
-    "oneOf": ["payment_initiation", "payment_approval",
-              "beneficiary_designation"]
+  "authorization_details_types_supported": {
+      "oneOf": ["payment_initiation", "payment_approval",
+                "beneficiary_designation"]
+    }
 }
 </pre><a href="#section-4-4" class="pilcrow">¶</a>
 </div>

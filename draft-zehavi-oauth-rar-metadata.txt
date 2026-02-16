@@ -388,9 +388,10 @@ Table of Contents
      "scopes_supported": ["payment"],
      "resource_documentation":
        "https://resource.example.com/docs/payments.html",
-     "authorization_details_types_supported":
-       "oneOf": ["payment_initiation", "payment_approval",
-                 "beneficiary_designation"]
+     "authorization_details_types_supported": {
+         "oneOf": ["payment_initiation", "payment_approval",
+                   "beneficiary_designation"]
+       }
    }
 
    Note: When resource servers accept access tokens _from several
