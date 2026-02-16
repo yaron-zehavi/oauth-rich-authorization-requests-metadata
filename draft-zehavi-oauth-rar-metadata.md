@@ -240,9 +240,10 @@ The following is a non-normative example response with the added `authorization_
       "scopes_supported": ["payment"],
       "resource_documentation":
         "https://resource.example.com/docs/payments.html",
-      "authorization_details_types_supported":
-        "oneOf": ["payment_initiation", "payment_approval",
-                  "beneficiary_designation"]
+      "authorization_details_types_supported": {
+          "oneOf": ["payment_initiation", "payment_approval",
+                    "beneficiary_designation"]
+        }
     }
 
 Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained and confusion is prevented, because clients can discover which authorization details types each authorization server supports.
