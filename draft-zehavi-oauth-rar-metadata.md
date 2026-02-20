@@ -666,7 +666,7 @@ This section provides non-normative examples of how this specification may be us
             ]
           }
         },
-        {
+        "helseid_trust_framework": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "description": "Complete Trust Framework structure",
           "documentation_uri":
