@@ -230,19 +230,19 @@ The following is a non-normative example response with the added `authorization_
     Content-Type: application/json
 
     {
-      "resource":
-      "https://resource.example.com/payments",
-      "authorization_servers":
-        ["https://as1.example.com",
-         "https://as2.example.net"],
-      "bearer_methods_supported":
-        ["header", "body"],
-      "scopes_supported": ["payment"],
-      "resource_documentation":
-        "https://resource.example.com/docs/payments.html",
-      "authorization_details_types_supported": {
-          "oneOf": ["payment_initiation", "payment_approval",
-                    "beneficiary_designation"]
+        "resource":
+        "https://resource.example.com/payments",
+        "authorization_servers":
+            ["https://as1.example.com",
+            "https://as2.example.net"],
+        "bearer_methods_supported":
+            ["header", "body"],
+        "scopes_supported": ["payment"],
+        "resource_documentation":
+            "https://resource.example.com/docs/payments.html",
+        "authorization_details_types_supported": {
+            "oneOf": ["payment_initiation", "payment_approval",
+                      "beneficiary_designation"]
         }
     }
 
@@ -523,7 +523,7 @@ The metadata attribute `authorization_details_types_supported` is defined for OA
 
 This section provides non-normative examples of how this specification may be used to support specific use cases.
 
-## Metadata Examples {#metadata-examples}
+## Authorization Server Metadata Examples {#metadata-examples}
 
 ### Example authorization_details_types_metadata_endpoint response with Payment Initiation
 
@@ -870,6 +870,47 @@ This section provides non-normative examples of how this specification may be us
         }
     }
 
+## Protected Resource Metadata Examples
+
+### Example Protected Resource Metadata response of payments resource
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+        "resource": "https://resource.example.com/payments",
+        "authorization_servers":
+            ["https://as1.example.com",
+            "https://as2.example.net"],
+        "bearer_methods_supported":
+            ["header", "body"],
+        "scopes_supported": ["payment"],
+        "resource_documentation":
+            "https://resource.example.com/docs/payments.html",
+        "authorization_details_types_supported": {
+            "oneOf": ["payment_initiation", "payment_approval",
+                      "beneficiary_designation"]
+        }
+    }
+
+
+### Example Protected Resource Metadata response from the Norwegian Health Sector (HelseID)
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+        "resource": "https://health-api.nhn.no/health-information",
+        "authorization_servers": ["https://helseid-sts.nhn.no"],
+        "bearer_methods_supported": ["header"],
+        "scopes_supported": ["nhn:health-api/read", "nhn:health-api/write"],
+        "resource_documentation": "https://utviklerportal.nhn.no",
+        "authorization_details_types_supported": {
+            "allOf": ["helseid_authorization", "nhn:tillitsrammeverk:parameters"]
+        }
+    }
+
+
 ## Payment initiation with RAR error signaling
 
 ### Client initiates API request
@@ -973,7 +1014,7 @@ After user approves the request, client obtains single-use access token represen
 -02
 
 * Defined the required types expression
-* Runes addition of a example from the Norwegian Health Sector (HelseID)
+* Added Protected Resource Metadata examples
 
 -01
 
