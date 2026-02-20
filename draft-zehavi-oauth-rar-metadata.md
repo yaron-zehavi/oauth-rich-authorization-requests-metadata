@@ -904,10 +904,12 @@ This section provides non-normative examples of how this specification may be us
         "resource": "https://health-api.nhn.no/health-information",
         "authorization_servers": ["https://helseid-sts.nhn.no"],
         "bearer_methods_supported": ["header"],
-        "scopes_supported": ["nhn:health-api/read", "nhn:health-api/write"],
+        "scopes_supported":
+            ["nhn:health-api/read", "nhn:health-api/write"],
         "resource_documentation": "https://utviklerportal.nhn.no",
         "authorization_details_types_supported": {
-            "allOf": ["helseid_authorization", "nhn:tillitsrammeverk:parameters"]
+            "allOf": ["helseid_authorization",
+                      "nhn:tillitsrammeverk:parameters"]
         }
     }
 
