@@ -235,8 +235,7 @@ The following is a non-normative example response with the added `authorization_
         "authorization_servers":
             ["https://as1.example.com",
             "https://as2.example.net"],
-        "bearer_methods_supported":
-            ["header", "body"],
+        "bearer_methods_supported": ["header"],
         "scopes_supported": ["payment"],
         "resource_documentation":
             "https://resource.example.com/docs/payments.html",
@@ -612,8 +611,10 @@ This section provides non-normative examples of how this specification may be us
         "authorization_details_types_metadata": {
             "helseid_authorization": {
                 "version": "1.0",
-                "description": "Allows the OAuth client to pass organization information to HelseID.",
-                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd",
+                "description":
+                    "Allows the OAuth client to pass organization information to HelseID.",
+                "documentation_uri":
+                    "https://utviklerportal.nhn.no/helseid/organisasjonsnumre_enmd",
                 "schema": {
                     "$schema": "http://json-schema.org/draft-07/schema#",
                     "title": "Organization numbers for a multi-tenant client",
@@ -668,7 +669,8 @@ This section provides non-normative examples of how this specification may be us
             {
                 "$schema": "http://json-schema.org/draft-07/schema#",
                 "description": "Complete Trust Framework structure",
-                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd",
+                "documentation_uri":
+                    "https://utviklerportal.nhn.no/helseid/tillitsrammeverkmd",
                 "type": "object",
                 "properties": {
                     "type": {
@@ -882,8 +884,7 @@ This section provides non-normative examples of how this specification may be us
         "authorization_servers":
             ["https://as1.example.com",
             "https://as2.example.net"],
-        "bearer_methods_supported":
-            ["header", "body"],
+        "bearer_methods_supported": ["header"],
         "scopes_supported": ["payment"],
         "resource_documentation":
             "https://resource.example.com/docs/payments.html",
