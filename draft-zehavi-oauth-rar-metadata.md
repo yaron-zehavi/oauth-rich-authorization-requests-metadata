@@ -50,7 +50,7 @@ normative:
 
 OAuth 2.0 Rich Authorization Requests (RAR), as defined in {{RFC9396}}, enables fine-grained authorization requests, using structured JSON objects.
 
-While RAR {{RFC9396}} standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types.
+While RAR {{RFC9396}} standardizes the exchange and processing of authorization details, it does not specify metadata describing authorization details types.
 
 This document defines a machine-readable metadata format for authorization servers to provide authorization details type documentation and JSON Schema {{JSON.Schema}} definitions, as well as interoperable discovery via OAuth Resource Server Metadata {{RFC9728}}.
 
