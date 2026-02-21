@@ -8,7 +8,7 @@
 <meta content="Yaron Zehavi" name="author">
 <meta content="
        OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , enables fine-grained authorization requests, using structured JSON objects. 
-       While RAR   standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types. 
+       While RAR   standardizes the exchange and processing of authorization details, it does not specify metadata describing authorization details types. 
        This document defines a machine-readable metadata format for authorization servers to provide authorization details type documentation and JSON Schema   definitions, as well as interoperable discovery via OAuth Resource Server Metadata  . 
        This document also defines a new WWW-Authenticate normative OAuth error code,  insufficient_authorization_details , enabling resource servers to indicate inadequate authorization details as the cause of failure. 
        It also defines an  OPTIONAL  response body which  MAY  be returned alongside the  insufficient_authorization_details  error, providing an informative yet actionable authorization details object, which can be used directly in a subsequent OAuth request. 
@@ -1087,7 +1087,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, enables fine-grained authorization requests, using structured JSON objects.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and handling of authorization details, it does not define a mechanism for clients to discover how to construct valid authorization details types.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and processing of authorization details, it does not specify metadata describing authorization details types.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This document defines a machine-readable metadata format for authorization servers to provide authorization details type documentation and JSON Schema <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> definitions, as well as interoperable discovery via OAuth Resource Server Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 <p id="section-abstract-4">This document also defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 <p id="section-abstract-5">It also defines an <span class="bcp14">OPTIONAL</span> response body which <span class="bcp14">MAY</span> be returned alongside the <code>insufficient_authorization_details</code> error, providing an informative yet actionable authorization details object, which can be used directly in a subsequent OAuth request.<a href="#section-abstract-5" class="pilcrow">¶</a></p>
