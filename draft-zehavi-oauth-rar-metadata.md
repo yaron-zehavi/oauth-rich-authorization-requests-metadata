@@ -1028,3 +1028,5 @@ After user approves the request, client obtains single-use access token represen
 
 # Acknowledgments
 {:numbered="false"}
+
+The authors would like to thank the following individuals who contributed ideas, feedback, and wording that shaped and formed the final specification: Rune Grimstad.
