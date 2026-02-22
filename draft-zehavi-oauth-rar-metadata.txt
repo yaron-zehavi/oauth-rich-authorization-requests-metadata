@@ -180,12 +180,12 @@ Table of Contents
       authorization_details objects, to be included in a subsequent
       OAuth request.
 
-   *  Support for ephemeral, interaction-specific details provided by
-      the resource domain, in the authorization details object, such as
-      for example a risk score, a risk profile or an internal
-      interaction identifier.  Resource servers MAY use this to guide
-      authorization servers as to the required authentication strength
-      and consent flow.
+   *  Support for ephemeral, interaction-specific claims provided by the
+      resource domain in the authorization details object, such as for
+      example a risk score, a risk profile or an internal interaction
+      identifier.  Resource servers MAY use this to guide authorization
+      servers as to the required authentication strength and consent
+      flow.
 
 2.  Conventions and Definitions
 
