@@ -74,7 +74,7 @@ This document addresses this gap by:
 The OPTIONAL providing of actionable authorization details objects by resource servers enables:
 
 * Higher interoperability and simplification by relieving clients from having to figure out how to construct valid authorization details objects, instead providing them with ready-to-use authorization_details objects, to be included in a subsequent OAuth request.
-* Support for ephemeral, interaction-specific details provided by the resource domain, in the authorization details object, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers as to the required authentication strength and consent flow.
+* Support for ephemeral, interaction-specific claims provided by the resource domain in the authorization details object, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers as to the required authentication strength and consent flow.
 
 # Conventions and Definitions
 
