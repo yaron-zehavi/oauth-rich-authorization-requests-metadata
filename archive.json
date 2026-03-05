@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-10T03:16:42.156974+00:00",
+  "timestamp": "2026-03-05T02:43:33.666303+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -125,6 +125,22 @@
           "updatedAt": "2026-01-16T14:00:43Z"
         }
       ]
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOQ1ZTTM7v45FT",
+      "title": "Security considerations for client manipulation of authorization details",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/4",
+      "state": "OPEN",
+      "author": "max-stytch",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "In `3.2. Client obtains authorization details object from resource server's error response` - the client receives an authorization details object from the resource server. The client then replays that authorization details object in a RAR OAuth request.\n\nThe authorization details object is cleartext - it is not signed or encrypted. The client can manipulate the authorization details object before replaying it to the authorization server. This means that no parameter within the RAR request can be trusted.\n\nTaking the example from `A.3.2. Resource server signals insufficient_authorization_details with actionable RAR object`:\n```json\n{\n    \"authorization_details\": [{\n      \"type\": \"payment_initiation\",\n      \"locations\": [\n          \"https://example.com/payments\"\n      ],\n      \"instructedAmount\": {\n          \"currency\": \"EUR\",\n          \"amount\": \"123.50\"\n      },\n      \"creditorName\": \"Merchant A\",\n      \"creditorAccount\": {\n          \"bic\": \"ABCIDEFFXXX\",\n          \"iban\": \"DE02100100109307118603\"\n      },\n      \"interactionId\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n      \"riskProfile\": \"B-71\"\n}]\n}\n```\n\nThe client can change the fields to (possibly):\n- Request a token with permissions to move a larger amount of money than originally requested\n- Spoof the creditor name (e.g. from `Evil Merchant` to `Merchant A`)\n- Substitute new values for `interactionId` and `riskProfile`\n\n[9396](https://www.rfc-editor.org/rfc/rfc9396#name-security-considerations) defines security considerations for manipulation of RAR payloads by the user-agent by using PAR and JAR:\n> The authorization_details parameter is sent through the user agent in case of an OAuth authorization request, which makes them vulnerable to modifications by the user. If the integrity of the authorization_details is a concern, clients MUST protect authorization_details against tampering and swapping. \n\nHowever, PAR and JAR are both initiated by the client, and we don't have a mechanism for a resource server to defend against tampering of an `authorization_details` object. Do we need one?\n\nDoes this mean that the challenge response can never be used in cases where the integrity of the `authorization_details` from the RS is a concern? Can fields like `riskProfile` ever be safely embedded?",
+      "createdAt": "2026-03-04T23:13:06Z",
+      "updatedAt": "2026-03-04T23:13:06Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
