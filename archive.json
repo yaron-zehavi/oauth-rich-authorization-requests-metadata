@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-05T02:43:33.666303+00:00",
+  "timestamp": "2026-03-19T02:53:09.635918+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -138,9 +138,38 @@
       "labels": [],
       "body": "In `3.2. Client obtains authorization details object from resource server's error response` - the client receives an authorization details object from the resource server. The client then replays that authorization details object in a RAR OAuth request.\n\nThe authorization details object is cleartext - it is not signed or encrypted. The client can manipulate the authorization details object before replaying it to the authorization server. This means that no parameter within the RAR request can be trusted.\n\nTaking the example from `A.3.2. Resource server signals insufficient_authorization_details with actionable RAR object`:\n```json\n{\n    \"authorization_details\": [{\n      \"type\": \"payment_initiation\",\n      \"locations\": [\n          \"https://example.com/payments\"\n      ],\n      \"instructedAmount\": {\n          \"currency\": \"EUR\",\n          \"amount\": \"123.50\"\n      },\n      \"creditorName\": \"Merchant A\",\n      \"creditorAccount\": {\n          \"bic\": \"ABCIDEFFXXX\",\n          \"iban\": \"DE02100100109307118603\"\n      },\n      \"interactionId\": \"f81d4fae-7dec-11d0-a765-00a0c91e6bf6\",\n      \"riskProfile\": \"B-71\"\n}]\n}\n```\n\nThe client can change the fields to (possibly):\n- Request a token with permissions to move a larger amount of money than originally requested\n- Spoof the creditor name (e.g. from `Evil Merchant` to `Merchant A`)\n- Substitute new values for `interactionId` and `riskProfile`\n\n[9396](https://www.rfc-editor.org/rfc/rfc9396#name-security-considerations) defines security considerations for manipulation of RAR payloads by the user-agent by using PAR and JAR:\n> The authorization_details parameter is sent through the user agent in case of an OAuth authorization request, which makes them vulnerable to modifications by the user. If the integrity of the authorization_details is a concern, clients MUST protect authorization_details against tampering and swapping. \n\nHowever, PAR and JAR are both initiated by the client, and we don't have a mechanism for a resource server to defend against tampering of an `authorization_details` object. Do we need one?\n\nDoes this mean that the challenge response can never be used in cases where the integrity of the `authorization_details` from the RS is a concern? Can fields like `riskProfile` ever be safely embedded?",
       "createdAt": "2026-03-04T23:13:06Z",
-      "updatedAt": "2026-03-04T23:13:06Z",
+      "updatedAt": "2026-03-18T00:08:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "body": "Thanks @max-stytch,\nA very valid point which was mentioned also by RFC9396 co-author Justin Richer when the draft was presented 16.03 at IETF 125. I think several solution patterns are possible.\n\nFirst prerequisite would be that RS must have a way to validate access tokens of incoming requests have been issued by OAuth flows that contained required RAR objects. This depends on how RAR is represented in access tokens (or introspection response), both are out of scope of RFC 9396.\n\nI assume AS has got to either include the RAR objects, or array of their hashes in the access token (or introspection response).\nRS can then reconstruct expected RAR from request body, [hashes and] checks against AT / introspection response, detecting unauthorized modification of requested RAR object or request body.\n\nQuestion: If adversary modifies **both** RAR and request body so they match, provided end-user has given permission, validation will succeed. Should this case be mitigated?\n\nAccess token / introspection response representation of RAR objects is new oauth work that needs to be discussed in the IETF oauth WG.\n\nWe could consider additional authorization server mechanisms to validate integrity of requested RAR objects when they are provided by resource server:\n1. Resource server can provide a detached JWS signature (RFC 7515 appendix F) authorization server part of RAR object or authorization server an auxiliary object. authorization server can use resource= oauth request parameter to pull resource server's jwks_uri and validate RAR object integrity.\n2. New pushed RAR objects endpoint, to be called by resource server, enabling direct resource server to authorization server communication removing client authorization server adveresource serverary channel. authorization server stores RAR alongside resource and returns rar_uri, which resource server provides to client to be included in oauth request, alongside resource parameter for validation.",
+          "createdAt": "2026-03-17T10:49:20Z",
+          "updatedAt": "2026-03-17T10:51:00Z"
+        },
+        {
+          "author": "max-stytch",
+          "authorAssociation": "NONE",
+          "body": "> First prerequisite would be that RS must have a way to validate access tokens of incoming requests have been issued by OAuth flows that contained required RAR objects. This depends on how RAR is represented in access tokens (or introspection response), both are out of scope of RFC 9396.\n\n[9396 section 9](https://www.rfc-editor.org/rfc/rfc9396.html#name-resource-servers) defines RAR representation for both access tokens and introspection responses already. Do we need something additional here?\n\n> New pushed RAR objects endpoint, to be called by resource server, enabling direct resource server to authorization server communication\n\nI am a big fan of a pushed RAR object endpoint - I think it does a good job of ensuring that RAR objects of larger sizes can be passed around, and it eliminates the need to return the RAR object in the response body on challenge responses. This would free up the response body to continue to hold application-specific error messages and error formats.",
+          "createdAt": "2026-03-17T20:51:10Z",
+          "updatedAt": "2026-03-17T20:51:10Z"
+        },
+        {
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "body": "> [9396 section 9](https://www.rfc-editor.org/rfc/rfc9396.html#name-resource-servers) defines RAR representation for both access tokens and introspection responses already. Do we need something additional here?\n> \n> >\nWe've encountered size problems with multiple RAR objects bloating access tokens so much that ingress header limits were reached.\nWe therefore have opted for hashing RAR objects in JWT access tokens.\nThe pattern of RAR introspection also solves size problems, don't know if it can be combined with JWT access tokens.\n\n> I am a big fan of a pushed RAR object endpoint - I think it does a good job of ensuring that RAR objects of larger sizes can be passed around, and it eliminates the need to return the RAR object in the response body on challenge responses. This would free up the response body to continue to hold application-specific error messages and error formats.\n> \n> >\nJustin says:\nGNAP solved this same kind of problem by allowing the RS to register a resource set (as a RAR like object) and get back a reference (which is the GNAP equivalent of a scope string \u2014 but in this case it\u2019s likely a random value and not something a developer would pull from documentation). https://www.rfc-editor.org/rfc/rfc9767.html#name-registering-a-resource-set.\nIn GNAP, this reference can be sent by the client alongside whatever client-provided access requests that you want. So an attacker can always ALSO ask for more if the AS allows it.\n\nNow this is GNAP not OAuth so he's going to comment here if such a pattern may be used as is with OAuth.",
+          "createdAt": "2026-03-17T21:13:46Z",
+          "updatedAt": "2026-03-17T21:13:46Z"
+        },
+        {
+          "author": "jricher",
+          "authorAssociation": "NONE",
+          "body": "Yes, this registration pattern could be used in OAuth by defining a resource registration endpoint, which exactly is what UMA did many years ago now as well. The response of this registration can be returned to the client as a scope. The client doesn't need to know or care what that scope means, and it can ask for additional scopes or RAR objects as well.\n\nI would recommend starting with the gnap protocol definition and adapting it slightly to fit OAuth. ",
+          "createdAt": "2026-03-18T00:08:24Z",
+          "updatedAt": "2026-03-18T00:08:24Z"
+        }
+      ]
     }
   ],
   "pulls": [
