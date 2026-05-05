@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-19T02:53:09.635918+00:00",
+  "timestamp": "2026-05-05T03:36:01.335918+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -170,6 +170,22 @@
           "updatedAt": "2026-03-18T00:08:24Z"
         }
       ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOQ1ZTTM8AAAABBKLWNQ",
+      "title": "Security considerations for revealing sensitive data in authorization details",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/5",
+      "state": "OPEN",
+      "author": "yaron-zehavi",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Resource server providing actionable authorization details should avoid revealing sensitive data.\nThis falls also in the responsibility of the authorization server's design of authorization details types.\n\nGenerally:\n\n- RAR Authoization details represent **request** semantics\n- Resulting authorization_details granted to access tokens represent **approval** semantics and may contain richer content\n- Request RAR objects should:\n  - Avoid including end-user's sensitive data, instead having end-user provide required sensitive data by interacting with the authorization server.\n  - Or use reference indicators (e.g use account #2 as reference instead of providing full account details)\n\nSee also:\nhttps://www.rfc-editor.org/rfc/rfc9396.html#name-security-considerations",
+      "createdAt": "2026-05-03T19:29:35Z",
+      "updatedAt": "2026-05-03T19:29:35Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
