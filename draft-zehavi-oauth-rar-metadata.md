@@ -452,8 +452,10 @@ HTTP response body definition:
 
     "single":
     :   Single use only.
+
     "multiple":
     :   unbounded multiple use.
+
     integer:
     :   e.g: 3 (token may be used exactly 3 times).
 
