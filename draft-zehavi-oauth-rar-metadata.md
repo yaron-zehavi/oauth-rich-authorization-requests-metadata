@@ -448,14 +448,14 @@ HTTP response body definition:
 : OPTIONAL. String serving as reference to authorization details objects. Its value shall be stable and always the same when the same *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion.
 
 "usage_semantics":
-: OPTIONAL. String value guiding client as to how resource server shall treat a new token resulting from a grant using *authorization_details*. Its purpose is to guide client on access token usage semantics. Possible values are:
+: OPTIONAL. String or integer value guiding client as to how resource server shall treat a new token resulting from a grant using *authorization_details*. Its purpose is to guide client on access token usage semantics. Possible values are:
 
     "single":
-        : Single use only.
+    :   Single use only.
     "multiple":
-        : unbounded multiple use.
-    integer number:
-        : e.g: "3" (token may be used exactly 3 times).
+    :   unbounded multiple use.
+    integer:
+    :   e.g: 3 (token may be used exactly 3 times).
 
 Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
 
