@@ -652,11 +652,11 @@ Table of Contents
       grant using _authorization_details_. Its purpose is to guide
       client on access token usage semantics.  Possible values are:
 
-      "single":  Single use only.  "multiple":
+      "single":  Single use only.
 
-         unbounded multiple use.  integer:
+      "multiple":  unbounded multiple use.
 
-         e.g: 3 (token may be used exactly 3 times).
+      integer:  e.g: 3 (token may be used exactly 3 times).
 
    Clients MAY use the provided authorization_details in a subsequent
    OAuth request to obtain an access token satisfying the resource's
