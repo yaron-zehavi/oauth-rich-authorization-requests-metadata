@@ -1889,13 +1889,26 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details",
           <dd class="break"></dd>
 <dt id="section-6.1-5.5">"usage_semantics":</dt>
           <dd style="margin-left: 1.5em" id="section-6.1-5.6">
-            <p id="section-6.1-5.6.1"><span class="bcp14">OPTIONAL</span>. String value guiding client as to how resource server shall treat a new token resulting from a grant using <em>authorization_details</em>. Its purpose is to guide client on access token usage semantics. Possible values are:<a href="#section-6.1-5.6.1" class="pilcrow">¶</a></p>
-<p id="section-6.1-5.6.2">"single":
-      : Single use only.
-  "multiple":
-      : unbounded multiple use.
-  integer number:
-      : e.g: "3" (token may be used exactly 3 times).<a href="#section-6.1-5.6.2" class="pilcrow">¶</a></p>
+            <p id="section-6.1-5.6.1"><span class="bcp14">OPTIONAL</span>. String or integer value guiding client as to how resource server shall treat a new token resulting from a grant using <em>authorization_details</em>. Its purpose is to guide client on access token usage semantics. Possible values are:<a href="#section-6.1-5.6.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1-5.6.2">
+              <dt id="section-6.1-5.6.2.1">"single":</dt>
+              <dd style="margin-left: 1.5em" id="section-6.1-5.6.2.2">
+                <p id="section-6.1-5.6.2.2.1">Single use only.
+  "multiple":<a href="#section-6.1-5.6.2.2.1" class="pilcrow">¶</a></p>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-6.1-5.6.2.3"></dt>
+              <dd style="margin-left: 1.5em" id="section-6.1-5.6.2.4">
+                <p id="section-6.1-5.6.2.4.1">unbounded multiple use.
+  integer:<a href="#section-6.1-5.6.2.4.1" class="pilcrow">¶</a></p>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-6.1-5.6.2.5"></dt>
+              <dd style="margin-left: 1.5em" id="section-6.1-5.6.2.6">
+                <p id="section-6.1-5.6.2.6.1">e.g: 3 (token may be used exactly 3 times).<a href="#section-6.1-5.6.2.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+</dl>
 </dd>
         <dd class="break"></dd>
 </dl>
