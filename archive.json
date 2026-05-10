@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-05T03:36:01.335918+00:00",
+  "timestamp": "2026-05-10T03:59:08.957280+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -185,6 +185,38 @@
       "createdAt": "2026-05-03T19:29:35Z",
       "updatedAt": "2026-05-03T19:29:35Z",
       "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOQ1ZTTM8AAAABBi5s0A",
+      "title": "Provide stable reference as authorization_hint guiding client on token selection",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/6",
+      "state": "CLOSED",
+      "author": "yaron-zehavi",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Resource server providing informative authorization_details body SHOULD also provide a **stable reference**, guiding client on token selection.\n```\n{\n  **\"authorization_hint\": [hash or id]**,\n  \"authorization_details\": [{\n    \"type\": \"payment_initiation\",\n    \"instructedAmount\": {\n      \"currency\": \"EUR\",\n      \"amount\": \"100.00\"\n    },\n    \"creditorAccount\": {\n      \"iban\": \"DE02120300000000202051\"\n    }\n  }]\n}\n```\n\n",
+      "createdAt": "2026-05-07T12:15:54Z",
+      "updatedAt": "2026-05-07T20:16:08Z",
+      "closedAt": "2026-05-07T20:16:08Z",
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOQ1ZTTM8AAAABBltncQ",
+      "title": "Provide single or multi use semantics when providing remediation challenge",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/7",
+      "state": "CLOSED",
+      "author": "yaron-zehavi",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "As Resource server is the one deciding on token's usage semantics (single / multi usage), it makes sense that alongside providing informative authorization_details body it SHALL also provide an indication to client on the usage of the resulting token\n\n{\n  **\"token_usage\": \u201csingle / multi / n (3)\u201d**,\n  \"authorization_details\": [{\n    \"type\": \"payment_initiation\",\n    \"instructedAmount\": {\n      \"currency\": \"EUR\",\n      \"amount\": \"100.00\"\n    },\n    \"creditorAccount\": {\n      \"iban\": \"DE02120300000000202051\"\n    }\n  }]\n}",
+      "createdAt": "2026-05-07T20:02:05Z",
+      "updatedAt": "2026-05-07T20:16:01Z",
+      "closedAt": "2026-05-07T20:16:01Z",
       "comments": []
     }
   ],
