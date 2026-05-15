@@ -482,7 +482,7 @@ Example resource server response with OPTIONAL authorization_details:
         }
       }],
       "authorization_hint": "Yb7q3AC5d",
-      "usage": "single"
+      "usage_semantics": "single"
     }
 
 # Processing Rules
