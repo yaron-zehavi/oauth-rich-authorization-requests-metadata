@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                             15 May 2026
-Expires: 16 November 2026
+Intended status: Standards Track                             23 May 2026
+Expires: 24 November 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -69,7 +69,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 November 2026.
+   This Internet-Draft will expire on 24 November 2026.
 
 Copyright Notice
 
@@ -110,6 +110,8 @@ Table of Contents
      7.2.  Resource Server Processing Rules
    8.  Security Considerations
      8.1.  Cacheability and Intermediaries
+     8.2.  Confidentiality of resource server provided
+           authorization_details
    9.  IANA Considerations
      9.1.  OAuth 2.0 Bearer Token Error Registry
      9.2.  OAuth Metadata Attribute Registration
@@ -732,6 +734,22 @@ Table of Contents
    unexpected contexts.  Recommended mitigation is resource servers
    SHALL use Cache-Control: no-store response header.
 
+8.2.  Confidentiality of resource server provided authorization_details
+
+   Resource server providing actionable authorization_details should
+   avoid revealing sensitive data, in line with the intended usage per
+   [RFC9396] of authorization_details as OAuth request parameter
+   representing request semantics.
+
+   Confidentiality preserving authorization_details types should avoid
+   including any sensitive data, instead deferring to end-user providing
+   required sensitive data when interacting with the authorization
+   server.
+
+   Alternatively they MAY refer to specifc end-user's resources using
+   opaque reference handles (e.g "account_1a" instead of using explicit
+   IBAN).
+
 9.  IANA Considerations
 
 9.1.  OAuth 2.0 Bearer Token Error Registry
@@ -1300,6 +1318,14 @@ A.3.5.  Resource server authorizes the request
    }
 
 Appendix B.  Document History
+
+   -03
+
+   *  Added usage_semantics and authorization_hint guiding client
+      multiple token handling
+
+   *  Added security consideration on confidentiality of RS-provided
+      authorization_details
 
    -02
 
