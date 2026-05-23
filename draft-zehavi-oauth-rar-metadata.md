@@ -511,6 +511,14 @@ Example resource server response with OPTIONAL authorization_details:
 HTTP 403 responses with response bodies may be cached or replayed in unexpected contexts.
 Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` response header.
 
+## Confidentiality of resource server provided authorization_details
+
+Resource server providing actionable authorization_details should avoid revealing sensitive data, in line with the intended usage per {{RFC9396}} of authorization_details as OAuth request parameter representing request semantics.
+
+Confidentiality preserving authorization_details types should avoid including any sensitive data, instead deferring to end-user providing required sensitive data when interacting with the authorization server.
+
+Alternatively they MAY refer to specifc end-user's resources using opaque reference handles (e.g "account_1a" instead of using explicit IBAN).
+
 # IANA Considerations
 
 ## OAuth 2.0 Bearer Token Error Registry
@@ -1018,6 +1026,11 @@ After user approves the request, client obtains single-use access token represen
     }
 
 # Document History
+
+-03
+
+* Added usage_semantics and authorization_hint guiding client multiple token handling
+* Added security consideration on confidentiality of RS-provided authorization_details
 
 -02
 
