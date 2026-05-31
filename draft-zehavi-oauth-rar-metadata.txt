@@ -711,24 +711,25 @@ Table of Contents
    caused when including large RAR objects in JWT access tokens,
    resulting in token size violating header size restrictions.
 
-   Authorization servers SHOULD therefore consider an *approved RAR
-   objects size threshhold*, above which JWT access tokens SHALL NOT
+   Authorization servers SHOULD therefore consider a *maximum approved
+   RAR objects size threshhold*, above which JWT access tokens SHALL NOT
    include an authorization_details claim but rather authorization
-   server SHALL make approved authorization_details available through
-   token introspection [RFC7662].
+   server SHALL make approved authorization_details available to
+   resource server enforcement through token introspection [RFC7662].
 
 8.  Processing Rules
 
 8.1.  Client Processing Rules
 
    *  When receiving error insufficient_authorization_details, if
-      response body contains an authorization_hint claim which matches a
-      valid token in client's possession, client SHOULD retry calling
+      response body contains an _authorization_hint_ claim which matches
+      a valid token in client's possession, client SHOULD retry calling
       the failing endpoint using the matching token.
 
-   *  Otherwise if response body contains an authorization_details claim
-      client MAY include it in a subsequent OAuth request to obtain a
-      token with which it MAY retry calling the failing endpoint.
+   *  Otherwise if response body contains an _authorization_details_
+      claim client MAY include it in a subsequent OAuth request to
+      obtain a token with which it MAY retry calling the failing
+      endpoint.
 
    *  Otherwise client MAY consult metadata:
 
