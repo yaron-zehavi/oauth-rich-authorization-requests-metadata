@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                             23 May 2026
-Expires: 24 November 2026
+Intended status: Standards Track                             31 May 2026
+Expires: 2 December 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -21,19 +21,27 @@ Abstract
    authorization details, it does not specify metadata describing
    authorization details types.
 
-   This document defines a machine-readable metadata format for
-   authorization servers to provide authorization details type
-   documentation including JSON Schema [JSON.Schema] definitions, as
-   well as interoperable discovery via OAuth Resource Server Metadata
-   [RFC9728].
+   This document:
 
-   It also defines a new WWW-Authenticate normative OAuth error code,
-   insufficient_authorization_details, enabling resource servers to
-   indicate inadequate authorization details as the cause of failure, as
-   well as an OPTIONAL response body which MAY be returned alongside the
-   insufficient_authorization_details error, providing an informative
-   yet actionable authorization details object, which can be used
-   directly in a subsequent OAuth request.
+   *  Defines a machine-readable metadata format for authorization
+      servers to provide authorization details type documentation
+      including JSON Schema [JSON.Schema] definitions, as well as
+      interoperable discovery via OAuth Resource Server Metadata
+      [RFC9728].
+
+   *  Defines a new WWW-Authenticate normative OAuth error code,
+      insufficient_authorization_details, enabling resource servers to
+      indicate inadequate authorization details as the cause of failure,
+      as well as an OPTIONAL response body which MAY be returned
+      alongside the insufficient_authorization_details error, providing
+      an informative yet actionable authorization details object, which
+      can be used directly in a subsequent OAuth request.
+
+   *  Specifies RECOMMENDED authorization server handling of large Rich
+      Authorization Request (RAR) objects combining JWT tokens and token
+      introspection, enabling resource servers to access authorization
+      details avoiding interoperability problems due to token size
+      conflicting with header size restrictions.
 
 About This Document
 
@@ -69,7 +77,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 November 2026.
+   This Internet-Draft will expire on 2 December 2026.
 
 Copyright Notice
 
@@ -105,17 +113,18 @@ Table of Contents
    6.  Resource Server Error Signaling of Inadequate
            authorization_details
      6.1.  OPTIONAL authorization_details in response body
-   7.  Processing Rules
-     7.1.  Client Processing Rules
-     7.2.  Resource Server Processing Rules
-   8.  Security Considerations
-     8.1.  Cacheability and Intermediaries
-     8.2.  Confidentiality of resource server provided
+   7.  Authorization server handling large RAR objects
+   8.  Processing Rules
+     8.1.  Client Processing Rules
+     8.2.  Resource Server Processing Rules
+   9.  Security Considerations
+     9.1.  Cacheability and Intermediaries
+     9.2.  Confidentiality of resource server provided
            authorization_details
-   9.  IANA Considerations
-     9.1.  OAuth 2.0 Bearer Token Error Registry
-     9.2.  OAuth Metadata Attribute Registration
-   10. Normative References
+   10. IANA Considerations
+     10.1.  OAuth 2.0 Bearer Token Error Registry
+     10.2.  OAuth Metadata Attribute Registration
+   11. Normative References
    Appendix A.  Examples
      A.1.  Authorization Server Metadata Examples
        A.1.1.  Example authorization_details_types_metadata_endpoint
@@ -361,15 +370,15 @@ Table of Contents
 4.  OAuth 2.0 Protected Resource Metadata [RFC9728]
 
    This document specifies a new OPTIONAL metadata attribute:
-   authorization_details_types_supported, to be included in the response
+   authorization_details_types_required, to be included in the response
    of OAuth Protected Resource Metadata [RFC9728].
 
-   "authorization_details_types_supported":  OPTIONAL.  a JSON object
+   "authorization_details_types_required":  OPTIONAL.  a JSON object
       that conforms to the syntax described in Section 4.1 for a
       _required types expression_.
 
-   The following is a non-normative example response with the added
-   authorization_details_types_supported attribute:
+   The following is a non-normative example response with the new
+   authorization_details_types_required attribute:
 
    HTTP/1.1 200 OK
    Content-Type: application/json
@@ -384,7 +393,7 @@ Table of Contents
        "scopes_supported": ["payment"],
        "resource_documentation":
            "https://resource.example.com/docs/payments.html",
-       "authorization_details_types_supported": {
+       "authorization_details_types_required": {
            "oneOf": ["payment_initiation", "payment_approval",
                      "beneficiary_designation"]
        }
@@ -392,8 +401,8 @@ Table of Contents
 
    Note: When resource servers accept access tokens _from several
    authorization servers_, interoperability is maintained and confusion
-   is prevented, because clients can discover which authorization
-   details types each authorization server supports.
+   is avoided, as clients can discover which authorization details types
+   each authorization server supports.
 
 4.1.  Required types expression syntax
 
@@ -642,12 +651,14 @@ Table of Contents
 
    "authorization_hint":  OPTIONAL.  String serving as reference to
       authorization details objects.  Its value shall be stable and
-      always the same when the same _authorization_details_ value is
+      identical whenever a specific _authorization_details_ value is
       returned.  Its purpose is to guide client on access token
       selection, enabling client to use an existing access token if
       created in response to the same authorization_hint, without
       requiring client to parse and compare authorization_details
-      objects to reach that conclusion.
+      objects to reach that conclusion. _authorization_hint_ SHALL NOT
+      be returned when resulting token SHALL only be accepted once by
+      resource server.
 
    "usage_semantics":  OPTIONAL.  String or integer value guiding client
       as to how resource server shall treat a new token resulting from a
@@ -685,24 +696,47 @@ Table of Contents
        }
      }],
      "authorization_hint": "Yb7q3AC5d",
-     "usage_semantics": "single"
+     "usage_semantics": "multiple"
    }
 
-7.  Processing Rules
+7.  Authorization server handling large RAR objects
 
-7.1.  Client Processing Rules
+   RAR [RFC9396] section 9 instructs that authorization servers MUST
+   make authorization details as approved in the authorization process
+   available to resource servers.  The authorization server MAY add the
+   authorization_details field to access tokens in JSON Web Token (JWT)
+   format or to token introspection responses.
 
-   *  If encountering error insufficient_authorization_details, check if
-      body.authorization_details exists and if provided MAY include in
-      subsequent OAuth request.
+   When issuing JWT access tokens, loss of interoperability could be
+   caused when including large RAR objects in JWT access tokens,
+   resulting in token size violating header size restrictions.
 
-   *  Otherwise consult metadata:
+   Authorization servers SHOULD therefore consider an *approved RAR
+   objects size threshhold*, above which JWT access tokens SHALL NOT
+   include an authorization_details claim but rather authorization
+   server SHALL make approved authorization_details available through
+   token introspection [RFC7662].
+
+8.  Processing Rules
+
+8.1.  Client Processing Rules
+
+   *  When receiving error insufficient_authorization_details, if
+      response body contains an authorization_hint claim which matches a
+      valid token in client's possession, client SHOULD retry calling
+      the failing endpoint using the matching token.
+
+   *  Otherwise if response body contains an authorization_details claim
+      client MAY include it in a subsequent OAuth request to obtain a
+      token with which it MAY retry calling the failing endpoint.
+
+   *  Otherwise client MAY consult metadata:
 
       -  Fetch resource metadata to discover accepted authorization
-         servers and supported *authorization_details types*.
+         servers and required *authorization_details types*.
 
       -  Fetch authorization server metadata to discover
-         authorization_details_types_supported.
+         authorization_details_types_required.
 
       -  Fetch authorization server's
          authorization_details_types_metadata_endpoint to obtain
@@ -711,12 +745,13 @@ Table of Contents
       -  Locate schema or retrieve schema_uri.
 
    *  Construct authorization details conforming to the schema and
-      include in subsequent OAuth request.
+      include in subsequent OAuth request to obtain a token with which
+      it MAY retry calling the failing endpoint.
 
-7.2.  Resource Server Processing Rules
+8.2.  Resource Server Processing Rules
 
    *  Advertise in resource metadata
-      authorization_details_types_supported, where relevant.
+      authorization_details_types_required, where relevant.
 
    *  Verify access tokens against required authorization details.
 
@@ -726,15 +761,15 @@ Table of Contents
    *  OPTIONALLY provide also an HTTP body with an informative
       actionable authorization_details object.
 
-8.  Security Considerations
+9.  Security Considerations
 
-8.1.  Cacheability and Intermediaries
+9.1.  Cacheability and Intermediaries
 
    HTTP 403 responses with response bodies may be cached or replayed in
    unexpected contexts.  Recommended mitigation is resource servers
    SHALL use Cache-Control: no-store response header.
 
-8.2.  Confidentiality of resource server provided authorization_details
+9.2.  Confidentiality of resource server provided authorization_details
 
    Resource server providing actionable authorization_details should
    avoid revealing sensitive data, in line with the intended usage per
@@ -746,13 +781,13 @@ Table of Contents
    required sensitive data when interacting with the authorization
    server.
 
-   Alternatively they MAY refer to specifc end-user's resources using
-   opaque reference handles (e.g "account_1a" instead of using explicit
-   IBAN).
+   Alternatively authorization_details MAY refer to specifc end-user's
+   resources using opaque reference handles (e.g "account_1a" instead of
+   using explicit IBAN).
 
-9.  IANA Considerations
+10.  IANA Considerations
 
-9.1.  OAuth 2.0 Bearer Token Error Registry
+10.1.  OAuth 2.0 Bearer Token Error Registry
 
      +====================================+=========================+
      | Error Code                         | Description             |
@@ -766,14 +801,14 @@ Table of Contents
 
                                  Table 1
 
-9.2.  OAuth Metadata Attribute Registration
+10.2.  OAuth Metadata Attribute Registration
 
    The metadata attribute authorization_details_types_metadata_endpoint
    is defined for OAuth 2.0 authorization server metadata as a URL.  The
-   metadata attribute authorization_details_types_supported is defined
+   metadata attribute authorization_details_types_required is defined
    for OAuth 2.0 protected resource metadata.
 
-10.  Normative References
+11.  Normative References
 
    [IANA.oauth-parameters]
               IANA, "OAuth Parameters",
@@ -798,6 +833,10 @@ Table of Contents
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
               <https://www.rfc-editor.org/rfc/rfc6749>.
+
+   [RFC7662]  Richer, J., Ed., "OAuth 2.0 Token Introspection",
+              RFC 7662, DOI 10.17487/RFC7662, October 2015,
+              <https://www.rfc-editor.org/rfc/rfc7662>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
@@ -1189,7 +1228,7 @@ A.2.1.  Example Protected Resource Metadata response of payments
        "scopes_supported": ["payment"],
        "resource_documentation":
            "https://resource.example.com/docs/payments.html",
-       "authorization_details_types_supported": {
+       "authorization_details_types_required": {
            "oneOf": ["payment_initiation", "payment_approval",
                      "beneficiary_designation"]
        }
@@ -1208,7 +1247,7 @@ A.2.2.  Example Protected Resource Metadata response from the Norwegian
        "scopes_supported":
            ["nhn:health-api/read", "nhn:health-api/write"],
        "resource_documentation": "https://utviklerportal.nhn.no",
-       "authorization_details_types_supported": {
+       "authorization_details_types_required": {
            "allOf": ["helseid_authorization",
                      "nhn:tillitsrammeverk:parameters"]
        }
@@ -1322,10 +1361,14 @@ Appendix B.  Document History
    -03
 
    *  Added usage_semantics and authorization_hint guiding client
-      multiple token handling
+      multiple token handling and updated client processing rules
+      accordingly
 
    *  Added security consideration on confidentiality of RS-provided
       authorization_details
+
+   *  Added authorization server considerations for handling large RAR
+      objects in JWT access tokens
 
    -02
 
