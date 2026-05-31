@@ -494,14 +494,14 @@ RAR {{RFC9396}} section 9 instructs that authorization servers MUST make authori
 
 When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.
 
-Authorization servers SHOULD therefore consider an **approved RAR objects size threshhold**, above which JWT access tokens SHALL NOT include an authorization_details claim but rather authorization server SHALL make approved authorization_details available through token introspection {{RFC7662}}.
+Authorization servers SHOULD therefore consider a **maximum approved RAR objects size threshhold**, above which JWT access tokens SHALL NOT include an authorization_details claim but rather authorization server SHALL make approved authorization_details available to resource server enforcement through token introspection {{RFC7662}}.
 
 # Processing Rules
 
 ## Client Processing Rules
 
-* When receiving error `insufficient_authorization_details`, if response body contains an authorization_hint claim which matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
-* Otherwise if response body contains an authorization_details claim client MAY include it in a subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
+* When receiving error `insufficient_authorization_details`, if response body contains an *authorization_hint* claim which matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
+* Otherwise if response body contains an *authorization_details* claim client MAY include it in a subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
 * Otherwise client MAY consult metadata:
     * Fetch resource metadata to discover accepted authorization servers and required **authorization_details types**.
     * Fetch authorization server metadata to discover `authorization_details_types_required`.
