@@ -1309,8 +1309,8 @@ A.3.2.  Resource server signals insufficient_authorization_details with
 A.3.3.  Client initiates OAuth flow using the provided
         authorization_details object
 
-   After user approves the request, client obtains single-use access
-   token representing the approved payment
+   After user approves the request, client obtains an access token
+   representing the approved payment
 
 A.3.4.  Client re-attempts API request
 
