@@ -72,7 +72,7 @@ This document:
 
 * Defines a new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * Adds **required** authorization details types to OAuth 2.0 Protected Resource Metadata {{RFC9728}} response.
-* Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of error.
+* Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of the error.
 * Defines an OPTIONAL response body, included with an `insufficient_authorization_details` error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.
 * Defines RECOMMENMDED handling of large RAR {{RFC9396}} authorization details when authorization servers issue JWT access tokens.
 
@@ -154,7 +154,7 @@ Figure: Client remediates using metadata of required authorization details types
 - (B) The client calls an API with an access token.
 - (C) Resource server returns HTTP 403 Forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and the resource metadata url (OAuth 2.0 Protected Resource Metadata {{RFC9728}}).
 - (D-E) The client discovers expected authorization details types from resource metadata endpoint's response.
-- (F-G) The client consumes authorization details type metadata from authorization server's `authorization_details_types_metadata_endpoint`.
+- (F-G) The client consumes authorization details types metadata from authorization server's `authorization_details_types_metadata_endpoint`.
 - (H-I) The client constructs a valid authorization details object and makes an OAuth + RAR {{RFC9396}} request.
 - (J) Authorization server returns authorization code.
 - (K-L) The client exchanges authorization code for access token.
@@ -450,7 +450,7 @@ HTTP response body definition:
 : OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 "authorization_hint":
-: OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a specific *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. *authorization_hint* SHALL NOT be returned when resulting token SHALL only be accepted once by resource server.
+: OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a semantically identical *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. *authorization_hint* SHALL NOT be returned when resulting token SHALL only be accepted once by resource server.
 
 "usage_semantics":
 : OPTIONAL. String or integer value guiding client as to how resource server will treat a new token resulting from a grant using *authorization_details*. Its purpose is to guide client on access token usage semantics. Possible values are:
@@ -545,7 +545,7 @@ Alternatively, authorization_details MAY refer to specifc end-user resources usi
 ## OAuth Metadata Attribute Registration
 
 The metadata attribute `authorization_details_types_metadata_endpoint` is defined for OAuth 2.0 authorization server metadata as a URL.
-The metadata attribute `authorization_details_types_required` is defined for OAuth 2.0 protected resource metadata.
+The metadata attribute `authorization_details_types_required` is defined for OAuth 2.0 protected resource metadata {{RFC9728}}.
 
 --- back
 
