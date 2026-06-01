@@ -991,7 +991,7 @@ Note: the resource server has added the ephemeral attributes `interaction_id` an
 
 ### Client initiates OAuth flow using the provided authorization_details object
 
-After user approves the request, client obtains single-use access token representing the approved payment
+After user approves the request, client obtains an access token representing the approved payment
 
 ### Client re-attempts API request
 
