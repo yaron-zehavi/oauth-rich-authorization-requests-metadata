@@ -55,16 +55,16 @@ While RAR {{RFC9396}} standardizes the exchange and processing of authorization 
 
 This document:
 
-* Defines a how authorization servers provide metadata and documentation about authorization details types, including JSON Schema {{JSON.Schema}} definitions.
+* Defines how authorization servers MAY provide metadata and documentation about authorization details types, including JSON Schema {{JSON.Schema}} definitions.
 * Describes interoperable authorization details types metadata discovery via OAuth Resource Server Metadata {{RFC9728}}.
-* Defines a new error code in the OAuth 2.0 Bearer Token Error Registry, `insufficient_authorization_details`, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an OPTIONAL response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request.
+* Defines a new error code in the OAuth 2.0 WWW-Authenticate Error Code Registry, `insufficient_authorization_details`, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an OPTIONAL response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request.
 * Specifies RECOMMENDED authorization server handling of large RAR objects when issuing JWT access tokens, using token introspection to provide approved `authorization_details` objects to resource servers, enabling enforcement while avoiding interoperability problems caused by large tokens conflicting with header size restrictions.
 
 --- middle
 
 # Introduction
 
-OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} allows OAuth clients to request detailed and structured authorization, which has enabled advanced authorization models across domains such as banking & healthcare.
+OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} allows OAuth clients to request detailed and structured authorization, which has enabled advanced authorization models across domains such as banking and healthcare.
 
 However, RAR {{RFC9396}} does not specify how clients discover metadata describing valid authorization details objects. Such metadata and documentation is currently obtained out-of-band.
 
@@ -74,12 +74,12 @@ This document:
 * Adds **required** authorization details types to OAuth 2.0 Protected Resource Metadata {{RFC9728}} response.
 * Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of the error.
 * Defines an OPTIONAL response body, included with an `insufficient_authorization_details` error, providing an informative authorization details object, whose inclusion in a new OAuth request SHOULD result, if approved, in an access token satisfying the endpoint's requirements.
-* Defines RECOMMENMDED handling of large RAR {{RFC9396}} authorization details when authorization servers issue JWT access tokens.
+* Defines RECOMMENDED handling of large RAR {{RFC9396}} authorization details when authorization servers issue JWT access tokens.
 
 OPTIONALLY providing actionable authorization details objects by resource servers enables:
 
-* Higher interoperability and simplification of clients who can proceed with remediation without requiring knowlege about constructing valid authorization details objects.
-* Support for ephemeral, interaction-specific claims provided by resource server, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers as to the required authentication strength and consent flow.
+* Higher interoperability and simplification of clients who can proceed with remediation without requiring knowledge about constructing valid authorization details objects.
+* Support for ephemeral, interaction-specific claims provided by resource server, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers regarding required authentication strength and consent flow.
 
 # Conventions and Definitions
 
@@ -301,7 +301,7 @@ Attributes definition:
           with the **min** or **max** attributes.
 
      "forbidden":
-     :    OPTIONAL.  a non-empty JSON array, whose each
+     :    OPTIONAL.  a non-empty JSON array, where each
           element is an array of authorization_details
           types identifiers, representing a combination
           that MUST NOT be present together.
@@ -426,7 +426,7 @@ See Examples {{metadata-examples}} for non-normative response example.
 
 # Resource Server Error Signaling of Inadequate `authorization_details`
 
-This document defines a new error code in the OAuth 2.0 Bearer Token Error Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal access is denied due to missing or insufficient authorization details.
+This document defines a new error code in the OAuth 2.0 WWW-Authenticate Error Code Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal access is denied due to missing or insufficient authorization details.
 
 Example HTTP response:
 
@@ -483,15 +483,15 @@ RAR {{RFC9396}} section 9 instructs that authorization servers MUST make authori
 
 When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.
 
-Authorization servers SHOULD therefore offer a configurable **maximum approved RAR objects size threshhold**, over which JWT access tokens SHALL NOT include the `authorization_details` claim, instead authorization server SHALL provide approved authorization details using token introspection {{RFC7662}}.
+Authorization servers SHOULD therefore offer a configurable **maximum approved RAR objects size threshold**, as a size in bytes over which JWT access tokens SHALL NOT include the `authorization_details` claim, instead authorization server SHALL provide approved authorization details using token introspection {{RFC7662}}.
 
 # Processing Rules
 
 ## Client Processing Rules
 
-* When receiving error `insufficient_authorization_details`, if response body contains an *authorization_hint* claim which matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
+* When receiving error `insufficient_authorization_details`, if response body contains an *authorization_hint* claim that matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
 * Otherwise if response body contains an *authorization_details* claim client MAY include it in a subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
-* Otherwise client MAY consult metadata:
+* Otherwise, the client MAY consult metadata:
     * Fetch resource metadata to discover accepted authorization servers and required **authorization_details types**.
     * Fetch authorization server metadata to discover `authorization_details_types_supported`.
     * Fetch authorization server's `authorization_details_types_metadata_endpoint` to
@@ -503,7 +503,7 @@ Authorization servers SHOULD therefore offer a configurable **maximum approved R
 
 * Advertise in resource metadata `authorization_details_types_required`, where relevant.
 * Verify access tokens against required authorization details.
-* If insufficient, return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".
+* If insufficient, the resource server MUST return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".
 * OPTIONALLY provide also an HTTP body with an informative actionable `authorization_details` object.
 
 # Security Considerations {#security-considerations}
@@ -517,13 +517,13 @@ Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` r
 
 Resource server providing actionable `authorization_details` SHOULD NOT reveal in them sensitive data. This is consistent with RAR {{RFC9396}} `authorization_details` OAuth request parameter, representing **request** semantics.
 
-Confidentiality-preserving `authorization_details` types SHOULD NOT include any sensitive data, instead end-user SHALL provide such information when interacting with the authorization server.
+Confidentiality-preserving `authorization_details` types SHOULD NOT include sensitive data. Instead, end-user SHALL provide such information when interacting with the authorization server.
 
 Alternatively, `authorization_details` MAY refer to specific end-user resources using opaque reference handles (e.g "account_1a" instead of using explicit IBAN).
 
 # IANA Considerations
 
-## OAuth 2.0 Bearer Token Error Registry
+## OAuth 2.0 WWW-Authenticate Error Code Registry
 
 | Error Code | Description |
 |------------|-------------|
@@ -638,7 +638,7 @@ This section provides non-normative examples of how this specification may be us
                     "properties": {
                         "type": {
                             "type": "string",
-                            "const": "helseid_autorization",
+                            "const": "helseid_autorization"
                         },
                         "practitioner_role": {
                             "type": "object",
@@ -690,7 +690,7 @@ This section provides non-normative examples of how this specification may be us
                 "properties": {
                     "type": {
                         "type": "string",
-                        "const": "nhn:tillitsrammeverk:parameters",
+                        "const": "nhn:tillitsrammeverk:parameters"
                     },
                     "practitioner": {
                         "type": "object",
