@@ -23,9 +23,9 @@ Abstract
 
    This document:
 
-   *  Defines a machine-readable metadata format for authorization
-      servers to provide metadata and documentation about authorization
-      details types, including JSON Schema [JSON.Schema] definitions.
+   *  Defines a how authorization servers provide metadata and
+      documentation about authorization details types, including JSON
+      Schema [JSON.Schema] definitions.
 
    *  Describes interoperable authorization details types metadata
       discovery via OAuth Resource Server Metadata [RFC9728].
@@ -39,7 +39,7 @@ Abstract
 
    *  Specifies RECOMMENDED authorization server handling of large RAR
       objects when issuing JWT access tokens, using token introspection
-      to provide the approved authorization_details objects to resource
+      to provide approved authorization_details objects to resource
       servers, enabling enforcement while avoiding interoperability
       problems caused by large tokens conflicting with header size
       restrictions.
@@ -154,10 +154,10 @@ Table of Contents
 
    OAuth 2.0 Rich Authorization Requests (RAR) [RFC9396] allows OAuth
    clients to request detailed and structured authorization, which has
-   enabled advanced authorization models across domains such as Banking
-   & Healthcare.
+   enabled advanced authorization models across domains such as banking
+   & healthcare.
 
-   However, RAR [RFC9396] does not specify how clients obtain metadata
+   However, RAR [RFC9396] does not specify how clients discover metadata
    describing valid authorization details objects.  Such metadata and
    documentation is currently obtained out-of-band.
 
@@ -178,7 +178,7 @@ Table of Contents
    *  Defines an OPTIONAL response body, included with an
       insufficient_authorization_details error, providing an informative
       authorization details object, whose inclusion in a new OAuth
-      request shall result, if approved, in an access token satisfying
+      request SHOULD result, if approved, in an access token satisfying
       the endpoint's requirements.
 
    *  Defines RECOMMENMDED handling of large RAR [RFC9396] authorization
@@ -653,14 +653,13 @@ Table of Contents
 
    "authorization_hint":  OPTIONAL.  String serving as a stable
       reference to authorization details objects.  Its value SHALL be
-      identical whenever a semantically identical
-      _authorization_details_ value is returned.  Its purpose is to
-      guide client on access token selection, enabling client to use an
-      existing access token if created in response to the same
-      authorization_hint, without requiring client to parse and compare
-      authorization_details objects to reach that conclusion.
-      _authorization_hint_ SHALL NOT be returned in case remediated
-      token SHALL only be accepted once by resource server.
+      identical whenever a semantically identical authorization_details
+      value is returned. authorization_hint guides client in access
+      token selection, enabling it to identify existing valid tokens
+      created in response to the same authorization_hint, without
+      requiring client to semantically understand authorization_details
+      objects. authorization_hint SHALL NOT be returned in case
+      remediated token SHALL only be accepted once by resource server.
 
    Clients MAY use the provided authorization_details in a subsequent
    OAuth request to obtain an access token satisfying the resource's
@@ -694,8 +693,8 @@ Table of Contents
    RAR [RFC9396] section 9 instructs that authorization servers MUST
    make authorization details as approved in the authorization process
    available to resource servers.  The authorization server MAY add the
-   authorization_details field to access tokens in JSON Web Token (JWT)
-   format or to token introspection responses.
+   authorization_details attribute to access tokens in JSON Web Token
+   (JWT) format or to token introspection responses.
 
    When issuing JWT access tokens, loss of interoperability could be
    caused when including large RAR objects in JWT access tokens,
@@ -704,7 +703,7 @@ Table of Contents
    Authorization servers SHOULD therefore offer a configurable *maximum
    approved RAR objects size threshhold*, over which JWT access tokens
    SHALL NOT include the authorization_details claim, instead
-   authorization server SHALL provide approved authorization_details
+   authorization server SHALL provide approved authorization details
    using token introspection [RFC7662].
 
 8.  Processing Rules
@@ -771,7 +770,7 @@ Table of Contents
    include any sensitive data, instead end-user SHALL provide such
    information when interacting with the authorization server.
 
-   Alternatively, authorization_details MAY refer to specifc end-user
+   Alternatively, authorization_details MAY refer to specific end-user
    resources using opaque reference handles (e.g "account_1a" instead of
    using explicit IBAN).
 
