@@ -1917,29 +1917,7 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details",
           <dd class="break"></dd>
 <dt id="section-6.1-5.3">"authorization_hint":</dt>
           <dd style="margin-left: 1.5em" id="section-6.1-5.4">
-            <p id="section-6.1-5.4.1"><span class="bcp14">OPTIONAL</span>. String serving as a stable reference to authorization details objects. Its value <span class="bcp14">SHALL</span> be identical whenever a semantically identical <em>authorization_details</em> value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. <em>authorization_hint</em> <span class="bcp14">SHALL NOT</span> be returned when resulting token <span class="bcp14">SHALL</span> only be accepted once by resource server.<a href="#section-6.1-5.4.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-6.1-5.5">"usage_semantics":</dt>
-          <dd style="margin-left: 1.5em" id="section-6.1-5.6">
-            <p id="section-6.1-5.6.1"><span class="bcp14">OPTIONAL</span>. String or integer value guiding client as to how resource server will treat a new token resulting from a grant using <em>authorization_details</em>. Its purpose is to guide client on access token usage semantics. Possible values are:<a href="#section-6.1-5.6.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-6.1-5.6.2">
-              <dt id="section-6.1-5.6.2.1">"single":</dt>
-              <dd style="margin-left: 1.5em" id="section-6.1-5.6.2.2">
-                <p id="section-6.1-5.6.2.2.1">Single use only.<a href="#section-6.1-5.6.2.2.1" class="pilcrow">¶</a></p>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-6.1-5.6.2.3">"multiple":</dt>
-              <dd style="margin-left: 1.5em" id="section-6.1-5.6.2.4">
-                <p id="section-6.1-5.6.2.4.1">unbounded multiple use.<a href="#section-6.1-5.6.2.4.1" class="pilcrow">¶</a></p>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-6.1-5.6.2.5">integer:</dt>
-              <dd style="margin-left: 1.5em" id="section-6.1-5.6.2.6">
-                <p id="section-6.1-5.6.2.6.1">e.g: 3, representing <strong>successful</strong> resource server invocations.<a href="#section-6.1-5.6.2.6.1" class="pilcrow">¶</a></p>
-</dd>
-            <dd class="break"></dd>
-</dl>
+            <p id="section-6.1-5.4.1"><span class="bcp14">OPTIONAL</span>. String serving as a stable reference to authorization details objects. Its value <span class="bcp14">SHALL</span> be identical whenever a semantically identical <em>authorization_details</em> value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. <em>authorization_hint</em> <span class="bcp14">SHALL NOT</span> be returned in case remediated token <span class="bcp14">SHALL</span> only be accepted once by resource server.<a href="#section-6.1-5.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -1965,8 +1943,7 @@ Cache-Control: no-store
       "iban": "DE02120300000000202051"
     }
   }],
-  "authorization_hint": "Yb7q3AC5d",
-  "usage_semantics": "multiple"
+  "authorization_hint": "Yb7q3AC5d"
 }
 </pre><a href="#section-6.1-8" class="pilcrow">¶</a>
 </div>
@@ -2742,7 +2719,7 @@ Cache-Control: no-store
 <p id="appendix-B-1">-03<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-B-2.1">
-          <p id="appendix-B-2.1.1">Added usage_semantics and authorization_hint guiding client multiple token handling and updated client processing rules accordingly<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.1.1">Added authorization_hint to guide client on token selection and updated client processing rules accordingly<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.2">
           <p id="appendix-B-2.2.1">Added security consideration on confidentiality of RS-provided authorization_details<a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>

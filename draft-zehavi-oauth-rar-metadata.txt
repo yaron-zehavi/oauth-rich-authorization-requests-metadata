@@ -659,20 +659,8 @@ Table of Contents
       existing access token if created in response to the same
       authorization_hint, without requiring client to parse and compare
       authorization_details objects to reach that conclusion.
-      _authorization_hint_ SHALL NOT be returned when resulting token
-      SHALL only be accepted once by resource server.
-
-   "usage_semantics":  OPTIONAL.  String or integer value guiding client
-      as to how resource server will treat a new token resulting from a
-      grant using _authorization_details_. Its purpose is to guide
-      client on access token usage semantics.  Possible values are:
-
-      "single":  Single use only.
-
-      "multiple":  unbounded multiple use.
-
-      integer:  e.g: 3, representing *successful* resource server
-         invocations.
+      _authorization_hint_ SHALL NOT be returned in case remediated
+      token SHALL only be accepted once by resource server.
 
    Clients MAY use the provided authorization_details in a subsequent
    OAuth request to obtain an access token satisfying the resource's
@@ -698,8 +686,7 @@ Table of Contents
          "iban": "DE02120300000000202051"
        }
      }],
-     "authorization_hint": "Yb7q3AC5d",
-     "usage_semantics": "multiple"
+     "authorization_hint": "Yb7q3AC5d"
    }
 
 7.  Authorization server handling of large RAR objects
@@ -1363,9 +1350,8 @@ Appendix B.  Document History
 
    -03
 
-   *  Added usage_semantics and authorization_hint guiding client
-      multiple token handling and updated client processing rules
-      accordingly
+   *  Added authorization_hint to guide client on token selection and
+      updated client processing rules accordingly
 
    *  Added security consideration on confidentiality of RS-provided
       authorization_details
