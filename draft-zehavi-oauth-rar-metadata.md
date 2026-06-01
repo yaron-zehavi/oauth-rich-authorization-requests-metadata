@@ -450,19 +450,7 @@ HTTP response body definition:
 : OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 "authorization_hint":
-: OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a semantically identical *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. *authorization_hint* SHALL NOT be returned when resulting token SHALL only be accepted once by resource server.
-
-"usage_semantics":
-: OPTIONAL. String or integer value guiding client as to how resource server will treat a new token resulting from a grant using *authorization_details*. Its purpose is to guide client on access token usage semantics. Possible values are:
-
-    "single":
-    :   Single use only.
-
-    "multiple":
-    :   unbounded multiple use.
-
-    integer:
-    :   e.g: 3, representing **successful** resource server invocations.
+: OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a semantically identical *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. *authorization_hint* SHALL NOT be returned in case remediated token SHALL only be accepted once by resource server.
 
 Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
 
@@ -486,8 +474,7 @@ Example resource server response with OPTIONAL authorization_details:
           "iban": "DE02120300000000202051"
         }
       }],
-      "authorization_hint": "Yb7q3AC5d",
-      "usage_semantics": "multiple"
+      "authorization_hint": "Yb7q3AC5d"
     }
 
 # Authorization server handling of large RAR objects
@@ -1044,7 +1031,7 @@ After user approves the request, client obtains single-use access token represen
 
 -03
 
-* Added usage_semantics and authorization_hint guiding client multiple token handling and updated client processing rules accordingly
+* Added authorization_hint to guide client on token selection and updated client processing rules accordingly
 * Added security consideration on confidentiality of RS-provided authorization_details
 * Added authorization server considerations for handling large RAR objects in JWT access tokens
 
