@@ -173,7 +173,7 @@ Table of Contents
 
    *  Defines a standardized error signaling mechanism using the WWW-
       Authenticate response header, allowing resource servers to specify
-      insufficient_authorization_details as the cause of error.
+      insufficient_authorization_details as the cause of the error.
 
    *  Defines an OPTIONAL response body, included with an
       insufficient_authorization_details error, providing an informative
@@ -286,8 +286,8 @@ Table of Contents
    *  (D-E) The client discovers expected authorization details types
       from resource metadata endpoint's response.
 
-   *  (F-G) The client consumes authorization details type metadata from
-      authorization server's
+   *  (F-G) The client consumes authorization details types metadata
+      from authorization server's
       authorization_details_types_metadata_endpoint.
 
    *  (H-I) The client constructs a valid authorization details object
@@ -653,14 +653,14 @@ Table of Contents
 
    "authorization_hint":  OPTIONAL.  String serving as a stable
       reference to authorization details objects.  Its value SHALL be
-      identical whenever a specific _authorization_details_ value is
-      returned.  Its purpose is to guide client on access token
-      selection, enabling client to use an existing access token if
-      created in response to the same authorization_hint, without
-      requiring client to parse and compare authorization_details
-      objects to reach that conclusion. _authorization_hint_ SHALL NOT
-      be returned when resulting token SHALL only be accepted once by
-      resource server.
+      identical whenever a semantically identical
+      _authorization_details_ value is returned.  Its purpose is to
+      guide client on access token selection, enabling client to use an
+      existing access token if created in response to the same
+      authorization_hint, without requiring client to parse and compare
+      authorization_details objects to reach that conclusion.
+      _authorization_hint_ SHALL NOT be returned when resulting token
+      SHALL only be accepted once by resource server.
 
    "usage_semantics":  OPTIONAL.  String or integer value guiding client
       as to how resource server will treat a new token resulting from a
@@ -809,7 +809,7 @@ Table of Contents
    The metadata attribute authorization_details_types_metadata_endpoint
    is defined for OAuth 2.0 authorization server metadata as a URL.  The
    metadata attribute authorization_details_types_required is defined
-   for OAuth 2.0 protected resource metadata.
+   for OAuth 2.0 protected resource metadata [RFC9728].
 
 11.  Normative References
 

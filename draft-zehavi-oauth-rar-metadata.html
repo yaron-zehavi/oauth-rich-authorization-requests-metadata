@@ -1348,7 +1348,7 @@ svg {
           <p id="section-1-4.2.1">Adds <strong>required</strong> authorization details types to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.3.1">Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of the error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.4">
           <p id="section-1-4.4.1">Defines an <span class="bcp14">OPTIONAL</span> response body, included with an <code>insufficient_authorization_details</code> error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
@@ -1469,7 +1469,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
             <p id="section-3.1-3.4.1">(D-E) The client discovers expected authorization details types from resource metadata endpoint's response.<a href="#section-3.1-3.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.1-3.5">
-            <p id="section-3.1-3.5.1">(F-G) The client consumes authorization details type metadata from authorization server's <code>authorization_details_types_metadata_endpoint</code>.<a href="#section-3.1-3.5.1" class="pilcrow">¶</a></p>
+            <p id="section-3.1-3.5.1">(F-G) The client consumes authorization details types metadata from authorization server's <code>authorization_details_types_metadata_endpoint</code>.<a href="#section-3.1-3.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.1-3.6">
             <p id="section-3.1-3.6.1">(H-I) The client constructs a valid authorization details object and makes an OAuth + RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> request.<a href="#section-3.1-3.6.1" class="pilcrow">¶</a></p>
@@ -1917,7 +1917,7 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details",
           <dd class="break"></dd>
 <dt id="section-6.1-5.3">"authorization_hint":</dt>
           <dd style="margin-left: 1.5em" id="section-6.1-5.4">
-            <p id="section-6.1-5.4.1"><span class="bcp14">OPTIONAL</span>. String serving as a stable reference to authorization details objects. Its value <span class="bcp14">SHALL</span> be identical whenever a specific <em>authorization_details</em> value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. <em>authorization_hint</em> <span class="bcp14">SHALL NOT</span> be returned when resulting token <span class="bcp14">SHALL</span> only be accepted once by resource server.<a href="#section-6.1-5.4.1" class="pilcrow">¶</a></p>
+            <p id="section-6.1-5.4.1"><span class="bcp14">OPTIONAL</span>. String serving as a stable reference to authorization details objects. Its value <span class="bcp14">SHALL</span> be identical whenever a semantically identical <em>authorization_details</em> value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. <em>authorization_hint</em> <span class="bcp14">SHALL NOT</span> be returned when resulting token <span class="bcp14">SHALL</span> only be accepted once by resource server.<a href="#section-6.1-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-6.1-5.5">"usage_semantics":</dt>
@@ -2107,7 +2107,7 @@ Recommended mitigation is resource servers <span class="bcp14">SHALL</span> use 
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-oauth-metadata-attribute-re" class="section-name selfRef">OAuth Metadata Attribute Registration</a>
         </h3>
 <p id="section-10.2-1">The metadata attribute <code>authorization_details_types_metadata_endpoint</code> is defined for OAuth 2.0 authorization server metadata as a URL.
-The metadata attribute <code>authorization_details_types_required</code> is defined for OAuth 2.0 protected resource metadata.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
+The metadata attribute <code>authorization_details_types_required</code> is defined for OAuth 2.0 protected resource metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
