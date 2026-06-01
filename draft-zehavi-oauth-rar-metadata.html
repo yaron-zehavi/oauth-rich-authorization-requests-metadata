@@ -7,18 +7,21 @@
 <title>OAuth 2.0 RAR Metadata and Error Signaling</title>
 <meta content="Yaron Zehavi" name="author">
 <meta content="
-       OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , enables fine-grained authorization requests, using structured JSON objects. 
+       OAuth 2.0 Rich Authorization Requests (RAR), as defined in  , introduces detailed authorization requests expressed as structured JSON objects. 
        While RAR   standardizes the exchange and processing of authorization details, it does not specify metadata describing authorization details types. 
        This document: 
        
          
-           Defines a machine-readable metadata format for authorization servers to provide authorization details type documentation including JSON Schema   definitions, as well as interoperable discovery via OAuth Resource Server Metadata  . 
+           Defines a machine-readable metadata format for authorization servers to provide metadata and documentation about authorization details types, including JSON Schema   definitions. 
          
          
-           Defines a new WWW-Authenticate normative OAuth error code,  insufficient_authorization_details , enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an  OPTIONAL  response body which  MAY  be returned alongside the  insufficient_authorization_details  error, providing an informative yet actionable authorization details object, which can be used directly in a subsequent OAuth request. 
+           Describes interoperable authorization details types metadata discovery via OAuth Resource Server Metadata  . 
          
          
-           Specifies  RECOMMENDED  authorization server handling of large Rich Authorization Request (RAR) objects combining JWT tokens and token introspection, enabling resource servers to access authorization details avoiding interoperability problems due to token size conflicting with header size restrictions. 
+           Defines a new WWW-Authenticate normative OAuth error code,  insufficient_authorization_details , enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an  OPTIONAL  response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request. 
+         
+         
+           Specifies  RECOMMENDED  authorization server handling of large RAR objects when issuing JWT access tokens, using token introspection to provide the approved authorization_details objects to resource servers, enabling enforcement while avoiding interoperability problems caused by large tokens conflicting with header size restrictions. 
          
        
     " name="description">
@@ -1058,11 +1061,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">OAuth 2.0 RAR Metadata and Error Signali</td>
-<td class="right">May 2026</td>
+<td class="right">June 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Zehavi</td>
-<td class="center">Expires 2 December 2026</td>
+<td class="center">Expires 3 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1075,12 +1078,12 @@ svg {
 <dd class="internet-draft">draft-zehavi-oauth-rar-metadata-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-31" class="published">31 May 2026</time>
+<time datetime="2026-06-01" class="published">1 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-02">2 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-03">3 December 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1093,18 +1096,21 @@ svg {
 <h1 id="title">OAuth 2.0 RAR Metadata and Error Signaling</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, enables fine-grained authorization requests, using structured JSON objects.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR), as defined in <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, introduces detailed authorization requests expressed as structured JSON objects.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">While RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> standardizes the exchange and processing of authorization details, it does not specify metadata describing authorization details types.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This document:<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-abstract-4.1">
-          <p id="section-abstract-4.1.1">Defines a machine-readable metadata format for authorization servers to provide authorization details type documentation including JSON Schema <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> definitions, as well as interoperable discovery via OAuth Resource Server Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-abstract-4.1.1" class="pilcrow">¶</a></p>
+          <p id="section-abstract-4.1.1">Defines a machine-readable metadata format for authorization servers to provide metadata and documentation about authorization details types, including JSON Schema <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> definitions.<a href="#section-abstract-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-abstract-4.2">
-          <p id="section-abstract-4.2.1">Defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an <span class="bcp14">OPTIONAL</span> response body which <span class="bcp14">MAY</span> be returned alongside the <code>insufficient_authorization_details</code> error, providing an informative yet actionable authorization details object, which can be used directly in a subsequent OAuth request.<a href="#section-abstract-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-abstract-4.2.1">Describes interoperable authorization details types metadata discovery via OAuth Resource Server Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-abstract-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-abstract-4.3">
-          <p id="section-abstract-4.3.1">Specifies <span class="bcp14">RECOMMENDED</span> authorization server handling of large Rich Authorization Request (RAR) objects combining JWT tokens and token introspection, enabling resource servers to access authorization details avoiding interoperability problems due to token size conflicting with header size restrictions.<a href="#section-abstract-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-abstract-4.3.1">Defines a new WWW-Authenticate normative OAuth error code, <code>insufficient_authorization_details</code>, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an <span class="bcp14">OPTIONAL</span> response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request.<a href="#section-abstract-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-abstract-4.4">
+          <p id="section-abstract-4.4.1">Specifies <span class="bcp14">RECOMMENDED</span> authorization server handling of large RAR objects when issuing JWT access tokens, using token introspection to provide the approved authorization_details objects to resource servers, enabling enforcement while avoiding interoperability problems caused by large tokens conflicting with header size restrictions.<a href="#section-abstract-4.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1143,7 +1149,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 2 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1182,10 +1188,10 @@ svg {
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-protocol-overview" class="internal xref">Protocol Overview</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-client-obtains-metadata-of-" class="internal xref">Client obtains metadata of required authorization details types</a></p>
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-client-remediates-using-met" class="internal xref">Client remediates using metadata of required authorization details types</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-client-obtains-authorizatio" class="internal xref">Client obtains authorization details object from resource server's error response</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-client-remediates-using-act" class="internal xref">Client remediates using actionable authorization details object from resource server's error response</a></p>
 </li>
             </ul>
 </li>
@@ -1228,7 +1234,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-authorization-server-handli" class="internal xref">Authorization server handling large RAR objects</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-authorization-server-handli" class="internal xref">Authorization server handling of large RAR objects</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-processing-rules" class="internal xref">Processing Rules</a></p>
@@ -1331,27 +1337,30 @@ svg {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> allows OAuth clients to request structured, fine-grained authorization, which has enabled advanced authorization models across many domains, such as Banking &amp; Healthcare.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">However, RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> does not specify how clients obtain metadata describing valid authorization details objects. Clients must therefore rely on out-of-band documentation or static ecosystem profiles.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">This document addresses this gap by:<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> allows OAuth clients to request detailed and structured authorization, which has enabled advanced authorization models across domains such as Banking &amp; Healthcare.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">However, RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> does not specify how clients obtain metadata describing valid authorization details objects. Such metadata and documentation is currently obtained out-of-band.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">This document:<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-4.1">
-          <p id="section-1-4.1.1">Defining a new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including human-readable documentation as well as embedded JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.1.1">Defines a new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including human-readable documentation as well as embedded JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.2">
-          <p id="section-1-4.2.1">Adding supported / required authorization details types to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.2.1">Adds <strong>required</strong> authorization details types to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">Defining a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.3.1">Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.4">
-          <p id="section-1-4.4.1">Defining an <span class="bcp14">OPTIONAL</span> response body, included with an <code>insufficient_authorization_details</code> error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.4.1">Defines an <span class="bcp14">OPTIONAL</span> response body, included with an <code>insufficient_authorization_details</code> error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-4.5">
+          <p id="section-1-4.5.1">Defines RECOMMENMDED handling of large RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> authorization details when authorization servers issue JWT access tokens.<a href="#section-1-4.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-5">The <span class="bcp14">OPTIONAL</span> providing of actionable authorization details objects by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">OPTIONALLY providing actionable authorization details objects by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-6.1">
-          <p id="section-1-6.1.1">Higher interoperability and simplification by relieving clients from having to figure out how to construct valid authorization details objects, instead providing them with ready-to-use authorization_details objects, to be included in a subsequent OAuth request.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-6.1.1">Higher interoperability and simplification of clients who can proceed with remediation without requiring knowlege about constructing valid authorization details objects.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-6.2">
           <p id="section-1-6.2.1">Support for ephemeral, interaction-specific claims provided by the resource domain in the authorization details object, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers <span class="bcp14">MAY</span> use this to guide authorization servers as to the required authentication strength and consent flow.<a href="#section-1-6.2.1" class="pilcrow">¶</a></p>
@@ -1378,16 +1387,16 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3-1">There are two main proposed flows:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1">Client obtains <strong>metadata</strong> of required authorization details types.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.1.1">Client remediates using metadata of required authorization details types.<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">Client obtains an <strong>actionable authorization details object</strong> from resource server's error response.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Client remediates using <strong>actionable authorization details object</strong> from resource server's error response<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<div id="client-obtains-metadata-of-required-authorization-details-types">
+<div id="client-remediates-using-metadata-of-required-authorization-details-types">
 <section id="section-3.1">
-        <h3 id="name-client-obtains-metadata-of-">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-client-obtains-metadata-of-" class="section-name selfRef">Client obtains metadata of required authorization details types</a>
+        <h3 id="name-client-remediates-using-met">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-client-remediates-using-met" class="section-name selfRef">Client remediates using metadata of required authorization details types</a>
         </h3>
 <div class="alignLeft art-ascii-art art-text artwork" id="section-3.1-1">
 <pre>
@@ -1445,7 +1454,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
              +----------+
 </pre><a href="#section-3.1-1" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-2">Figure: Client obtains metadata of required authorization details types<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">Figure: Client remediates using metadata of required authorization details types<a href="#section-3.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1-3.1">
             <p id="section-3.1-3.1.1">(A) The user starts the flow.<a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
@@ -1480,10 +1489,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </ul>
 </section>
 </div>
-<div id="client-obtains-authorization-details-object-from-resource-servers-error-response">
+<div id="client-remediates-using-actionable-authorization-details-object-from-resource-servers-error-response">
 <section id="section-3.2">
-        <h3 id="name-client-obtains-authorizatio">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-client-obtains-authorizatio" class="section-name selfRef">Client obtains authorization details object from resource server's error response</a>
+        <h3 id="name-client-remediates-using-act">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-client-remediates-using-act" class="section-name selfRef">Client remediates using actionable authorization details object from resource server's error response</a>
         </h3>
 <div class="alignLeft art-ascii-art art-text artwork" id="section-3.2-1">
 <pre>
@@ -1527,7 +1536,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
              +----------+
 </pre><a href="#section-3.2-1" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-2">Figure: Client obtains authorization details object from resource server's error response<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">Figure: Client remediates using actionable authorization details object from resource server's error response<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-3.1">
             <p id="section-3.2-3.1.1">(A) The user starts the flow.<a href="#section-3.2-3.1.1" class="pilcrow">¶</a></p>
@@ -1893,10 +1902,10 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details",
 <p id="section-6.1-2">Note:<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-6.1-3.1">
-            <p id="section-6.1-3.1.1">The audience of authorization details objects provided by a resource server in an error response are its trusted authorization servers, as advertised by the Resource Server’s metadata endpoint.<a href="#section-6.1-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-6.1-3.1.1">The audience of authorization details objects provided by a resource server in an error response is its trusted authorization servers, as advertised by the Resource Server’s metadata endpoint.<a href="#section-6.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-6.1-3.2">
-            <p id="section-6.1-3.2.1">Resource servers <span class="bcp14">SHALL</span> provide authorization_details objects only if <strong>all</strong> trusted authorization servers accept the <strong>authorization details type</strong> used.<a href="#section-6.1-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-6.1-3.2.1">Resource servers <span class="bcp14">SHOULD</span> provide authorization_details objects only if <strong>all</strong> trusted authorization servers accept the <strong>authorization details type</strong> used.<a href="#section-6.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-6.1-4">HTTP response body definition:<a href="#section-6.1-4" class="pilcrow">¶</a></p>
@@ -1965,14 +1974,14 @@ Cache-Control: no-store
 </div>
 </section>
 </div>
-<div id="authorization-server-handling-large-rar-objects">
+<div id="authorization-server-handling-of-large-rar-objects">
 <section id="section-7">
       <h2 id="name-authorization-server-handli">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-authorization-server-handli" class="section-name selfRef">Authorization server handling large RAR objects</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-authorization-server-handli" class="section-name selfRef">Authorization server handling of large RAR objects</a>
       </h2>
 <p id="section-7-1">RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> section 9 instructs that authorization servers <span class="bcp14">MUST</span> make authorization details as approved in the authorization process available to resource servers. The authorization server <span class="bcp14">MAY</span> add the authorization_details field to access tokens in JSON Web Token (JWT) format or to token introspection responses.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">Authorization servers <span class="bcp14">SHOULD</span> therefore consider a <strong>maximum approved RAR objects size threshhold</strong>, above which JWT access tokens <span class="bcp14">SHALL NOT</span> include an authorization_details claim but rather authorization server <span class="bcp14">SHALL</span> make approved authorization_details available to resource server enforcement through token introspection <span>[<a href="#RFC7662" class="cite xref">RFC7662</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-3">Authorization servers <span class="bcp14">SHOULD</span> therefore offer a configurable <strong>maximum approved RAR objects size threshhold</strong>, over which JWT access tokens <span class="bcp14">SHALL NOT</span> include the authorization_details claim, instead authorization server <span class="bcp14">SHALL</span> provide approved authorization_details using token introspection <span>[<a href="#RFC7662" class="cite xref">RFC7662</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="processing-rules">
