@@ -57,7 +57,7 @@ This document:
 
 * Defines a machine-readable metadata format for authorization servers to provide metadata and documentation about authorization details types, including JSON Schema {{JSON.Schema}} definitions.
 * Describes interoperable authorization details types metadata discovery via OAuth Resource Server Metadata {{RFC9728}}.
-* Defines a new WWW-Authenticate normative OAuth error code, `insufficient_authorization_details`, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an OPTIONAL response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request.
+* Defines a new error code in the OAuth 2.0 Bearer Token Error Registry, `insufficient_authorization_details`, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an OPTIONAL response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request.
 * Specifies RECOMMENDED authorization server handling of large RAR objects when issuing JWT access tokens, using token introspection to provide the approved authorization_details objects to resource servers, enabling enforcement while avoiding interoperability problems caused by large tokens conflicting with header size restrictions.
 
 --- middle
@@ -70,7 +70,7 @@ However, RAR {{RFC9396}} does not specify how clients obtain metadata describing
 
 This document:
 
-* Defines a new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including human-readable documentation as well as embedded JSON Schema definitions {{JSON.Schema}}.
+* Defines a new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * Adds **required** authorization details types to OAuth 2.0 Protected Resource Metadata {{RFC9728}} response.
 * Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of error.
 * Defines an OPTIONAL response body, included with an `insufficient_authorization_details` error, providing an informative authorization details object, whose inclusion in a new OAuth request shall result, if approved, in an access token satisfying the endpoint's requirements.
@@ -79,7 +79,7 @@ This document:
 OPTIONALLY providing actionable authorization details objects by resource servers enables:
 
 * Higher interoperability and simplification of clients who can proceed with remediation without requiring knowlege about constructing valid authorization details objects.
-* Support for ephemeral, interaction-specific claims provided by the resource domain in the authorization details object, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers as to the required authentication strength and consent flow.
+* Support for ephemeral, interaction-specific claims provided by resource server, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers as to the required authentication strength and consent flow.
 
 # Conventions and Definitions
 
@@ -152,7 +152,7 @@ Figure: Client remediates using metadata of required authorization details types
 
 - (A) The user starts the flow.
 - (B) The client calls an API with an access token.
-- (C) Resource server returns HTTP 403 forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and the resource metadata url (OAuth 2.0 Protected Resource Metadata {{RFC9728}}).
+- (C) Resource server returns HTTP 403 Forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and the resource metadata url (OAuth 2.0 Protected Resource Metadata {{RFC9728}}).
 - (D-E) The client discovers expected authorization details types from resource metadata endpoint's response.
 - (F-G) The client consumes authorization details type metadata from authorization server's `authorization_details_types_metadata_endpoint`.
 - (H-I) The client constructs a valid authorization details object and makes an OAuth + RAR {{RFC9396}} request.
@@ -186,20 +186,20 @@ Figure: Client remediates using metadata of required authorization details types
              |          | (E) Authorization Code||                  ||
              |          |        :              |+------------------+|
              |          |        :              |                    |
-             |          | (G) Token Request     |+------------------+|
+             |          | (F) Token Request     |+------------------+|
              |          |---------------------->||                  ||
              |          |                       || Token Endpoint   ||
              |          |<----------------------||                  ||
-             |          | (H) Access Token      |+------------------+|
+             |          | (G) Access Token      |+------------------+|
              |          |        :              +--------------------+
              |          |        :
              |          |        :
-             |          | (I) Retry API Call    +--------------------+
+             |          | (H) Retry API Call    +--------------------+
              |          |     with Token        |                    |
              |          |---------------------->|      Resource      |
              |          |                       |       Server       |
              |          |<----------------------|                    |
-             |          | (J) 200 OK + Resource +--------------------+
+             |          | (I) 200 OK + Resource +--------------------+
              |          |
              +----------+
 ~~~
@@ -207,12 +207,12 @@ Figure: Client remediates using actionable authorization details object from res
 
 - (A) The user starts the flow.
 - (B) The client calls an API with an access token.
-- (C) Resource server returns HTTP 403 forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body **includes the authorization details object requiring approval**.
+- (C) Resource server returns HTTP 403 Forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body **includes the authorization details object requiring approval**.
 - (D) The client uses the obtained authorization details object in a new OAuth + RAR {{RFC9396}} request.
 - (E) Authorization server returns authorization code.
-- (G-H) The client exchanges authorization code for access token.
-- (I) The client makes an API request with the (RAR) access token.
-- (J) Resource server validates access token and returns successful response.
+- (F-G) The client exchanges authorization code for access token.
+- (H) The client makes an API request with the (RAR) access token.
+- (I) Resource server validates access token and returns successful response.
 
 # OAuth 2.0 Protected Resource Metadata {{RFC9728}}
 
@@ -248,7 +248,7 @@ Note: When resource servers accept access tokens *from several authorization ser
 
 The following JSON syntax defines a **required types expression** to declaratively describe permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
 
-A **required types expression** is a JSON object that MUST contain **exactly** one of the following attributes:
+A **required types expression** is a JSON object whose top-level claims MUST contain **exactly** one of the following attributes:
 
 * and
 * or
@@ -408,13 +408,13 @@ Attributes definition:
 : OPTIONAL. String identifying the version of the authorization details type definition. The value is informational and does not imply semantic version negotiation.
 
 "description":
-: OPTIONAL. String containing a human-readable description of the authorization details type. Clients MUST NOT rely on this value for authorization or validation decisions.
+: OPTIONAL. String containing a description of the authorization details type. Clients MUST NOT rely on this value for authorization or validation decisions.
 
 "documentation_uri":
-: OPTIONAL. URI referencing external human-readable documentation describing the authorization details type.
+: OPTIONAL. URI referencing external documentation describing the authorization details type.
 
 "schema":
-: The `schema` attribute is a JSON Schema document {{JSON.Schema}} describing a single authorization detail object. The schema MUST validate a single authorization detail object and MUST constrain the `type` attribute to the authorization detail type identifier. This attribute is REQUIRED unless `schema_uri` is specified. If this attribute is present, `schema_uri` MUST NOT be present.
+: The `schema` attribute is a JSON Schema document {{JSON.Schema}} describing a single authorization details object. The schema MUST validate a single authorization details object and MUST constrain the `type` attribute to the authorization details type identifier. This attribute is REQUIRED unless `schema_uri` is specified. If this attribute is present, `schema_uri` MUST NOT be present.
 
 "schema_uri":
 : The `schema_uri` attribute is an absolute URI, as defined by RFC 3986 {{RFC3986}}, referencing a JSON Schema document describing a single authorization details object. The referenced schema MUST satisfy the same requirements as the `schema` attribute. This attribute is REQUIRED unless `schema` is specified. If this attribute is present, `schema` MUST NOT be present.
@@ -426,7 +426,7 @@ See Examples {{metadata-examples}} for non-normative response example.
 
 # Resource Server Error Signaling of Inadequate authorization_details
 
-This document defines a new normative OAuth error code, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal access is denied due to missing or insufficient authorization details.
+This document defines a new error code in the OAuth 2.0 Bearer Token Error Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal access is denied due to missing or insufficient authorization details.
 
 Example HTTP response:
 
@@ -450,10 +450,10 @@ HTTP response body definition:
 : OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 "authorization_hint":
-: OPTIONAL. String serving as reference to authorization details objects. Its value shall be stable and identical whenever a specific *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. *authorization_hint* SHALL NOT be returned when resulting token SHALL only be accepted once by resource server.
+: OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a specific *authorization_details* value is returned. Its purpose is to guide client on access token selection, enabling client to use an existing access token if created in response to the same authorization_hint, without requiring client to parse and compare authorization_details objects to reach that conclusion. *authorization_hint* SHALL NOT be returned when resulting token SHALL only be accepted once by resource server.
 
 "usage_semantics":
-: OPTIONAL. String or integer value guiding client as to how resource server shall treat a new token resulting from a grant using *authorization_details*. Its purpose is to guide client on access token usage semantics. Possible values are:
+: OPTIONAL. String or integer value guiding client as to how resource server will treat a new token resulting from a grant using *authorization_details*. Its purpose is to guide client on access token usage semantics. Possible values are:
 
     "single":
     :   Single use only.
@@ -462,7 +462,7 @@ HTTP response body definition:
     :   unbounded multiple use.
 
     integer:
-    :   e.g: 3 (token may be used exactly 3 times).
+    :   e.g: 3, representing **successful** resource server invocations.
 
 Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
 
@@ -478,11 +478,11 @@ Example resource server response with OPTIONAL authorization_details:
     {
       "authorization_details": [{
         "type": "payment_initiation",
-        "instructedAmount": {
+        "instructed_amount": {
           "currency": "EUR",
           "amount": "100.00"
         },
-        "creditorAccount": {
+        "creditor_account": {
           "iban": "DE02120300000000202051"
         }
       }],
@@ -506,8 +506,9 @@ Authorization servers SHOULD therefore offer a configurable **maximum approved R
 * Otherwise if response body contains an *authorization_details* claim client MAY include it in a subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
 * Otherwise client MAY consult metadata:
     * Fetch resource metadata to discover accepted authorization servers and required **authorization_details types**.
-    * Fetch authorization server metadata to discover `authorization_details_types_required`.
-    * Fetch authorization server's `authorization_details_types_metadata_endpoint` to obtain metadata and schema
+    * Fetch authorization server metadata to discover `authorization_details_types_supported`.
+    * Fetch authorization server's `authorization_details_types_metadata_endpoint` to
+    obtain authorization details type metadata and schemas.
     * Locate schema or retrieve schema_uri.
 * Construct authorization details conforming to the schema and include in subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
 
@@ -527,11 +528,11 @@ Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` r
 
 ## Confidentiality of resource server provided authorization_details
 
-Resource server providing actionable authorization_details should avoid revealing sensitive data, in line with the intended usage per {{RFC9396}} of authorization_details as OAuth request parameter representing request semantics.
+Resource server providing actionable authorization_details SHOULD NOT reveal in them sensitive data. This is consistent with RAR {{RFC9396}} authorization_details OAuth request parameter, representing **request** semantics.
 
-Confidentiality preserving authorization_details types should avoid including any sensitive data, instead deferring to end-user providing required sensitive data when interacting with the authorization server.
+Confidentiality-preserving authorization_details types SHOULD NOT include any sensitive data, instead end-user SHALL provide such information when interacting with the authorization server.
 
-Alternatively authorization_details MAY refer to specifc end-user's resources using opaque reference handles (e.g "account_1a" instead of using explicit IBAN).
+Alternatively, authorization_details MAY refer to specifc end-user resources using opaque reference handles (e.g "account_1a" instead of using explicit IBAN).
 
 # IANA Considerations
 
@@ -577,7 +578,7 @@ This section provides non-normative examples of how this specification may be us
                     "properties": {
                         "type": {
                             "const": "payment_initiation",
-                            "description": "Authorization detail type identifier."
+                            "description": "Authorization details type identifier."
                         },
                         "actions": {
                             "type": "array",
@@ -957,12 +958,12 @@ Client uses access token obtained at login to call payment initiation API
         "locations": [
             "https://resource.example.com/payments"
         ],
-        "instructedAmount": {
+        "instructed_amount": {
             "currency": "EUR",
             "amount": "123.50"
         },
-        "creditorName": "Merchant A",
-        "creditorAccount": {
+        "creditor_name": "Merchant A",
+        "creditor_account": {
             "bic": "ABCIDEFFXXX",
             "iban": "DE02100100109307118603"
         }
@@ -985,21 +986,21 @@ Resource server requires payment approval and responds with:
           "locations": [
               "https://example.com/payments"
           ],
-          "instructedAmount": {
+          "instructed_amount": {
               "currency": "EUR",
               "amount": "123.50"
           },
-          "creditorName": "Merchant A",
-          "creditorAccount": {
+          "creditor_name": "Merchant A",
+          "creditor_account": {
               "bic": "ABCIDEFFXXX",
               "iban": "DE02100100109307118603"
           },
-          "interactionId": "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
-          "riskProfile": "B-71"
+          "interaction_id": "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
+          "risk_profile": "B-71"
     }]
     }
 
-Note: the resource server has added the ephemeral attributes `interactionId` and `riskProfile`.
+Note: the resource server has added the ephemeral attributes `interaction_id` and `risk_profile`.
 
 ### Client initiates OAuth flow using the provided authorization_details object
 
@@ -1017,12 +1018,12 @@ After user approves the request, client obtains single-use access token represen
         "locations": [
             "https://resource.example.com/payments"
         ],
-        "instructedAmount": {
+        "instructed_amount": {
             "currency": "EUR",
             "amount": "123.50"
         },
-        "creditorName": "Merchant A",
-        "creditorAccount": {
+        "creditor_name": "Merchant A",
+        "creditor_account": {
             "bic": "ABCIDEFFXXX",
             "iban": "DE02100100109307118603"
         }
@@ -1065,4 +1066,4 @@ After user approves the request, client obtains single-use access token represen
 # Acknowledgments
 {:numbered="false"}
 
-The authors would like to thank the following individuals who contributed ideas, feedback, and wording that shaped and formed the final specification: Rune Grimstad.
+The authors would like to thank the following individuals who contributed ideas, feedback, and wording that helped shape the final specification: Rune Grimstad.
