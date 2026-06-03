@@ -84,7 +84,7 @@ The optional providing of actionable authorization details objects by resource s
 There are two main proposed flows:
 
 * Client remediates using **metadata of required authorization details types**.
-* Client remediates using **actionable authorization details object** provided by resource server.
+* Client remediates using **actionable authorization details objects** provided by resource server.
 
 ## Client remediates using metadata of required authorization details types
 
@@ -155,7 +155,7 @@ Figure: Client remediates using metadata of required authorization details types
 - (M) The client makes an API request with the (RAR) access token.
 - (N) Resource server validates access token and returns successful response.
 
-## Client remediates using actionable authorization details object provided by resource server
+## Client remediates using actionable authorization details objects provided by resource server
 
 ~~~ ascii-art
                                                 +--------------------+
@@ -197,12 +197,12 @@ Figure: Client remediates using metadata of required authorization details types
              |          |
              +----------+
 ~~~
-Figure: Client remediates using actionable authorization details object provided by resource server
+Figure: Client remediates using actionable authorization details objects provided by resource server
 
 - (A) The user starts the flow.
 - (B) The client calls an API with an access token.
-- (C) Resource server returns HTTP 403 Forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body **includes the authorization details object requiring approval**.
-- (D) The client uses the obtained authorization details object in a new OAuth + RAR {{RFC9396}} request.
+- (C) Resource server returns HTTP 403 Forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body includes the **required authorization details objects**.
+- (D) The client uses the obtained authorization details objects in a new OAuth + RAR {{RFC9396}} request.
 - (E) Authorization server returns authorization code.
 - (F-G) The client exchanges authorization code for access token.
 - (H) The client makes an API request with the (RAR) access token.
