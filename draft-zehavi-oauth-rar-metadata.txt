@@ -82,7 +82,7 @@ Table of Contents
      3.1.  Client remediates using metadata of required authorization
            details types
      3.2.  Client remediates using actionable authorization details
-           object from resource server's error response
+           object provided by resource server
    4.  OAuth 2.0 Protected Resource Metadata RFC9728
      4.1.  Required types expression syntax
      4.2.  Required types expression examples
@@ -186,11 +186,11 @@ Table of Contents
 
    There are two main proposed flows:
 
-   *  Client remediates using metadata of required authorization details
-      types.
+   *  Client remediates using *metadata of required authorization
+      details types*.
 
    *  Client remediates using *actionable authorization details object*
-      from resource server's error response
+      provided by resource server.
 
 3.1.  Client remediates using metadata of required authorization details
       types
@@ -280,7 +280,7 @@ Table of Contents
       response.
 
 3.2.  Client remediates using actionable authorization details object
-      from resource server's error response
+      provided by resource server
 
                                                 +--------------------+
              +----------+ (B) API Request       |                    |
@@ -322,7 +322,7 @@ Table of Contents
              +----------+
 
    Figure: Client remediates using actionable authorization details
-   object from resource server's error response
+   object provided by resource server
 
    *  (A) The user starts the flow.
 
