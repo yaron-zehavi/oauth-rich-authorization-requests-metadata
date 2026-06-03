@@ -49,9 +49,7 @@ normative:
 
 --- abstract
 
-OAuth 2.0 Rich Authorization Requests (RAR), as defined in {{RFC9396}}, introduces detailed authorization requests expressed as structured JSON objects.
-
-While RAR {{RFC9396}} standardizes the exchange and processing of authorization details, it does not specify metadata describing authorization details types.
+OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}}, standardizes the exchange and processing of authorization details but does not define metadata to describe authorization details types.
 
 This document:
 
@@ -64,16 +62,16 @@ This document:
 
 # Introduction
 
-OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} allows OAuth clients to request detailed and structured authorization, which has enabled advanced authorization models across domains such as banking and healthcare.
+OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} allows OAuth clients to request detailed and structured authorization, enabling advanced authorization models across domains such as banking and healthcare.
 
-However, RAR {{RFC9396}} does not specify how clients discover metadata describing valid authorization details objects. Such metadata and documentation is currently obtained out-of-band.
+However, RAR {{RFC9396}} does not specify how clients discover metadata describing valid authorization details objects. Such metadata and documentation are obtained out-of-band.
 
 This document:
 
 * Defines a new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * Adds **required** authorization details types to OAuth 2.0 Protected Resource Metadata {{RFC9728}} response.
 * Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of the error.
-* Defines an OPTIONAL response body, included with an `insufficient_authorization_details` error, providing an informative authorization details object, whose inclusion in a new OAuth request SHOULD result, if approved, in an access token satisfying the endpoint's requirements.
+* Defines an OPTIONAL response body that MAY accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.
 * Defines RECOMMENDED handling of large RAR {{RFC9396}} authorization details when authorization servers issue JWT access tokens.
 
 OPTIONALLY providing actionable authorization details objects by resource servers enables:
@@ -246,7 +244,7 @@ Note: When resource servers accept access tokens *from several authorization ser
 
 ## Required types expression syntax {#syntax}
 
-The following JSON syntax defines a **required types expression** to declaratively describe permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
+The following JSON syntax defines a **required types expression** that declaratively describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
 
 A **required types expression** is a JSON object whose top-level claims MUST contain **exactly** one of the following attributes:
 
@@ -414,7 +412,7 @@ Attributes definition:
 : OPTIONAL. URI referencing external documentation describing the authorization details type.
 
 "schema":
-: The `schema` attribute is a JSON Schema document {{JSON.Schema}} describing a single authorization details object. The schema MUST validate a single authorization details object and MUST constrain the `type` attribute to the authorization details type identifier. This attribute is REQUIRED unless `schema_uri` is specified. If this attribute is present, `schema_uri` MUST NOT be present.
+: The `schema` attribute contains a JSON Schema document {{JSON.Schema}} that describes a single authorization details object. The schema MUST validate exactly one authorization details object and MUST restrict the `type` attribute to the corresponding authorization details type identifier. This attribute is REQUIRED unless `schema_uri` is specified. If present, `schema_uri` MUST NOT be included.
 
 "schema_uri":
 : The `schema_uri` attribute is an absolute URI, as defined by RFC 3986 {{RFC3986}}, referencing a JSON Schema document describing a single authorization details object. The referenced schema MUST satisfy the same requirements as the `schema` attribute. This attribute is REQUIRED unless `schema` is specified. If this attribute is present, `schema` MUST NOT be present.
@@ -437,7 +435,7 @@ Example HTTP response:
 
 ## OPTIONAL authorization_details in response body
 
-Resource server MAY provide alongside the `insufficient_authorization_details` error, an informative HTTP response body of content type application/json, containing required authorization details objects to satisfy the currently failing request.
+Resource server MAY include, alongside the insufficient_authorization_details error, an informative HTTP response body with content type application/json containing the required authorization details objects needed to satisfy the failing request.
 
 Note:
 
@@ -452,7 +450,7 @@ HTTP response body definition:
 "authorization_hint":
 : OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a semantically identical `authorization_details` value is returned. `authorization_hint` guides client in access token selection, enabling it to identify existing valid tokens created in response to the same authorization_hint, without requiring client to semantically understand `authorization_details` objects. `authorization_hint` SHALL NOT be returned in case remediated token SHALL only be accepted once by resource server.
 
-Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
+Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token that satisfies the resource's requirements.
 
 Example resource server response with OPTIONAL `authorization_details`:
 
@@ -483,14 +481,14 @@ RAR {{RFC9396}} section 9 instructs that authorization servers MUST make authori
 
 When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.
 
-Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold**, as a size in bytes over which JWT access tokens SHALL NOT include the `authorization_details` claim, instead approved authorization details will be accessed using token introspection {{RFC7662}}.
+Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold** (in bytes). If the size exceeds this threshold, JWT access tokens SHALL NOT include the `authorization_details` claim; instead, approved authorization details will be accessed via token introspection {{RFC7662}}.
 
 # Processing Rules
 
 ## Client Processing Rules
 
 * When receiving error `insufficient_authorization_details`, if response body contains an *authorization_hint* claim that matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
-* Otherwise if response body contains an *authorization_details* claim client MAY include it in a subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
+* If the response body contains an *authorization_details* claim, the client MAY include it in a subsequent OAuth request to obtain a token, which it MAY then use to retry the failing endpoint.
 * Otherwise, the client MAY consult metadata:
     * Fetch resource metadata to discover accepted authorization servers and required **authorization_details types**.
     * Fetch authorization server metadata to discover `authorization_details_types_supported`.
@@ -515,7 +513,7 @@ Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` r
 
 ## Confidentiality of resource server provided authorization_details
 
-Resource server providing actionable `authorization_details` SHOULD NOT reveal in them sensitive data. This is consistent with RAR {{RFC9396}} `authorization_details` OAuth request parameter, representing **request** semantics.
+Resource server providing actionable `authorization_details` SHOULD NOT include sensitive data within them. This is consistent with RAR {{RFC9396}} `authorization_details` OAuth request parameter, representing **request** semantics.
 
 Confidentiality-preserving `authorization_details` types SHOULD NOT include sensitive data. Instead, end-user SHALL provide such information when interacting with the authorization server.
 
