@@ -83,8 +83,8 @@ The optional providing of actionable authorization details objects by resource s
 
 There are two main proposed flows:
 
-* Client remediates using metadata of required authorization details types.
-* Client remediates using **actionable authorization details object** from resource server's error response
+* Client remediates using **metadata of required authorization details types**.
+* Client remediates using **actionable authorization details object** provided by resource server.
 
 ## Client remediates using metadata of required authorization details types
 
@@ -155,7 +155,7 @@ Figure: Client remediates using metadata of required authorization details types
 - (M) The client makes an API request with the (RAR) access token.
 - (N) Resource server validates access token and returns successful response.
 
-## Client remediates using actionable authorization details object from resource server's error response
+## Client remediates using actionable authorization details object provided by resource server
 
 ~~~ ascii-art
                                                 +--------------------+
@@ -197,7 +197,7 @@ Figure: Client remediates using metadata of required authorization details types
              |          |
              +----------+
 ~~~
-Figure: Client remediates using actionable authorization details object from resource server's error response
+Figure: Client remediates using actionable authorization details object provided by resource server
 
 - (A) The user starts the flow.
 - (B) The client calls an API with an access token.
