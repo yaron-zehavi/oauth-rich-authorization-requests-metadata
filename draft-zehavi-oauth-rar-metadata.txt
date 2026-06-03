@@ -82,7 +82,7 @@ Table of Contents
      3.1.  Client remediates using metadata of required authorization
            details types
      3.2.  Client remediates using actionable authorization details
-           object provided by resource server
+           objects provided by resource server
    4.  OAuth 2.0 Protected Resource Metadata RFC9728
      4.1.  Required types expression syntax
      4.2.  Required types expression examples
@@ -189,7 +189,7 @@ Table of Contents
    *  Client remediates using *metadata of required authorization
       details types*.
 
-   *  Client remediates using *actionable authorization details object*
+   *  Client remediates using *actionable authorization details objects*
       provided by resource server.
 
 3.1.  Client remediates using metadata of required authorization details
@@ -279,7 +279,7 @@ Table of Contents
    *  (N) Resource server validates access token and returns successful
       response.
 
-3.2.  Client remediates using actionable authorization details object
+3.2.  Client remediates using actionable authorization details objects
       provided by resource server
 
                                                 +--------------------+
@@ -322,7 +322,7 @@ Table of Contents
              +----------+
 
    Figure: Client remediates using actionable authorization details
-   object provided by resource server
+   objects provided by resource server
 
    *  (A) The user starts the flow.
 
@@ -331,10 +331,10 @@ Table of Contents
    *  (C) Resource server returns HTTP 403 Forbidden including a WWW-
       Authenticate header with error code
       insufficient_authorization_details and in the response body
-      *includes the authorization details object requiring approval*.
+      includes the *required authorization details objects*.
 
-   *  (D) The client uses the obtained authorization details object in a
-      new OAuth + RAR [RFC9396] request.
+   *  (D) The client uses the obtained authorization details objects in
+      a new OAuth + RAR [RFC9396] request.
 
    *  (E) Authorization server returns authorization code.
 
