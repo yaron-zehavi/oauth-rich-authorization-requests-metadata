@@ -51,7 +51,7 @@ normative:
 
 OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}}, standardizes the exchange and processing of authorization details but does not define metadata to describe authorization details types.
 
-The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients dynamic discovery rather than relying on out-of-band agreements.
+The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients tp dynamically discover metadata instead of relying on out-of-band agreements.
 It also standardizes error signaling, in case insufficient RAR was provided and offers structured ways of remediation.
 
 --- middle
@@ -62,15 +62,15 @@ OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} allows OAuth clients to 
 
 However, RAR {{RFC9396}} does not specify how clients discover metadata describing valid authorization details objects. Such metadata and documentation are obtained out-of-band.
 
-This document:
+This document defines:
 
-* Defines a new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
+* A new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * Adds **required** authorization details types to OAuth 2.0 Protected Resource Metadata {{RFC9728}} response.
-* Defines a new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization_details` as the cause of error.
-* Defines an OPTIONAL response body that MAY accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.
-* Defines RECOMMENDED handling of large RAR {{RFC9396}} authorization details objects when issuing JWT access tokens, to prevent potential failures due to exceeding header size restrictions.
+* A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization_details` as the cause of error.
+* An OPTIONAL response body that MAY accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.
+* RECOMMENDED handling of large RAR {{RFC9396}} authorization details objects when issuing JWT access tokens, to avoid failures due to token sizes exceeding header size restrictions.
 
-OPTIONALLY providing actionable authorization details objects by resource servers enables:
+The optional providing of actionable authorization details objects by resource servers enables:
 
 * Simplification for clients who can directly remediate without learning to construct valid authorization details objects.
 * Support for ephemeral, interaction-specific claims from resource server, such as for example a risk profile or an internal interaction identifier, guiding authorization servers on required authentication strength and consent flows.
@@ -240,7 +240,7 @@ Note: When resource servers accept access tokens *from several authorization ser
 
 ## Required types expression syntax {#syntax}
 
-The following JSON syntax defines a **required types expression** that describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
+The following JSON syntax defines a **required types expression** that describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf) and boolean composition (and, or) to be combined in a predictable manner.
 
 A **required types expression** is a JSON object whose top-level claims MUST contain **exactly** one of the following attributes:
 
@@ -248,8 +248,6 @@ A **required types expression** is a JSON object whose top-level claims MUST con
 * or
 * oneOf
 * allOf
-* constraints
-
 
 Attributes definition:
 
@@ -265,41 +263,6 @@ Attributes definition:
 "allOf":
 :    OPTIONAL.  a non-empty JSON array of strings identifying `authorization_details` types. When **allOf** is specified, the expression is satisfied if **all** of the listed types are present.
 
-"constraints":
-:    OPTIONAL.  a JSON object defining cardinality and exclusion constraints over a set of `authorization_details` types. The object MUST contain the **types** attribute and MAY contain the attributes **min**, **max**, **exact**, and **forbidden**. Constraints attributes definition:
-
-     "types":
-     :    REQUIRED.  a non-empty JSON array of strings
-          identifying the `authorization_details` types
-          to which the constraints apply.
-
-     "min":
-     :    OPTIONAL.  a non-negative integer indicating
-          the minimum number of `authorization_details`
-          types from `types` that MUST be present.
-          This attribute MUST NOT be used together
-          with the **exact** attribute.
-
-     "max":
-     :    OPTIONAL.  a non-negative integer indicating
-          the maximum number of authorization_details
-          types from `types` that MAY be present.
-          This attribute MUST NOT be used together
-          with the **exact** attribute.
-
-     "exact":
-     :    OPTIONAL.  a non-negative integer indicating
-          the exact number of authorization_details
-          types from `types` that MUST be present.
-          This attribute MUST NOT be used together
-          with the **min** or **max** attributes.
-
-     "forbidden":
-     :    OPTIONAL.  a non-empty JSON array, where each
-          element is an array of authorization_details
-          types identifiers, representing a combination
-          that MUST NOT be present together.
-
 ## Required types expression examples
 
 ### Example expression using "and" operator
@@ -307,29 +270,10 @@ Attributes definition:
 Specifies that the selection MUST include a and b, **and** one of c **or** d.
 
     {
-      "required_types": {
-        "and": [
-          { "allOf": ["a", "b"] },
-          { "oneOf": ["c", "d"] }
-        ]
-      }
-    }
-
-Specifies that the selection MUST include one of a or b, **and** exactly two of [c,d,e], but the combination of d and e together is forbidden.
-
-    {
-      "required_types": {
-        "and": [
-          { "oneOf": ["a", "b"] },
-          {
-            "constraints": {
-              "types": ["c", "d", "e"],
-              "exact": 2,
-              "forbidden": [["d", "e"]]
-            }
-          }
-        ]
-      }
+      "and": [
+        { "allOf": ["a", "b"] },
+        { "oneOf": ["c", "d"] }
+      ]
     }
 
 ### Example expression using "or" operator
@@ -337,37 +281,10 @@ Specifies that the selection MUST include one of a or b, **and** exactly two of 
 Specifies that the selection MUST include **either** c **and** d, **or** one of a or b.
 
     {
-      "required_types": {
-        "or": [
-          { "allOf": ["c", "d"] },
-          { "oneOf": ["a", "b"] }
-        ]
-      }
-    }
-
-### Example expression using "constraints" operator
-
-Specifies that at least two of {a,b,c} MUST be present, but the combination of a and c together is forbidden.
-
-    {
-      "required_types": {
-        "constraints": {
-          "types": ["a","b","c"],
-          "min": 2,
-          "forbidden": [ ["a","c"] ]
-        }
-      }
-    }
-
-Specifies that exactly two of {a,b,c} MUST be present.
-
-    {
-      "required_types": {
-        "constraints": {
-          "types": ["a","b","c"],
-          "exact": 2
-        }
-      }
+      "or": [
+        { "allOf": ["c", "d"] },
+        { "oneOf": ["a", "b"] }
+      ]
     }
 
 # Authorization Details Types Metadata Endpoint
@@ -444,9 +361,9 @@ HTTP response body definition:
 : OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 "authorization_hint":
-: RECOMMENDED. String serving as a stable reference, enabling the client to select existing access tokens linked to authorization details objects without having to understand RAR object semantics. Its value SHALL be identical for semantically equal `authorization_details` and it SHALL NOT be returned in case tokens resulting from provided `authorization_details` SHALL only be accepted once by the resource server.
+: RECOMMENDED. String serving as a stable reference, enabling the client to select existing access tokens linked to authorization details objects without having to understand RAR object semantics. Its value SHALL be identical for semantically equal `authorization_details` and it SHALL NOT be returned in case tokens resulting from provided `authorization_details` are single-use only.
 
-Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token that satisfies the resource's requirements.
+Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying  the resource's requirements.
 
 Example resource server response with OPTIONAL `authorization_details`:
 
@@ -475,7 +392,7 @@ Example resource server response with OPTIONAL `authorization_details`:
 
 RAR {{RFC9396}} section 9 instructs that authorization servers MUST provide approved RAR objects to resource servers for enforcement. The authorization server MAY add the `authorization_details` attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.
 
-When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.
+Including large RAR objects in JWT access tokens may cause interoperability loss due to token sizes exceeding header size restrictions.
 
 Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold** (in bytes). If the size exceeds this threshold, JWT access tokens SHALL NOT include the `authorization_details` claim; instead, approved authorization details will be accessed via token introspection {{RFC7662}}.
 
