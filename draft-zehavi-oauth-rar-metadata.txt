@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                             1 June 2026
-Expires: 3 December 2026
+Intended status: Standards Track                             3 June 2026
+Expires: 5 December 2026
 
 
                OAuth 2.0 RAR Metadata and Error Signaling
@@ -78,7 +78,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 December 2026.
+   This Internet-Draft will expire on 5 December 2026.
 
 Copyright Notice
 
@@ -114,7 +114,7 @@ Table of Contents
    6.  Resource Server Error Signaling of Inadequate
            authorization_details
      6.1.  OPTIONAL authorization_details in response body
-   7.  Authorization server handling of large RAR objects
+   7.  Handling large RAR objects when issuing access tokens
    8.  Processing Rules
      8.1.  Client Processing Rules
      8.2.  Resource Server Processing Rules
@@ -688,7 +688,7 @@ Table of Contents
      "authorization_hint": "Yb7q3AC5d"
    }
 
-7.  Authorization server handling of large RAR objects
+7.  Handling large RAR objects when issuing access tokens
 
    RAR [RFC9396] section 9 instructs that authorization servers MUST
    make authorization details as approved in the authorization process
@@ -700,11 +700,11 @@ Table of Contents
    caused when including large RAR objects in JWT access tokens,
    resulting in token size violating header size restrictions.
 
-   Authorization servers SHOULD therefore offer a configurable *maximum
-   approved RAR objects size threshold*, as a size in bytes over which
-   JWT access tokens SHALL NOT include the authorization_details claim,
-   instead authorization server SHALL provide approved authorization
-   details using token introspection [RFC7662].
+   Authorization servers SHOULD support a configurable *maximum approved
+   RAR objects size threshold*, as a size in bytes over which JWT access
+   tokens SHALL NOT include the authorization_details claim, instead
+   approved authorization details will be accessed using token
+   introspection [RFC7662].
 
 8.  Processing Rules
 
