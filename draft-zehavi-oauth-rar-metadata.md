@@ -424,7 +424,7 @@ Attributes definition:
 
 See Examples {{metadata-examples}} for non-normative response example.
 
-# Resource Server Error Signaling of Inadequate `authorization_details`
+# Resource Server Error Signaling of Inadequate authorization_details
 
 This document defines a new error code in the OAuth 2.0 WWW-Authenticate Error Code Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal access is denied due to missing or insufficient authorization details.
 
@@ -435,7 +435,7 @@ Example HTTP response:
         resource_metadata="https://resource.example.com/
         .well-known/oauth-protected-resource/payments"
 
-## OPTIONAL `authorization_details` in response body
+## OPTIONAL authorization_details in response body
 
 Resource server MAY provide alongside the `insufficient_authorization_details` error, an informative HTTP response body of content type application/json, containing required authorization details objects to satisfy the currently failing request.
 
@@ -477,13 +477,13 @@ Example resource server response with OPTIONAL `authorization_details`:
       "authorization_hint": "Yb7q3AC5d"
     }
 
-# Authorization server handling of large RAR objects
+# Handling large RAR objects when issuing access tokens
 
 RAR {{RFC9396}} section 9 instructs that authorization servers MUST make authorization details as approved in the authorization process available to resource servers. The authorization server MAY add the `authorization_details` attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.
 
 When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.
 
-Authorization servers SHOULD therefore offer a configurable **maximum approved RAR objects size threshold**, as a size in bytes over which JWT access tokens SHALL NOT include the `authorization_details` claim, instead authorization server SHALL provide approved authorization details using token introspection {{RFC7662}}.
+Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold**, as a size in bytes over which JWT access tokens SHALL NOT include the `authorization_details` claim, instead approved authorization details will be accessed using token introspection {{RFC7662}}.
 
 # Processing Rules
 
@@ -989,7 +989,7 @@ Resource server requires payment approval and responds with:
 
 Note: the resource server has added the ephemeral attributes `interaction_id` and `risk_profile`.
 
-### Client initiates OAuth flow using the provided `authorization_details` object
+### Client initiates OAuth flow using the provided authorization_details object
 
 After user approves the request, client obtains an access token representing the approved payment
 
