@@ -8,7 +8,7 @@
 <meta content="Yaron Zehavi" name="author">
 <meta content="
        OAuth 2.0 Rich Authorization Requests (RAR)  , standardizes the exchange and processing of authorization details but does not define metadata to describe authorization details types. 
-       The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients dynamic discovery rather than relying on out-of-band agreements.
+       The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients tp dynamically discover metadata instead of relying on out-of-band agreements.
 It also standardizes error signaling, in case insufficient RAR was provided and offers structured ways of remediation. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
@@ -1083,7 +1083,7 @@ svg {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>, standardizes the exchange and processing of authorization details but does not define metadata to describe authorization details types.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients dynamic discovery rather than relying on out-of-band agreements.
+<p id="section-abstract-2">The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients tp dynamically discover metadata instead of relying on out-of-band agreements.
 It also standardizes error signaling, in case insufficient RAR was provided and offers structured ways of remediation.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
@@ -1181,9 +1181,6 @@ It also standardizes error signaling, in case insufficient RAR was provided and 
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.2">
                     <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="auto internal xref">4.2.2</a>.  <a href="#name-example-expression-using-or" class="internal xref">Example expression using "or" operator</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.3">
-                    <p id="section-toc.1-1.4.2.2.2.3.1"><a href="#section-4.2.3" class="auto internal xref">4.2.3</a>.  <a href="#name-example-expression-using-co" class="internal xref">Example expression using "constraints" operator</a></p>
 </li>
                 </ul>
 </li>
@@ -1311,25 +1308,25 @@ It also standardizes error signaling, in case insufficient RAR was provided and 
       </h2>
 <p id="section-1-1">OAuth 2.0 Rich Authorization Requests (RAR) <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> allows OAuth clients to request detailed and structured authorization, enabling advanced authorization models across domains such as banking and healthcare.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">However, RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> does not specify how clients discover metadata describing valid authorization details objects. Such metadata and documentation are obtained out-of-band.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">This document:<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3">This document defines:<a href="#section-1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-4.1">
-          <p id="section-1-4.1.1">Defines a new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including documentation and JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.1.1">A new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including documentation and JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.2">
           <p id="section-1-4.2.1">Adds <strong>required</strong> authorization details types to OAuth 2.0 Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> response.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">Defines a new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.3.1">A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate <code>insufficient_authorization_details</code> as the cause of error.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.4">
-          <p id="section-1-4.4.1">Defines an <span class="bcp14">OPTIONAL</span> response body that <span class="bcp14">MAY</span> accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.4.1">An <span class="bcp14">OPTIONAL</span> response body that <span class="bcp14">MAY</span> accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.5">
-          <p id="section-1-4.5.1">Defines <span class="bcp14">RECOMMENDED</span> handling of large RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> authorization details objects when issuing JWT access tokens, to prevent potential failures due to exceeding header size restrictions.<a href="#section-1-4.5.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.5.1"><span class="bcp14">RECOMMENDED</span> handling of large RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> authorization details objects when issuing JWT access tokens, to avoid failures due to token sizes exceeding header size restrictions.<a href="#section-1-4.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-1-5">OPTIONALLY providing actionable authorization details objects by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">The optional providing of actionable authorization details objects by resource servers enables:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-6.1">
           <p id="section-1-6.1.1">Simplification for clients who can directly remediate without learning to construct valid authorization details objects.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
@@ -1581,7 +1578,7 @@ Content-Type: application/json
         <h3 id="name-required-types-expression-s">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-required-types-expression-s" class="section-name selfRef">Required types expression syntax</a>
         </h3>
-<p id="section-4.1-1">The following JSON syntax defines a <strong>required types expression</strong> that describes permitted combinations of required <em>authorization_details</em> types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-1">The following JSON syntax defines a <strong>required types expression</strong> that describes permitted combinations of required <em>authorization_details</em> types. This expression allows selection operators (oneOf, allOf) and boolean composition (and, or) to be combined in a predictable manner.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2">A <strong>required types expression</strong> is a JSON object whose top-level claims <span class="bcp14">MUST</span> contain <strong>exactly</strong> one of the following attributes:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-3.1">
@@ -1595,9 +1592,6 @@ Content-Type: application/json
 </li>
           <li class="normal" id="section-4.1-3.4">
             <p id="section-4.1-3.4.1">allOf<a href="#section-4.1-3.4.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-4.1-3.5">
-            <p id="section-4.1-3.5.1">constraints<a href="#section-4.1-3.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-4.1-4">Attributes definition:<a href="#section-4.1-4" class="pilcrow">¶</a></p>
@@ -1621,55 +1615,6 @@ Content-Type: application/json
           <dd style="margin-left: 1.5em" id="section-4.1-5.8">
             <p id="section-4.1-5.8.1"><span class="bcp14">OPTIONAL</span>.  a non-empty JSON array of strings identifying <code>authorization_details</code> types. When <strong>allOf</strong> is specified, the expression is satisfied if <strong>all</strong> of the listed types are present.<a href="#section-4.1-5.8.1" class="pilcrow">¶</a></p>
 </dd>
-          <dd class="break"></dd>
-<dt id="section-4.1-5.9">"constraints":</dt>
-          <dd style="margin-left: 1.5em" id="section-4.1-5.10">
-            <p id="section-4.1-5.10.1"><span class="bcp14">OPTIONAL</span>.  a JSON object defining cardinality and exclusion constraints over a set of <code>authorization_details</code> types. The object <span class="bcp14">MUST</span> contain the <strong>types</strong> attribute and <span class="bcp14">MAY</span> contain the attributes <strong>min</strong>, <strong>max</strong>, <strong>exact</strong>, and <strong>forbidden</strong>. Constraints attributes definition:<a href="#section-4.1-5.10.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-4.1-5.10.2">
-              <dt id="section-4.1-5.10.2.1">"types":</dt>
-              <dd style="margin-left: 1.5em" id="section-4.1-5.10.2.2">
-                <p id="section-4.1-5.10.2.2.1"><span class="bcp14">REQUIRED</span>.  a non-empty JSON array of strings
-identifying the <code>authorization_details</code> types
-to which the constraints apply.<a href="#section-4.1-5.10.2.2.1" class="pilcrow">¶</a></p>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-4.1-5.10.2.3">"min":</dt>
-              <dd style="margin-left: 1.5em" id="section-4.1-5.10.2.4">
-                <p id="section-4.1-5.10.2.4.1"><span class="bcp14">OPTIONAL</span>.  a non-negative integer indicating
-the minimum number of <code>authorization_details</code>
-types from <code>types</code> that <span class="bcp14">MUST</span> be present.
-This attribute <span class="bcp14">MUST NOT</span> be used together
-with the <strong>exact</strong> attribute.<a href="#section-4.1-5.10.2.4.1" class="pilcrow">¶</a></p>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-4.1-5.10.2.5">"max":</dt>
-              <dd style="margin-left: 1.5em" id="section-4.1-5.10.2.6">
-                <p id="section-4.1-5.10.2.6.1"><span class="bcp14">OPTIONAL</span>.  a non-negative integer indicating
-the maximum number of authorization_details
-types from <code>types</code> that <span class="bcp14">MAY</span> be present.
-This attribute <span class="bcp14">MUST NOT</span> be used together
-with the <strong>exact</strong> attribute.<a href="#section-4.1-5.10.2.6.1" class="pilcrow">¶</a></p>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-4.1-5.10.2.7">"exact":</dt>
-              <dd style="margin-left: 1.5em" id="section-4.1-5.10.2.8">
-                <p id="section-4.1-5.10.2.8.1"><span class="bcp14">OPTIONAL</span>.  a non-negative integer indicating
-the exact number of authorization_details
-types from <code>types</code> that <span class="bcp14">MUST</span> be present.
-This attribute <span class="bcp14">MUST NOT</span> be used together
-with the <strong>min</strong> or <strong>max</strong> attributes.<a href="#section-4.1-5.10.2.8.1" class="pilcrow">¶</a></p>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-4.1-5.10.2.9">"forbidden":</dt>
-              <dd style="margin-left: 1.5em" id="section-4.1-5.10.2.10">
-                <p id="section-4.1-5.10.2.10.1"><span class="bcp14">OPTIONAL</span>.  a non-empty JSON array, where each
-element is an array of authorization_details
-types identifiers, representing a combination
-that <span class="bcp14">MUST NOT</span> be present together.<a href="#section-4.1-5.10.2.10.1" class="pilcrow">¶</a></p>
-</dd>
-            <dd class="break"></dd>
-</dl>
-</dd>
         <dd class="break"></dd>
 </dl>
 </section>
@@ -1688,33 +1633,12 @@ that <span class="bcp14">MUST NOT</span> be present together.<a href="#section-4
 <div class="alignLeft art-text artwork" id="section-4.2.1-2">
 <pre>
 {
-  "required_types": {
-    "and": [
-      { "allOf": ["a", "b"] },
-      { "oneOf": ["c", "d"] }
-    ]
-  }
+  "and": [
+    { "allOf": ["a", "b"] },
+    { "oneOf": ["c", "d"] }
+  ]
 }
 </pre><a href="#section-4.2.1-2" class="pilcrow">¶</a>
-</div>
-<p id="section-4.2.1-3">Specifies that the selection <span class="bcp14">MUST</span> include one of a or b, <strong>and</strong> exactly two of [c,d,e], but the combination of d and e together is forbidden.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.2.1-4">
-<pre>
-{
-  "required_types": {
-    "and": [
-      { "oneOf": ["a", "b"] },
-      {
-        "constraints": {
-          "types": ["c", "d", "e"],
-          "exact": 2,
-          "forbidden": [["d", "e"]]
-        }
-      }
-    ]
-  }
-}
-</pre><a href="#section-4.2.1-4" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1727,48 +1651,12 @@ that <span class="bcp14">MUST NOT</span> be present together.<a href="#section-4
 <div class="alignLeft art-text artwork" id="section-4.2.2-2">
 <pre>
 {
-  "required_types": {
-    "or": [
-      { "allOf": ["c", "d"] },
-      { "oneOf": ["a", "b"] }
-    ]
-  }
+  "or": [
+    { "allOf": ["c", "d"] },
+    { "oneOf": ["a", "b"] }
+  ]
 }
 </pre><a href="#section-4.2.2-2" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
-<div id="example-expression-using-constraints-operator">
-<section id="section-4.2.3">
-          <h4 id="name-example-expression-using-co">
-<a href="#section-4.2.3" class="section-number selfRef">4.2.3. </a><a href="#name-example-expression-using-co" class="section-name selfRef">Example expression using "constraints" operator</a>
-          </h4>
-<p id="section-4.2.3-1">Specifies that at least two of {a,b,c} <span class="bcp14">MUST</span> be present, but the combination of a and c together is forbidden.<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.2.3-2">
-<pre>
-{
-  "required_types": {
-    "constraints": {
-      "types": ["a","b","c"],
-      "min": 2,
-      "forbidden": [ ["a","c"] ]
-    }
-  }
-}
-</pre><a href="#section-4.2.3-2" class="pilcrow">¶</a>
-</div>
-<p id="section-4.2.3-3">Specifies that exactly two of {a,b,c} <span class="bcp14">MUST</span> be present.<a href="#section-4.2.3-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-4.2.3-4">
-<pre>
-{
-  "required_types": {
-    "constraints": {
-      "types": ["a","b","c"],
-      "exact": 2
-    }
-  }
-}
-</pre><a href="#section-4.2.3-4" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1889,11 +1777,11 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details",
           <dd class="break"></dd>
 <dt id="section-6.1-5.3">"authorization_hint":</dt>
           <dd style="margin-left: 1.5em" id="section-6.1-5.4">
-            <p id="section-6.1-5.4.1"><span class="bcp14">RECOMMENDED</span>. String serving as a stable reference, enabling the client to select existing access tokens linked to authorization details objects without having to understand RAR object semantics. Its value <span class="bcp14">SHALL</span> be identical for semantically equal <code>authorization_details</code> and it <span class="bcp14">SHALL NOT</span> be returned in case tokens resulting from provided <code>authorization_details</code> <span class="bcp14">SHALL</span> only be accepted once by the resource server.<a href="#section-6.1-5.4.1" class="pilcrow">¶</a></p>
+            <p id="section-6.1-5.4.1"><span class="bcp14">RECOMMENDED</span>. String serving as a stable reference, enabling the client to select existing access tokens linked to authorization details objects without having to understand RAR object semantics. Its value <span class="bcp14">SHALL</span> be identical for semantically equal <code>authorization_details</code> and it <span class="bcp14">SHALL NOT</span> be returned in case tokens resulting from provided <code>authorization_details</code> are single-use only.<a href="#section-6.1-5.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-6.1-6">Clients <span class="bcp14">MAY</span> use the provided <code>authorization_details</code> in a subsequent OAuth request to obtain an access token that satisfies the resource's requirements.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
+<p id="section-6.1-6">Clients <span class="bcp14">MAY</span> use the provided <code>authorization_details</code> in a subsequent OAuth request to obtain an access token satisfying  the resource's requirements.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
 <p id="section-6.1-7">Example resource server response with <span class="bcp14">OPTIONAL</span> <code>authorization_details</code>:<a href="#section-6.1-7" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.1-8">
 <pre>
@@ -1929,7 +1817,7 @@ Cache-Control: no-store
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-handling-large-rar-objects-" class="section-name selfRef">Handling large RAR objects when issuing access tokens</a>
       </h2>
 <p id="section-7-1">RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> section 9 instructs that authorization servers <span class="bcp14">MUST</span> provide approved RAR objects to resource servers for enforcement. The authorization server <span class="bcp14">MAY</span> add the <code>authorization_details</code> attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-2">Including large RAR objects in JWT access tokens may cause interoperability loss due to token sizes exceeding header size restrictions.<a href="#section-7-2" class="pilcrow">¶</a></p>
 <p id="section-7-3">Authorization servers <span class="bcp14">SHOULD</span> support a configurable <strong>maximum approved RAR objects size threshold</strong> (in bytes). If the size exceeds this threshold, JWT access tokens <span class="bcp14">SHALL NOT</span> include the <code>authorization_details</code> claim; instead, approved authorization details will be accessed via token introspection <span>[<a href="#RFC7662" class="cite xref">RFC7662</a>]</span>.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
