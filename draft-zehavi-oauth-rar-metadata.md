@@ -51,12 +51,8 @@ normative:
 
 OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}}, standardizes the exchange and processing of authorization details but does not define metadata to describe authorization details types.
 
-This document:
-
-* Defines how authorization servers MAY provide metadata and documentation about authorization details types, including JSON Schema {{JSON.Schema}} definitions.
-* Describes interoperable authorization details types metadata discovery via OAuth Resource Server Metadata {{RFC9728}}.
-* Defines a new error code in the OAuth 2.0 WWW-Authenticate Error Code Registry, `insufficient_authorization_details`, enabling resource servers to indicate inadequate authorization details as the cause of failure, as well as an OPTIONAL response body providing actionable authorization details objects, which can be directly used in a subsequent OAuth request.
-* Specifies RECOMMENDED authorization server handling of large RAR objects when issuing JWT access tokens, using token introspection to provide approved `authorization_details` objects to resource servers, enabling enforcement while avoiding interoperability problems caused by large tokens conflicting with header size restrictions.
+The document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients dynamic discovery rather than relying on out-of-band agreements.
+It also standardizes error signaling, in case insufficient RAR was provided and offers structured ways of remediation.
 
 --- middle
 
@@ -70,14 +66,14 @@ This document:
 
 * Defines a new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * Adds **required** authorization details types to OAuth 2.0 Protected Resource Metadata {{RFC9728}} response.
-* Defines a standardized error signaling mechanism using the WWW-Authenticate response header, allowing resource servers to specify `insufficient_authorization_details` as the cause of the error.
+* Defines a new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization_details` as the cause of error.
 * Defines an OPTIONAL response body that MAY accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.
-* Defines RECOMMENDED handling of large RAR {{RFC9396}} authorization details when authorization servers issue JWT access tokens.
+* Defines RECOMMENDED handling of large RAR {{RFC9396}} authorization details objects when issuing JWT access tokens, to prevent potential failures due to exceeding header size restrictions.
 
 OPTIONALLY providing actionable authorization details objects by resource servers enables:
 
-* Higher interoperability and simplification of clients who can proceed with remediation without requiring knowledge about constructing valid authorization details objects.
-* Support for ephemeral, interaction-specific claims provided by resource server, such as for example a risk score, a risk profile or an internal interaction identifier. Resource servers MAY use this to guide authorization servers regarding required authentication strength and consent flow.
+* Simplification for clients who can directly remediate without learning to construct valid authorization details objects.
+* Support for ephemeral, interaction-specific claims from resource server, such as for example a risk profile or an internal interaction identifier, guiding authorization servers on required authentication strength and consent flows.
 
 # Conventions and Definitions
 
@@ -217,7 +213,7 @@ Figure: Client remediates using actionable authorization details object from res
 This document specifies a new OPTIONAL metadata attribute: `authorization_details_types_required`, to be included in the response of OAuth Protected Resource Metadata {{RFC9728}}.
 
 "authorization_details_types_required":
-:    OPTIONAL.  a JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
+:    RECOMMENDED.  a JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
 
 The following is a non-normative example response with the new `authorization_details_types_required` attribute:
 
@@ -240,11 +236,11 @@ The following is a non-normative example response with the new `authorization_de
         }
     }
 
-Note: When resource servers accept access tokens *from several authorization servers*, interoperability is maintained and confusion is avoided, as clients can discover which authorization details types each authorization server supports.
+Note: When resource servers accept access tokens *from several authorization servers*, clients can discover which authorization details types each authorization server supports.
 
 ## Required types expression syntax {#syntax}
 
-The following JSON syntax defines a **required types expression** that declaratively describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
+The following JSON syntax defines a **required types expression** that describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf, constraints) and boolean composition (and, or) to be combined in a predictable manner.
 
 A **required types expression** is a JSON object whose top-level claims MUST contain **exactly** one of the following attributes:
 
@@ -422,7 +418,7 @@ Attributes definition:
 
 See Examples {{metadata-examples}} for non-normative response example.
 
-# Resource Server Error Signaling of Inadequate authorization_details
+# Resource Server Error Signaling of insufficient authorization_details
 
 This document defines a new error code in the OAuth 2.0 WWW-Authenticate Error Code Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal access is denied due to missing or insufficient authorization details.
 
@@ -448,7 +444,7 @@ HTTP response body definition:
 : OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 "authorization_hint":
-: OPTIONAL. String serving as a stable reference to authorization details objects. Its value SHALL be identical whenever a semantically identical `authorization_details` value is returned. `authorization_hint` guides client in access token selection, enabling it to identify existing valid tokens created in response to the same authorization_hint, without requiring client to semantically understand `authorization_details` objects. `authorization_hint` SHALL NOT be returned in case remediated token SHALL only be accepted once by resource server.
+: RECOMMENDED. String serving as a stable reference, enabling the client to select existing access tokens linked to authorization details objects without having to understand RAR object semantics. Its value SHALL be identical for semantically equal `authorization_details` and it SHALL NOT be returned in case tokens resulting from provided `authorization_details` SHALL only be accepted once by the resource server.
 
 Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token that satisfies the resource's requirements.
 
@@ -477,7 +473,7 @@ Example resource server response with OPTIONAL `authorization_details`:
 
 # Handling large RAR objects when issuing access tokens
 
-RAR {{RFC9396}} section 9 instructs that authorization servers MUST make authorization details as approved in the authorization process available to resource servers. The authorization server MAY add the `authorization_details` attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.
+RAR {{RFC9396}} section 9 instructs that authorization servers MUST provide approved RAR objects to resource servers for enforcement. The authorization server MAY add the `authorization_details` attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.
 
 When issuing JWT access tokens, loss of interoperability could be caused when including large RAR objects in JWT access tokens, resulting in token size violating header size restrictions.
 
