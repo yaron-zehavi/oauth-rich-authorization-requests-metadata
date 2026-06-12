@@ -920,6 +920,11 @@ After user approves the request, client obtains an access token representing the
 
 # Document History
 
+-04
+
+* Moved required authorization details types from resource metadata to resource server's response.
+* Adapted resource server processing rules to reflect error signaling and handling of large RAR payloads.
+
 -03
 
 * Added authorization_hint to guide client on token selection and updated client processing rules accordingly
