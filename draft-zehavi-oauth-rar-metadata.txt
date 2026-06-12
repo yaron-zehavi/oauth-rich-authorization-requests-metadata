@@ -149,10 +149,10 @@ Table of Contents
    *  A new normative OAuth 2.0 WWW-Authenticate Error Code, for
       resource servers to indicate insufficient_authorization_details as
       the cause of the error, as well as a RECOMMENDED response body
-      specifying *required* authorization details types, to satisfy the
+      specifying required authorization details types to satisfy the
       resource's requirements.
 
-   *  An OPTIONAL response body that MAY accompany the
+   *  An OPTIONAL response body attribute that MAY accompany the
       insufficient_authorization_details error, providing an informative
       and actionable authorization details object.  This object can be
       used directly in a follow-up OAuth request.
@@ -512,11 +512,11 @@ Table of Contents
 
    Note:
 
-   *  It is RECOMMENDED that resource servers provide
-      authorization_details objects whose audience is the access token's
-      issuer of the current failing request.  This simplifies client and
-      end-user interaction, by continuing with the same authorization
-      server used previously.
+   *  Resource servers SHOULD provide authorization_details objects
+      whose audience is the authorization server that issued the access
+      token's used for the current (failing) request.  This simplifies
+      client and end-user interaction, allowing them to continue with
+      the same authorization server previously used.
 
    HTTP response body definition:
 
@@ -620,16 +620,17 @@ Table of Contents
       server MUST return HTTP 403 with WWW-Authenticate: Bearer
       error="insufficient_authorization_details".
 
-   *  It is RECOMMENDED to provide an HTTP body with the
+   *  It is RECOMMENDED to also provide an HTTP body with the
       authorization_details_types_required attribute, specifying the
       required authorization details types to satisfy the resource's
       requirement.  This attribute applies to ALL supported
       authorization servers.
 
-   *  Resource server MAY also provide in the HTTP body OPTIONAL
-      informative actionable authorization_details objects, whose
-      audience is the authorization server that issued the current
-      access token.
+   *  Resource server MAY also provide in the HTTP body, OPTIONAL
+      actionable authorization_details objects, whose audience is the
+      authorization server that issued the current access token, which
+      MAY be used directly for remediation in a subsequent OAuth
+      request.
 
 8.  Security Considerations
 

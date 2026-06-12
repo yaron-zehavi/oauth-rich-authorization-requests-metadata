@@ -1306,10 +1306,10 @@ It also standardizes error signaling, in case insufficient authorization details
           <p id="section-1-4.1.1">A new authorization server endpoint: <code>authorization_details_types_metadata_endpoint</code>, providing metadata for authorization details types, including documentation and JSON Schema definitions <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span>.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.2">
-          <p id="section-1-4.2.1">A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate <code>insufficient_authorization_details</code> as the cause of the error, as well as a <span class="bcp14">RECOMMENDED</span> response body specifying <strong>required</strong> authorization details types, to satisfy the resource's requirements.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.2.1">A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate <code>insufficient_authorization_details</code> as the cause of the error, as well as a <span class="bcp14">RECOMMENDED</span> response body specifying required authorization details types to satisfy the resource's requirements.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">An <span class="bcp14">OPTIONAL</span> response body that <span class="bcp14">MAY</span> accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-4.3.1">An <span class="bcp14">OPTIONAL</span> response body attribute that <span class="bcp14">MAY</span> accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-4.4">
           <p id="section-1-4.4.1"><span class="bcp14">RECOMMENDED</span> handling of large RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> authorization details objects when issuing JWT access tokens, to avoid failures due to token sizes exceeding header size restrictions.<a href="#section-1-4.4.1" class="pilcrow">¶</a></p>
@@ -1605,7 +1605,7 @@ WWW-Authenticate: Bearer error="insufficient_authorization_details"
         <h3 id="name-recommended-authorization_d">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-recommended-authorization_d" class="section-name selfRef">RECOMMENDED authorization_details_types_required in response body</a>
         </h3>
-<p id="section-5.1-1">It is <span class="bcp14">RECOMMENDED</span> that resource servers return, alongside the insufficient_authorization_details error, an HTTP body of content type <code>application/json</code> containing the new attribute: <code>authorization_details_types_required</code>. This attribute specifies the required authorization details <strong>types</strong> satisfying resource's RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> requirements.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-1">It is <span class="bcp14">RECOMMENDED</span> that resource servers return, alongside the <code>insufficient_authorization_details</code> error, an HTTP body of content type <code>application/json</code> containing the new attribute: <code>authorization_details_types_required</code>. This attribute specifies the required authorization details <strong>types</strong> satisfying resource's RAR <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> requirements.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-5.1-2">
           <dt id="section-5.1-2.1">"authorization_details_types_required":</dt>
           <dd style="margin-left: 1.5em" id="section-5.1-2.2">
@@ -1725,11 +1725,11 @@ Content-Type: application/json
         <h3 id="name-optional-actionable-authori">
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-optional-actionable-authori" class="section-name selfRef">OPTIONAL actionable authorization_details in response body</a>
         </h3>
-<p id="section-5.2-1">Resource server <span class="bcp14">MAY</span> include, alongside the authorization_details_types_required attribute, actionable authorization details objects capable of satisfying the resource's requirements.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-1">Resource server <span class="bcp14">MAY</span> include, alongside the <code>authorization_details_types_required</code> attribute, actionable authorization details objects capable of satisfying the resource's requirements.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <p id="section-5.2-2">Note:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.2-3.1">
-            <p id="section-5.2-3.1.1">It is <span class="bcp14">RECOMMENDED</span> that resource servers provide <code>authorization_details</code> objects whose audience is the access token's issuer of the current failing request. This simplifies client and end-user interaction, by continuing with the same authorization server used previously.<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.1.1">Resource servers <span class="bcp14">SHOULD</span> provide <code>authorization_details</code> objects whose audience is the authorization server that issued the access token's used for the current (failing) request. This simplifies client and end-user interaction, allowing them to continue with the same authorization server previously used.<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-5.2-4">HTTP response body definition:<a href="#section-5.2-4" class="pilcrow">¶</a></p>
@@ -1840,10 +1840,10 @@ Cache-Control: no-store
             <p id="section-7.2-1.3.1">If authorization details are missing or insufficient, the resource server <span class="bcp14">MUST</span> return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".<a href="#section-7.2-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.2-1.4">
-            <p id="section-7.2-1.4.1">It is <span class="bcp14">RECOMMENDED</span> to provide an HTTP body with the <code>authorization_details_types_required</code> attribute, specifying the required authorization details types to satisfy the resource's requirement. This attribute applies to ALL supported authorization servers.<a href="#section-7.2-1.4.1" class="pilcrow">¶</a></p>
+            <p id="section-7.2-1.4.1">It is <span class="bcp14">RECOMMENDED</span> to also provide an HTTP body with the <code>authorization_details_types_required</code> attribute, specifying the required authorization details types to satisfy the resource's requirement. This attribute applies to ALL supported authorization servers.<a href="#section-7.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.2-1.5">
-            <p id="section-7.2-1.5.1">Resource server <span class="bcp14">MAY</span> also provide in the HTTP body <span class="bcp14">OPTIONAL</span> informative actionable <code>authorization_details</code> objects, whose audience is the authorization server that issued the current access token.<a href="#section-7.2-1.5.1" class="pilcrow">¶</a></p>
+            <p id="section-7.2-1.5.1">Resource server <span class="bcp14">MAY</span> also provide in the HTTP body, <span class="bcp14">OPTIONAL</span> actionable <code>authorization_details</code> objects, whose audience is the authorization server that issued the current access token, which <span class="bcp14">MAY</span> be used directly for remediation in a subsequent OAuth request.<a href="#section-7.2-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
