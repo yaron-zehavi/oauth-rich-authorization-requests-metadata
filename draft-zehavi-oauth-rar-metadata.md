@@ -31,6 +31,7 @@ author:
 
 normative:
   RFC3986:
+  RFC6750:
   RFC7662:
   RFC8414:
   RFC9396:
@@ -51,7 +52,7 @@ normative:
 OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} standardizes the exchange and processing of authorization details but does not define metadata to describe authorization details types.
 
 This document addresses a practical interoperability challenge regarding metadata of authorization details types, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements.
-It also standardizes error signaling, in case insufficient authorization details are provided and offers structured ways of remediation.
+It also standardizes error signaling for cases where insufficient authorization details are provided, and offers structured ways of remediation.
 
 --- middle
 
@@ -63,7 +64,7 @@ However, RAR {{RFC9396}} does not specify how clients discover metadata describi
 
 This document defines:
 
-* A new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing metadata for authorization details types, including documentation and JSON Schema definitions {{JSON.Schema}}.
+* A new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing authorization details types metadata, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization_details` as the cause of the error, as well as a RECOMMENDED response body specifying required authorization details types to satisfy the resource's requirements.
 * An OPTIONAL response body attribute that MAY accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.
 * RECOMMENDED handling of large RAR {{RFC9396}} authorization details objects when issuing JWT access tokens, to avoid failures due to token sizes exceeding header size restrictions.
@@ -71,7 +72,7 @@ This document defines:
 Providing actionable authorization details objects in the resource server's error response enables:
 
 * Simplification for clients who can directly remediate without learning to construct valid authorization details objects.
-* Support for ephemeral, interaction-specific claims from the resource server, such as a risk profile or an internal interaction identifier, guiding authorization servers on required authentication strength and consent flows.
+* Support for ephemeral, interaction-specific attributes from the resource server, such as a risk profile or an internal interaction identifier, guiding authorization servers on required authentication strength and consent flows.
 
 # Conventions and Definitions
 
@@ -140,7 +141,7 @@ Figure: Client remediates using metadata of required authorization details types
 - (B) The client calls an API with an access token.
 - (C) Resource server returns HTTP 403 Forbidden including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body specifies required authorization details types.
 - (D-E) The client consumes authorization details types metadata from authorization server's `authorization_details_types_metadata_endpoint`.
-- (F-G) The client constructs valid authorization details objects and makes an OAuth + RAR {{RFC9396}} request.
+- (F-G) The client constructs valid authorization details objects and makes an authorization request using RAR {{RFC9396}}.
 - (H) Authorization server returns authorization code.
 - (I-J) The client exchanges authorization code for access token.
 - (K) The client makes an API request with the (RAR) access token.
@@ -207,7 +208,7 @@ The following authorization server metadata {{RFC8414}} parameter is introduced 
 
 ## Authorization Details Types Metadata Endpoint Response
 
-The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with content type `application/json` and JSON body whose each attribute is an authorization details type identifier.
+The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with content type `application/json` and a JSON object whose members are authorization details type identifiers.
 
 Each identifier is an object describing a single authorization details type.
 
@@ -246,7 +247,9 @@ See Examples {{metadata-examples}} for non-normative response example.
 
 # Resource Server Error Signaling of insufficient authorization_details
 
-This document defines a new error code in the OAuth 2.0 WWW-Authenticate Error Code Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal that access is denied due to missing or insufficient authorization details.
+This document defines a new error code in the OAuth 2.0 WWW-Authenticate {{RFC6750}} Error Code Registry, `insufficient_authorization_details`, which resource servers SHALL return using the `WWW-Authenticate` header, to signal that access is denied due to missing or insufficient authorization details.
+
+The `insufficient_authorization_details` error is intended for requests where the access token is otherwise valid, but the authorization details associated with the token do not satisfy the resource's requirements.
 
 Example HTTP response:
 
@@ -258,7 +261,7 @@ Example HTTP response:
 It is RECOMMENDED that resource servers return, alongside the `insufficient_authorization_details` error, an HTTP body of content type `application/json` containing the new attribute: `authorization_details_types_required`. This attribute specifies the required authorization details **types** satisfying resource's RAR {{RFC9396}} requirements.
 
 "authorization_details_types_required":
-:    RECOMMENDED.  a JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
+:    RECOMMENDED.  A JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
 
 Note: It is RECOMMENDED that *authorization_details_types_required* specifies ALL acceptable authorization details types combinations, from ALL supported authorization servers.
 
@@ -280,7 +283,7 @@ Example resource server response with RECOMMENDED `authorization_details_types_r
 
 The following JSON syntax defines a **required types expression** that describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf) and boolean composition (and, or) to be combined in a predictable manner.
 
-A **required types expression** is a JSON object whose top-level claims MUST contain **exactly** one of the following attributes:
+A **required types expression** is a JSON object whose top-level attributes MUST contain **exactly** one of the following attributes:
 
 * and
 * or
@@ -327,11 +330,11 @@ Specifies that the selection MUST include **either** `c` **and** `d`, **or** one
 
 ## OPTIONAL actionable authorization_details in response body
 
-Resource server MAY include, alongside the `authorization_details_types_required` attribute, actionable authorization details objects capable of satisfying the resource's requirements.
+The resource server MAY include, alongside the `authorization_details_types_required` attribute, actionable authorization details objects capable of satisfying the resource's requirements.
 
 Note:
 
-* Resource servers SHOULD provide `authorization_details` objects whose audience is the authorization server that issued the access token's used for the current (failing) request. This simplifies client and end-user interaction, allowing them to continue with the same authorization server previously used.
+* Resource servers SHOULD provide `authorization_details` objects whose audience is the authorization server that issued the access token used for the current (failing) request. This simplifies client and end-user interaction, allowing them to continue with the same authorization server previously used.
 
 HTTP response body definition:
 
@@ -339,7 +342,7 @@ HTTP response body definition:
 : OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
 
 "authorization_hint":
-: RECOMMENDED. String serving as a stable reference, enabling the client to select existing access tokens linked to authorization details objects without having to understand RAR object semantics. Its value SHALL be identical for semantically equal `authorization_details` and it SHALL NOT be returned in case tokens resulting from provided `authorization_details` are single-use only.
+: RECOMMENDED. An opaque string generated by the resource server that enables the client to select an existing access token associated with equivalent authorization details without understanding the semantics of the authorization details object. Clients MUST treat this value as opaque. The value SHOULD be stable only within the context of the same resource server, client, subject, and authorization server. The value MUST NOT reveal sensitive information. The resource server SHALL NOT return this attribute when tokens resulting from the provided `authorization_details` are single-use only.
 
 Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
 
@@ -370,21 +373,22 @@ RAR {{RFC9396}} section 9 instructs that authorization servers MUST provide appr
 
 Including large RAR objects in JWT access tokens may cause interoperability loss due to token sizes exceeding header size restrictions.
 
-Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold** (in bytes). If the size exceeds this threshold, JWT access tokens SHALL NOT include the `authorization_details` claim; instead, approved authorization details will be accessed via token introspection {{RFC7662}}.
+Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold**. The size calculation SHOULD be based on the UTF-8 encoded JSON serialization
+of the approved `authorization_details` value before JWT signing or encryption. If the size exceeds this threshold, JWT access tokens SHOULD NOT include the `authorization_details` attribute; instead, the authorization server MUST ensure that the resource server can obtain the approved authorization details by another
+means, such as token introspection {{RFC7662}}.
 
 # Processing Rules
 
 ## Client Processing Rules
 
-* When receiving error `insufficient_authorization_details`, if response body contains an *authorization_hint* claim that matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
-* If the response body contains an *authorization_details* claim, the client MAY include it in a subsequent OAuth request to obtain a token, which it MAY then use to retry the failing endpoint.
-* Otherwise, the client MAY consult metadata:
-    * Fetch resource metadata to discover accepted authorization servers and required **authorization_details types**.
-    * Fetch authorization server metadata to discover `authorization_details_types_supported`.
+* When receiving error `insufficient_authorization_details`, if response body contains an `authorization_hint` attribute that matches a valid token in client's possession, client SHOULD retry calling the failing endpoint using the matching token.
+* If the response body contains an `authorization_details` attribute, the client MAY include it in a subsequent OAuth request to obtain a token, which it MAY then use to retry the failing endpoint.
+* Otherwise, the client SHOULD use the `authorization_details_types_required` attribute, if provided in the response body:
+    * Use response body to understand which authorization details types satisfy resource's requirements.
     * Fetch authorization server's `authorization_details_types_metadata_endpoint` to
-    obtain authorization details type metadata and schemas.
+    obtain authorization details types metadata and schemas.
     * Locate schema or retrieve schema_uri.
-* Construct authorization details conforming to the schema and include in subsequent OAuth request to obtain a token with which it MAY retry calling the failing endpoint.
+* Construct authorization details conforming to the schema and include in subsequent OAuth request to obtain an access token with which the client MAY retry calling the failing endpoint.
 
 ## Resource Server Processing Rules
 
@@ -392,14 +396,14 @@ Authorization servers SHOULD support a configurable **maximum approved RAR objec
 * When a resource server receives a JWT access token that does not contain an `authorization_details` claim, and authorization details are required for the requested resource, the resource server SHOULD attempt to obtain the authorization details using token introspection {{RFC7662}}, if introspection is available.
 * If authorization details are missing or insufficient, the resource server MUST return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".
 * It is RECOMMENDED to also provide an HTTP body with the `authorization_details_types_required` attribute, specifying the required authorization details types to satisfy the resource's requirement. This attribute applies to ALL supported authorization servers.
-* Resource server MAY also provide in the HTTP body, OPTIONAL actionable `authorization_details` objects, whose audience is the authorization server that issued the current access token, which MAY be used directly for remediation in a subsequent OAuth request.
+* Resource server MAY also provide in the HTTP body, OPTIONAL actionable `authorization_details` objects, intended to be submitted to the authorization server that issued the current access token, which MAY be used directly for remediation in a subsequent OAuth request.
 
 # Security Considerations {#security-considerations}
 
 ## Cacheability and Intermediaries
 
 HTTP 403 responses with response bodies may be cached or replayed in unexpected contexts.
-Recommended mitigation is resource servers SHALL use `Cache-Control: no-store` response header.
+Resource servers SHOULD mitigate by including the `Cache-Control: no-store` response header.
 
 ## Confidentiality of resource server provided authorization_details
 
@@ -415,7 +419,7 @@ Alternatively, `authorization_details` MAY refer to specific end-user resources 
 
 | Error Code | Description |
 |------------|-------------|
-| insufficient_authorization_details | The request is missing required authorization details or the provided authorization details are insufficient. |
+| insufficient_authorization_details | The `insufficient_authorization_details` error is intended for requests where the access token is otherwise valid, but the authorization details associated with the token do not satisfy the resource's requirements. |
 
 ## OAuth Metadata Attribute Registration
 
@@ -435,73 +439,68 @@ This section provides non-normative examples of how this specification may be us
     Content-Type: application/json
 
     {
-        "authorization_details_types_metadata": {
-            "payment_initiation": {
-                "version": "1.0",
-                "description": "Authorization to initiate a single payment from a payer account to a creditor account.",
-                "documentation_uri": "https://example.com/docs/payment-initiation",
-                "schema": {
-                    "$schema": "https://json-schema.org/draft/2020-12/schema",
-                    "title": "Payment Initiation Authorization Detail",
-                    "type": "object",
-                    "required": [
-                        "type",
-                        "instructed_amount",
-                        "creditor_account"
-                    ],
-                    "properties": {
-                        "type": {
-                            "const": "payment_initiation",
-                            "description": "Authorization details type identifier."
-                        },
-                        "actions": {
-                            "type": "array",
-                            "description": "Permitted actions for this authorization.",
-                            "items": {
-                                "type": "string",
-                                "enum": ["initiate"]
-                            },
-                            "minItems": 1,
-                            "uniqueItems": true
-                        },
-                        "instructed_amount": {
-                            "type": "object",
-                            "description": "Amount and currency of the payment to be initiated.",
-                            "required": ["currency", "amount"],
-                            "properties": {
-                                "currency": {
-                                    "type": "string",
-                                    "description": "ISO 4217 currency code.",
-                                    "pattern": "^[A-Z]{3}$"
-                                },
-                                "amount": {
-                                    "type": "string",
-                                    "description": "Decimal monetary amount represented as a string.",
-                                    "pattern": "^[0-9]+(\\.[0-9]{1,2})?$"
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "creditor_account": {
-                            "type": "object",
-                            "description": "Account to which the payment will be credited.",
-                            "required": ["iban"],
-                            "properties": {
-                                "iban": {
-                                    "type": "string",
-                                    "description": "International Bank Account Number (IBAN).",
-                                    "pattern": "^[A-Z0-9]{15,34}$"
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "remittance_information": {
+        "payment_initiation": {
+            "version": "1.0",
+            "description": "Authorization to initiate a single payment from a payer account to a creditor account.",
+            "documentation_uri": "https://example.com/docs/payment-initiation",
+            "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "title": "Payment Initiation Authorization Detail",
+                "type": "object",
+                "required": [
+                    "type",
+                    "instructed_amount",
+                    "creditor_account"
+                ],
+                "properties": {
+                    "type": {
+                        "const": "payment_initiation",
+                        "description": "Authorization details type identifier."
+                    },
+                    "actions": {
+                        "type": "array",
+                        "description": "Permitted actions for this authorization.",
+                        "items": {
                             "type": "string",
-                            "description": "Unstructured remittance information for the payment.",
-                            "maxLength": 140
+                            "enum": ["initiate"]
+                        },
+                        "minItems": 1,
+                        "uniqueItems": true
+                    },
+                    "instructed_amount": {
+                        "type": "object",
+                        "description": "Amount and currency of the payment to be initiated.",
+                        "required": ["currency", "amount"],
+                        "properties": {
+                            "currency": {
+                                "type": "string",
+                                "description": "ISO 4217 currency code.",
+                                "pattern": "^[A-Z]{3}$"
+                            },
+                            "amount": {
+                                "type": "string",
+                                "description": "Decimal monetary amount represented as a string.",
+                                "pattern": "^[0-9]+(\\.[0-9]{1,2})?$"
+                            }
                         }
                     },
-                    "additionalProperties": false
+                    "creditor_account": {
+                        "type": "object",
+                        "description": "Account to which the payment will be credited.",
+                        "required": ["iban"],
+                        "properties": {
+                            "iban": {
+                                "type": "string",
+                                "description": "International Bank Account Number (IBAN).",
+                                "pattern": "^[A-Z0-9]{15,34}$"
+                            }
+                        }
+                    },
+                    "remittance_information": {
+                        "type": "string",
+                        "description": "Unstructured remittance information for the payment.",
+                        "maxLength": 140
+                    }
                 }
             }
         }
@@ -513,109 +512,223 @@ This section provides non-normative examples of how this specification may be us
     Content-Type: application/json
 
     {
-        "authorization_details_types_metadata": {
-            "helseid_authorization": {
-                "version": "1.0",
-                "description": "Allows the OAuth client to pass organization information to HelseID.",
-                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd",
-                "schema": {
-                    "$schema": "http://json-schema.org/draft-07/schema#",
-                    "title": "Organization numbers for a multi-tenant client",
-                    "type": "object",
-                    "properties": {
-                        "type": {
-                            "type": "string",
-                            "const": "helseid_autorization"
-                        },
-                        "practitioner_role": {
-                            "type": "object",
-                            "properties": {
-                                "organization": {
-                                    "type": "object",
-                                    "properties": {
-                                        "identifier": {
-                                            "type": "object",
-                                            "properties": {
-                                                "system": {
-                                                    "type": "string"
-                                                },
-                                                "type": {
-                                                    "type": "string"
-                                                },
-                                                "value": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "system",
-                                                "type",
-                                                "value"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "identifier"
-                                    ]
-                                }
-                            },
-                            "required": [
-                                "organization"
-                            ]
-                        }
+
+        "helseid_authorization": {
+            "version": "1.0",
+            "description": "Allows the OAuth client to pass organization information to HelseID.",
+            "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/organisasjonsnumre_enmd",
+            "schema": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "title": "Organization numbers for a multi-tenant client",
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "const": "helseid_autorization"
                     },
-                    "required": [
-                        "type",
-                        "practitioner_role"
-                    ]
-                }
-            },
-            "helseid_trust_framework": {
-                "version": "1.0",
-                "description": "HelseID Trust Framework Information",
-                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/trust-framework",
-                "schema": {
-                    "$schema": "http://json-schema.org/draft-07/schema#",
-                    "description": "Complete Trust Framework structure",
-                    "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd",
-                    "type": "object",
-                    "properties": {
-                        "type": {
-                            "type": "string",
-                            "const": "nhn:tillitsrammeverk:parameters"
+                    "practitioner_role": {
+                        "type": "object",
+                        "properties": {
+                            "organization": {
+                                "type": "object",
+                                "properties": {
+                                    "identifier": {
+                                        "type": "object",
+                                        "properties": {
+                                            "system": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "system",
+                                            "type",
+                                            "value"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "identifier"
+                                ]
+                            }
                         },
-                        "practitioner": {
+                        "required": [
+                            "organization"
+                        ]
+                    }
+                },
+                "required": [
+                    "type",
+                    "practitioner_role"
+                ]
+            }
+        },
+        "helseid_trust_framework": {
+            "version": "1.0",
+            "description": "HelseID Trust Framework Information",
+            "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tekniske-mekanismer/trust-framework",
+            "schema": {
+                "$schema": "http://json-schema.org/draft-07/schema#",
+                "description": "Complete Trust Framework structure",
+                "documentation_uri": "https://utviklerportal.nhn.no/informasjonstjenester/helseid/bruksmoenstre-og-eksempelkode/bruk-av-helseid/docs/tillitsrammeverk/profil_for_tillitsrammeverkmd",
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "const": "nhn:tillitsrammeverk:parameters"
+                    },
+                    "practitioner": {
+                        "type": "object",
+                        "properties": {
+                            "authorization": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "system"
+                                ]
+                            },
+                            "legal_entity": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "system"
+                                ]
+                            },
+                            "point_of_care": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "system"
+                                ]
+                            },
+                            "department": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "system"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "authorization",
+                            "legal_entity",
+                            "point_of_care",
+                            "department"
+                        ]
+                    },
+                    "care_relationship": {
+                        "type": "object",
+                        "properties": {
+                            "healthcare_service": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "system"
+                                ]
+                            },
+                            "purpose_of_use": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "system"
+                                ]
+                            },
+                            "purpose_of_use_details": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "system": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "system"
+                                ]
+                            },
+                            "decision_ref": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "user_selected": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "user_selected"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "healthcare_service",
+                            "purpose_of_use",
+                            "purpose_of_use_details",
+                            "decision_ref"
+                        ]
+                    },
+                    "patients": {
+                        "type": "array",
+                        "items": {
                             "type": "object",
                             "properties": {
-                                "authorization": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "string"
-                                        },
-                                        "system": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "code",
-                                        "system"
-                                    ]
-                                },
-                                "legal_entity": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "system": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "id",
-                                        "system"
-                                    ]
-                                },
                                 "point_of_care": {
                                     "type": "object",
                                     "properties": {
@@ -648,153 +761,32 @@ This section provides non-normative examples of how this specification may be us
                                 }
                             },
                             "required": [
-                                "authorization",
-                                "legal_entity",
                                 "point_of_care",
                                 "department"
                             ]
-                        },
-                        "care_relationship": {
-                            "type": "object",
-                            "properties": {
-                                "healthcare_service": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "string"
-                                        },
-                                        "system": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "code",
-                                        "system"
-                                    ]
-                                },
-                                "purpose_of_use": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "string"
-                                        },
-                                        "system": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "code",
-                                        "system"
-                                    ]
-                                },
-                                "purpose_of_use_details": {
-                                    "type": "object",
-                                    "properties": {
-                                        "code": {
-                                            "type": "string"
-                                        },
-                                        "system": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "code",
-                                        "system"
-                                    ]
-                                },
-                                "decision_ref": {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "user_selected": {
-                                            "type": "boolean"
-                                        }
-                                    },
-                                    "required": [
-                                        "id",
-                                        "user_selected"
-                                    ]
-                                }
-                            },
-                            "required": [
-                                "healthcare_service",
-                                "purpose_of_use",
-                                "purpose_of_use_details",
-                                "decision_ref"
-                            ]
-                        },
-                        "patients": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "point_of_care": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string"
-                                            },
-                                            "system": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "id",
-                                            "system"
-                                        ]
-                                    },
-                                    "department": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string"
-                                            },
-                                            "system": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "id",
-                                            "system"
-                                        ]
-                                    }
-                                },
-                                "required": [
-                                    "point_of_care",
-                                    "department"
-                                ]
-                            }
                         }
-                    },
-                    "required": [
-                        "type",
-                        "practitioner",
-                        "care_relationship",
-                        "patients"
-                    ]
-                }
+                    }
+                },
+                "required": [
+                    "type",
+                    "practitioner",
+                    "care_relationship",
+                    "patients"
+                ]
             }
         }
     }
 
-## Protected Resource Metadata Examples
+## Resource Server authorization_details_types_required Response Examples
 
-### Example Protected Resource Metadata response of payments resource
+### Example Resource server authorization_details_types_required response from payments resource
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 403 Forbidden
+    WWW-Authenticate: Bearer error="insufficient_authorization_details"
     Content-Type: application/json
+    Cache-Control: no-store
 
     {
-        "resource": "https://resource.example.com/payments",
-        "authorization_servers":
-            ["https://as1.example.com",
-            "https://as2.example.net"],
-        "bearer_methods_supported": ["header"],
-        "scopes_supported": ["payment"],
-        "resource_documentation":
-            "https://resource.example.com/docs/payments.html",
         "authorization_details_types_required": {
             "oneOf": ["payment_initiation", "payment_approval",
                       "beneficiary_designation"]
@@ -802,24 +794,19 @@ This section provides non-normative examples of how this specification may be us
     }
 
 
-### Example Protected Resource Metadata response from the Norwegian Health Sector (HelseID)
+### Example Resource server authorization_details_types_required response from the Norwegian Health Sector (HelseID)
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 403 Forbidden
+    WWW-Authenticate: Bearer error="insufficient_authorization_details"
     Content-Type: application/json
+    Cache-Control: no-store
 
     {
-        "resource": "https://health-api.nhn.no/health-information",
-        "authorization_servers": ["https://helseid-sts.nhn.no"],
-        "bearer_methods_supported": ["header"],
-        "scopes_supported":
-            ["nhn:health-api/read", "nhn:health-api/write"],
-        "resource_documentation": "https://utviklerportal.nhn.no",
         "authorization_details_types_required": {
             "allOf": ["helseid_authorization",
                       "nhn:tillitsrammeverk:parameters"]
         }
     }
-
 
 ## Payment initiation with RAR error signaling
 
