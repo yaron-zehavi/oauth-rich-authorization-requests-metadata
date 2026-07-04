@@ -219,8 +219,6 @@ The following authorization server metadata {{RFC8414}} parameter is introduced 
 "authorization_details_types_metadata_endpoint":
 :    OPTIONAL.  The URL of the Authorization Details Types Metadata endpoint.
 
-## Authorization Details Types Metadata Endpoint Response
-
 The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with Content-Type `application/json` and a JSON object whose members are authorization details type identifiers.
 
 Each member value is an object describing a single authorization details type.
