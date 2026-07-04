@@ -84,7 +84,6 @@ Table of Contents
    3.  Protocol Overview
    4.  Remediation of failures due to insufficient authorization
    5.  Authorization Details Types Metadata Endpoint
-     5.1.  Authorization Details Types Metadata Endpoint Response
    6.  RAR objects in JWT access tokens
    7.  Processing Rules
      7.1.  Client Processing Rules
@@ -346,8 +345,6 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
 
    "authorization_details_types_metadata_endpoint":  OPTIONAL.  The URL
       of the Authorization Details Types Metadata endpoint.
-
-5.1.  Authorization Details Types Metadata Endpoint Response
 
    The Authorization Details Types Metadata endpoint is called with HTTP
    GET and responds with Content-Type application/json and a JSON object

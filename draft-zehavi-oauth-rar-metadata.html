@@ -1167,11 +1167,6 @@ It also standardizes failure signaling and interoperable remediation when insuff
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-authorization-details-types" class="internal xref">Authorization Details Types Metadata Endpoint</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-authorization-details-types-" class="internal xref">Authorization Details Types Metadata Endpoint Response</a></p>
-</li>
-            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-rar-objects-in-jwt-access-t" class="internal xref">RAR objects in JWT access tokens</a></p>
@@ -1489,14 +1484,9 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
 </dd>
       <dd class="break"></dd>
 </dl>
-<div id="authorization-details-types-metadata-endpoint-response">
-<section id="section-5.1">
-        <h3 id="name-authorization-details-types-">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-authorization-details-types-" class="section-name selfRef">Authorization Details Types Metadata Endpoint Response</a>
-        </h3>
-<p id="section-5.1-1">The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with Content-Type <code>application/json</code> and a JSON object whose members are authorization details type identifiers.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">Each member value is an object describing a single authorization details type.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.1-3">
+<p id="section-5-3">The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with Content-Type <code>application/json</code> and a JSON object whose members are authorization details type identifiers.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">Each member value is an object describing a single authorization details type.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-5">
 <pre>
 {
   "type": {
@@ -1508,44 +1498,42 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
     "examples": [ ]
   }
 }
-</pre><a href="#section-5.1-3" class="pilcrow">¶</a>
+</pre><a href="#section-5-5" class="pilcrow">¶</a>
 </div>
-<p id="section-5.1-4">Attribute definition:<a href="#section-5.1-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-5.1-5">
-          <dt id="section-5.1-5.1">"version":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-5.2">
-            <p id="section-5.1-5.2.1"><span class="bcp14">OPTIONAL</span>. String identifying the version of the authorization details type definition. The value is informational and does not imply semantic version negotiation.<a href="#section-5.1-5.2.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-5.3">"description":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-5.4">
-            <p id="section-5.1-5.4.1"><span class="bcp14">OPTIONAL</span>. String containing a description of the authorization details type. Clients <span class="bcp14">MUST NOT</span> rely on this value for authorization or validation decisions.<a href="#section-5.1-5.4.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-5.5">"documentation_uri":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-5.6">
-            <p id="section-5.1-5.6.1"><span class="bcp14">OPTIONAL</span>. URI referencing external documentation describing the authorization details type.<a href="#section-5.1-5.6.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-5.7">"schema":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-5.8">
-            <p id="section-5.1-5.8.1">The <code>schema</code> attribute contains a JSON Schema document <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> that describes a single authorization details object. The schema <span class="bcp14">MUST</span> validate exactly one authorization details object and <span class="bcp14">MUST</span> restrict the <code>type</code> attribute to the corresponding authorization details type identifier. This attribute is <span class="bcp14">REQUIRED</span> unless <code>schema_uri</code> is specified. If present, <code>schema_uri</code> <span class="bcp14">MUST NOT</span> be included.<a href="#section-5.1-5.8.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-5.9">"schema_uri":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-5.10">
-            <p id="section-5.1-5.10.1">The <code>schema_uri</code> attribute is an absolute URI, as defined by RFC 3986 <span>[<a href="#RFC3986" class="cite xref">RFC3986</a>]</span>, referencing a JSON Schema document describing a single authorization details object. The referenced schema <span class="bcp14">MUST</span> satisfy the same requirements as the <code>schema</code> attribute. This attribute is <span class="bcp14">REQUIRED</span> unless <code>schema</code> is specified. If this attribute is present, <code>schema</code> <span class="bcp14">MUST NOT</span> be present.<a href="#section-5.1-5.10.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-5.1-5.11">"examples":</dt>
-          <dd style="margin-left: 1.5em" id="section-5.1-5.12">
-            <p id="section-5.1-5.12.1"><span class="bcp14">OPTIONAL</span>. An array of example authorization details objects. Examples are non-normative.<a href="#section-5.1-5.12.1" class="pilcrow">¶</a></p>
+<p id="section-5-6">Attribute definition:<a href="#section-5-6" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-5-7">
+        <dt id="section-5-7.1">"version":</dt>
+        <dd style="margin-left: 1.5em" id="section-5-7.2">
+          <p id="section-5-7.2.1"><span class="bcp14">OPTIONAL</span>. String identifying the version of the authorization details type definition. The value is informational and does not imply semantic version negotiation.<a href="#section-5-7.2.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
+<dt id="section-5-7.3">"description":</dt>
+        <dd style="margin-left: 1.5em" id="section-5-7.4">
+          <p id="section-5-7.4.1"><span class="bcp14">OPTIONAL</span>. String containing a description of the authorization details type. Clients <span class="bcp14">MUST NOT</span> rely on this value for authorization or validation decisions.<a href="#section-5-7.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-5-7.5">"documentation_uri":</dt>
+        <dd style="margin-left: 1.5em" id="section-5-7.6">
+          <p id="section-5-7.6.1"><span class="bcp14">OPTIONAL</span>. URI referencing external documentation describing the authorization details type.<a href="#section-5-7.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-5-7.7">"schema":</dt>
+        <dd style="margin-left: 1.5em" id="section-5-7.8">
+          <p id="section-5-7.8.1">The <code>schema</code> attribute contains a JSON Schema document <span>[<a href="#JSON.Schema" class="cite xref">JSON.Schema</a>]</span> that describes a single authorization details object. The schema <span class="bcp14">MUST</span> validate exactly one authorization details object and <span class="bcp14">MUST</span> restrict the <code>type</code> attribute to the corresponding authorization details type identifier. This attribute is <span class="bcp14">REQUIRED</span> unless <code>schema_uri</code> is specified. If present, <code>schema_uri</code> <span class="bcp14">MUST NOT</span> be included.<a href="#section-5-7.8.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-5-7.9">"schema_uri":</dt>
+        <dd style="margin-left: 1.5em" id="section-5-7.10">
+          <p id="section-5-7.10.1">The <code>schema_uri</code> attribute is an absolute URI, as defined by RFC 3986 <span>[<a href="#RFC3986" class="cite xref">RFC3986</a>]</span>, referencing a JSON Schema document describing a single authorization details object. The referenced schema <span class="bcp14">MUST</span> satisfy the same requirements as the <code>schema</code> attribute. This attribute is <span class="bcp14">REQUIRED</span> unless <code>schema</code> is specified. If this attribute is present, <code>schema</code> <span class="bcp14">MUST NOT</span> be present.<a href="#section-5-7.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-5-7.11">"examples":</dt>
+        <dd style="margin-left: 1.5em" id="section-5-7.12">
+          <p id="section-5-7.12.1"><span class="bcp14">OPTIONAL</span>. An array of example authorization details objects. Examples are non-normative.<a href="#section-5-7.12.1" class="pilcrow">¶</a></p>
+</dd>
+      <dd class="break"></dd>
 </dl>
-<p id="section-5.1-6">See Examples <a href="#metadata-examples" class="auto internal xref">Appendix A.1</a> for non-normative response example.<a href="#section-5.1-6" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="section-5-8">See Examples <a href="#metadata-examples" class="auto internal xref">Appendix A.1</a> for non-normative response example.<a href="#section-5-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rar-objects-in-jwt-access-tokens">
