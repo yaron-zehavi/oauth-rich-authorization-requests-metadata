@@ -89,8 +89,7 @@ Table of Contents
      7.1.  Client Processing Rules
      7.2.  Resource Server Processing Rules
    8.  Security Considerations
-     8.1.  Cacheability and Intermediaries
-     8.2.  Confidentiality of resource server provided
+     8.1.  Confidentiality of resource server provided
            authorization_details
    9.  IANA Considerations
      9.1.  OAuth 2.0 WWW-Authenticate Error Code Registry
@@ -455,18 +454,12 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
 
 8.  Security Considerations
 
-8.1.  Cacheability and Intermediaries
+8.1.  Confidentiality of resource server provided authorization_details
 
-   HTTP 401 responses with response bodies may be cached or replayed in
-   unexpected contexts.  Resource servers SHOULD mitigate by including
-   the Cache-Control: no-store response header.
-
-8.2.  Confidentiality of resource server provided authorization_details
-
-   Resource server providing actionable authorization_details SHOULD NOT
-   include sensitive data in those objects.  This is consistent with RAR
-   [RFC9396] authorization_details OAuth request parameter, representing
-   *request* semantics.
+   Resource servers when providing actionable authorization_details
+   SHOULD NOT include sensitive data in those objects.  This is
+   consistent with RAR [RFC9396] authorization_details OAuth request
+   parameter, representing *request* semantics.
 
    Confidentiality-preserving authorization_details types SHOULD NOT
    include sensitive data.  Instead, the end-user SHOULD provide such
@@ -916,6 +909,24 @@ Content-Type: application/json
 }
 
 Appendix B.  Document History
+
+   -05
+
+   *  Removed required authorization details types.
+
+   *  Changed from HTTP 403 to 401.
+
+   *  Moved resource servers response from body to WWW-Authenticate
+      header.
+
+   *  Renamed authorization_hint to authorization_reference and
+      clarified its usage.
+
+   *  Clarified authorization server broader considerations on omitting
+      RAR from JWT access tokens.
+
+   *  Clarified document's interoperability with any OAuth rfc and any
+      grant that supports RAR.
 
    -04
 
