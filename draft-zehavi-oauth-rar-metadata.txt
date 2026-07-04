@@ -230,20 +230,14 @@ Table of Contents
 
    This document defines:
 
-   *  The bearer authentication error code insufficient_authorization
-      for use in the WWW-Authenticate header.  Resource servers SHOULD
-      return insufficient_authorization to signal that access is denied
-      due to missing or insufficient authorization details.  The
-      insufficient_authorization error is intended whenever the
-      authorization details associated with the token do not satisfy the
-      resource's requirements.  The insufficient_authorization error
-      MUST NOT be used when the access token is missing, expired,
-      malformed, or otherwise invalid.  Existing Bearer authentication
-      error codes are used for those cases.
+   *  The authentication error code insufficient_authorization for use
+      in the WWW-Authenticate header.  Resource servers SHOULD return
+      insufficient_authorization when access is denied due to missing or
+      insufficient authorization details.
 
    *  The authorization_remediation error parameter, which contains a
-      base64url-encoded JSON object used to guide the client on
-      remediating the error.  Its attributes are:
+      base64url-encoded JSON object guiding the client on remediating
+      the error.  Its attributes are:
 
       -  authorization_details: REQUIRED.  Array of actionable
          authorization details objects, matching the format specified in
