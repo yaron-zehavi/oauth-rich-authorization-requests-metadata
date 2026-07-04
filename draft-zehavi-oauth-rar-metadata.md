@@ -53,8 +53,7 @@ OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} standardizes the exchang
 
 In addition, no interoperable guidance is offered to clients, to remediate failures by resource servers due to insufficient authorization details.
 
-This document addresses this interoperability challenge, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements.
-It also standardizes failure signaling and interoperable remediation when insufficient authorization details are the cause of failure.
+This document addresses this interoperability challenge, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements, as well as standardizes failure signaling including interoperable remediation when insufficient authorization details are the cause of failure.
 
 --- middle
 
@@ -271,6 +270,7 @@ It is RECOMMENDED that when an authorization server issues JWT access tokens, it
 * When receiving an `insufficient_authorization` error, if the `authorization_remediation` parameter contains an `authorization_reference` attribute that matches a valid token in the client's possession, the client MAY retry the failing request using the matching token.
 * If the `authorization_remediation` parameter contains an `authorization_details` attribute, the client MAY include it in a subsequent OAuth request to obtain a token for retrying the failing endpoint.
 * If the authorization server used so far by the client does not support the required authorization details types, the client MAY use Protected Resource Metadata {{RFC9728}} to discover additional `authorization_servers` supported by the resource, and attempt remediation through them.
+* Clients MAY ignore authorization_reference if they do not support token reuse or caching.
 
 ## Resource Server Processing Rules
 
