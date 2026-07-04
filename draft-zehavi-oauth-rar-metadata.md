@@ -135,7 +135,7 @@ Figure: Client remediates using actionable authorization details objects provide
 - (H) The client makes an API request with the (RAR) access token.
 - (I) Resource server validates access token and returns successful response.
 
-# Resource Server guided remediation of failures due to insufficient authorization_details
+# Remediation of failures due to insufficient authorization
 
 This document defines:
 
