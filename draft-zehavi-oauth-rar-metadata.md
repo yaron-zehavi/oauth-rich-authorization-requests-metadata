@@ -1,6 +1,6 @@
 ---
-title: "OAuth 2.0 RAR Metadata and Error Signaling"
-abbrev: "OAuth 2.0 RAR Metadata and Error Signaling"
+title: "OAuth 2.0 RAR Metadata and Error Remediation"
+abbrev: "OAuth 2.0 RAR Metadata and Error Remediation"
 category: std
 
 docname: draft-zehavi-oauth-rar-metadata-latest
@@ -51,8 +51,10 @@ normative:
 
 OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} standardizes the exchange and processing of authorization details but does not define metadata for describing authorization details types.
 
-This document addresses a practical interoperability challenge regarding authorization details type metadata, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements.
-It also standardizes error signaling for cases where insufficient authorization details are provided, and offers structured remediation mechanisms.
+In addition, currently no interoperable guidance is offered to clients, guiding the remediation of failures returned by resource servers, due to insufficient authorization details.
+
+This document addresses this practical interoperability challenge regarding authorization details type metadata, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements.
+It also standardizes error signaling and interoperable remediation when insufficient authorization details are the cause of failures.
 
 --- middle
 
@@ -65,14 +67,14 @@ However, RAR {{RFC9396}} does not specify how clients discover metadata describi
 This document defines:
 
 * A new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing authorization details type metadata, including documentation and JSON Schema definitions {{JSON.Schema}}.
-* A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization_details` as the cause of the error, as well as a RECOMMENDED response body specifying required authorization details types to satisfy the resource's requirements.
-* An OPTIONAL response body attribute that MAY accompany the insufficient_authorization_details error, providing an informative and actionable authorization details object. This object can be used directly in a follow-up OAuth request.
+* A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization` as the cause of the error.
+* A new OAuth 2.0 WWW-Authenticate response parameter, `authorization_remediation`, which contains actionable authorization details objects, to be used directly for remediation in a follow-up OAuth request.
 * RECOMMENDED handling of large RAR {{RFC9396}} authorization details objects when issuing JWT access tokens, to avoid failures due to token sizes exceeding header size restrictions.
 
-Providing actionable authorization details objects in the resource server's error response enables:
+Providing clients with actionable authorization details objects enables:
 
-* Simplification for clients who can directly remediate without learning to construct valid authorization details objects.
-* Support for ephemeral, interaction-specific attributes from the resource server, such as a risk profile or an internal interaction identifier, guiding authorization servers on required authentication strength and consent flows.
+* Interoperability benefit as clients can simply and directly proceed to remediate, without first learning how to construct valid authorization details objects.
+* Support for ephemeral, interaction-specific attributes included by the resource server, such as a risk profile or an internal interaction identifier, guiding authorization servers on the required authentication strength and consent flows.
 
 # Conventions and Definitions
 
@@ -80,74 +82,7 @@ Providing actionable authorization details objects in the resource server's erro
 
 # Protocol Overview
 
-There are two main proposed flows:
-
-* Client remediates using **metadata of required authorization details types**.
-* Client remediates using **actionable authorization details objects** provided by resource server.
-
-## Client remediates using metadata of required authorization details types
-
-~~~ ascii-art
-                                                +---------------------+
-             +----------+ (B) API Request       |                     |
-             |          |---------------------->|      Resource       |
-(A) User +---|          |                       |       Server        |
-   Starts|   |          |<----------------------|                     |
-   Flow  +-->|          | (C) 403 Forbidden     +---------------------+
-             |          |     WWW-Authenticate: Bearer
-             |          |     error="insufficient_authorization_details"
-             |          |        +
-             |          |     HTTP body specifies
-             |          |     required authorization_details
-             |          |        :
-             |          |                       +---------------------+
-             |          |        RAR Types      |    Authorization    |
-             |          | (D) Metadata Request  |       Server        |
-             |          |---------------------->|+-------------------+|
-             |          |                       ||     RAR Types     ||
-             |          |<----------------------|| Metadata Endpoint ||
-             |          | (E) Metadata Response |+-------------------+|
-             |          |        :              |                     |
-             |          | (F) Construct RAR     |                     |
-             |          |     Using Metadata    |                     |
-             |          |        :              |                     |
-             |          | (G) Authorization     |                     |
-             |          |     Request + RAR     |                     |
-             |          |---------------------->|+-------------------+|
-             |          |                       ||   Authorization   ||
-             |          |<----------------------||     Endpoint      ||
-             |          | (H) Authorization Code||                   ||
-             |          |        :              |+-------------------+|
-             |          |        :              |                     |
-             |          | (I) Token Request     |+-------------------+|
-             |          |---------------------->||                   ||
-             |          |                       ||   Token Endpoint  ||
-             |          |<----------------------||                   ||
-             |          | (J) Access Token      |+-------------------+|
-             |          |        :              +---------------------+
-             |          |        :
-             |          | (K) API Call with
-             |          |     Access Token      +---------------------+
-             |          |---------------------->|                     |
-             |          |                       |   Resource Server   |
-             |          |<----------------------|                     |
-             |          | (L) 200 OK + Resource +---------------------+
-             |          |
-             +----------+
-~~~
-Figure: Client remediates using metadata of required authorization details types
-
-- (A) The user starts the flow.
-- (B) The client calls an API with an access token.
-- (C) Resource server returns HTTP 403 Forbidden, including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body specifies required authorization details types.
-- (D-E) The client consumes authorization details types metadata from authorization server's `authorization_details_types_metadata_endpoint`.
-- (F-G) The client constructs valid authorization details objects and makes an authorization request using RAR {{RFC9396}}.
-- (H) Authorization server returns authorization code.
-- (I-J) The client exchanges authorization code for access token.
-- (K) The client makes an API request with the (RAR) access token.
-- (L) Resource server validates access token and returns successful response.
-
-## Client remediates using actionable authorization details objects provided by resource server
+Client remediates using actionable authorization details objects provided by resource server:
 
 ~~~ ascii-art
                                                 +--------------------+
@@ -155,11 +90,12 @@ Figure: Client remediates using metadata of required authorization details types
              |          |---------------------->|      Resource      |
 (A) User +---|          |                       |       Server       |
    Starts|   |          |<----------------------|                    |
-   Flow  +-->|  Client  | (C) 403 Forbidden     +--------------------+
+   Flow  +-->|  Client  | (C) 401 Unauthorized     +--------------------+
              |          |     WWW-Authenticate: Bearer
-             |          |     error="insufficient_authorization_details"
-             |          |        +
-             |          |     HTTP body provides authorization_details
+             |          |     error="insufficient_authorization",
+             |          |     error_description=[human readable message],
+             |          |     authorization_remediation=[required
+             |          |     authorization_details]
              |          |        :
              |          |        :              +--------------------+
              |          |        :              |   Authorization    |
@@ -192,8 +128,8 @@ Figure: Client remediates using actionable authorization details objects provide
 
 - (A) The user starts the flow.
 - (B) The client calls an API with an access token.
-- (C) Resource server returns HTTP 403 Forbidden, including a WWW-Authenticate header with error code `insufficient_authorization_details` and in the response body includes the **required authorization details objects**.
-- (D) The client uses the obtained authorization details objects in a new OAuth + RAR {{RFC9396}} request.
+- (C) Resource server returns HTTP 401 with a WWW-Authenticate header with error code `insufficient_authorization` and in `authorization_remediation` the **required authorization details objects**.
+- (D) The client uses the provided authorization details objects in a new OAuth + RAR {{RFC9396}} request.
 - (E) Authorization server returns authorization code.
 - (F-G) The client exchanges authorization code for access token.
 - (H) The client makes an API request with the (RAR) access token.
@@ -244,169 +180,102 @@ Attribute definition:
 : OPTIONAL. An array of example authorization details objects. Examples are non-normative.
 
 See Examples {{metadata-examples}} for non-normative response example.
-
+/
 # Resource Server Error Signaling of insufficient authorization_details
 
-This document defines the Bearer authentication error code `insufficient_authorization_details` for use in the `WWW-Authenticate` header field as defined by {{RFC6750}}.
-Resource servers SHOULD return `insufficient_authorization_details` to signal that access is denied due to missing or insufficient authorization details.
-The `insufficient_authorization_details` error is intended in cases where the access token is otherwise valid, but the authorization details associated with the token do not satisfy the resource's requirements.
-The `insufficient_authorization_details` error MUST NOT be used when the access token is missing, expired, malformed, or otherwise invalid. Existing Bearer authentication error codes are used for those cases.
+This document defines:
 
-Example HTTP response:
+* The bearer authentication error code `insufficient_authorization` for use in the `WWW-Authenticate` header field as defined by {{RFC6750}}. Resource servers SHOULD return `insufficient_authorization` to signal that access is denied due to missing or insufficient authorization details. The `insufficient_authorization` error is intended whenever the authorization details associated with the token do not satisfy the resource's requirements. The `insufficient_authorization` error MUST NOT be used when the access token is missing, expired, malformed, or otherwise invalid. Existing Bearer authentication error codes are used for those cases.
+* The `authorization_remediation` error parameter, which contains a base64url-encoded JSON object used to guide the client on remediating the error. Its attributes are:
 
-    HTTP/1.1 403 Forbidden
-    WWW-Authenticate: Bearer error="insufficient_authorization_details"
+   * `authorization_details`: REQUIRED. Array of actionable authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter, whose contents satisfy the resource's requirements and remediates the failure. The provided `authorization_details` are intended to be interoperable with all OAuth specifications and usable in any grant flow supporting RAR.
+   * `authorization_reference`: RECOMMENDED. An opaque string generated by the resource server that enables the client to select an existing access token associated with equivalent authorization details without requiring the client to understand the semantics of the authorization details object. Clients MUST treat this value as opaque and MUST NOT attempt to interpret or derive meaning from it. The resource server SHOULD generate the authorization_reference by canonicalizing and hashing the authorization_details object or an equivalent stable representation, so that the same or semantically equivalent authorization details produce the same authorization_reference value. This stability allows clients to reliably match tokens to authorization requirements and avoid requesting new tokens when a matching token is already in their possession. The value MUST NOT reveal any sensitive or private information. The resource server SHALL NOT include this attribute when tokens issued for the provided authorization_details are intended for single-use only.
 
-## RECOMMENDED authorization_details_types_required in response body
+The `error_description` parameter MAY be included to provide a human-readable description.
 
-It is RECOMMENDED that resource servers return, alongside the `insufficient_authorization_details` error, an HTTP body of Content-Type `application/json` containing the new attribute: `authorization_details_types_required`. This attribute specifies the required authorization details **types** satisfying resource's RAR {{RFC9396}} requirements.
+Example HTTP response from a direct debit resource:
 
-"authorization_details_types_required":
-:    RECOMMENDED.  A JSON object that conforms to the syntax described in {{syntax}} for a *required types expression*.
+    HTTP/1.1 401 Unauthorized
+    WWW-Authenticate: Bearer error="insufficient_authorization",
+    error_description="Additional authorization is required",
+    authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaXJlY3RfZGViaXRfbWFuZG...
 
-Note: It is RECOMMENDED that *authorization_details_types_required* specifies ALL acceptable authorization details types combinations, from ALL supported authorization servers.
-
-Example resource server response with RECOMMENDED `authorization_details_types_required`:
-
-    HTTP/1.1 403 Forbidden
-    WWW-Authenticate: Bearer error="insufficient_authorization_details"
-    Content-Type: application/json
+The decoded `authorization_remediation` contents in this example are:
 
     {
-        "authorization_details_types_required": {
-            "oneOf": ["payment_initiation", "payment_approval",
-                      "beneficiary_designation"]
-        }
+        "authorization_details": [{
+                "type": "direct_debit_mandate",
+                "DebtorAccount": {
+                    "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+                    "Identification": "08080021325698",
+                    "Name": "JohnDoe"
+                },
+                "CreditorAgent": {
+                    "SchemeName": "UK.OBIE.BICFI",
+                    "Identification": "NWBKGB22"
+                },
+                "CreditorAccount": {
+                    "SchemeName": "UK.OBIE.SortCodeAccountNumber",
+                    "Identification": "08080021325698",
+                    "Name": "ACMECorp"
+                },
+                "MandateStatus": "Active",
+                "CreationDateTime": "2026-06-01T09:00:00+00:00"
+            }
+        ],
+        "authorization_reference": "Yb7q3AC5d"
     }
 
+Example HTTP response from a payment initiation resource:
 
-### Required types expression syntax {#syntax}
+    HTTP/1.1 401 Unauthorized
+    WWW-Authenticate: Bearer error="insufficient_authorization",
+    error_description="Additional authorization is required",
+    authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaXJlY3RfZGViaXRfbWFuZG...
 
-The following JSON syntax defines a **required types expression** that describes permitted combinations of required *authorization_details* types. This expression allows selection operators (oneOf, allOf) and boolean composition (and, or) to be combined in a predictable manner.
-
-A **required types expression** is a JSON object that MUST contain **exactly** one of the following attributes:
-
-* and
-* or
-* oneOf
-* allOf
-
-Attribute definition:
-
-"and":
-:    OPTIONAL.  A non-empty JSON array of *required types expressions*. When **and** is specified, the expression is satisfied if **all** contained expressions are satisfied.
-
-"or":
-:    OPTIONAL.  A non-empty JSON array of *required types expressions*. When **or** is specified, the expression is satisfied if **at least one** contained expression is satisfied.
-
-"oneOf":
-:    OPTIONAL.  A non-empty JSON array of strings identifying `authorization_details` types. When **oneOf** is specified, the expression is satisfied if **exactly one** of the listed types is present.
-
-"allOf":
-:    OPTIONAL.  A non-empty JSON array of strings identifying `authorization_details` types. When **allOf** is specified, the expression is satisfied if **all** of the listed types are present.
-
-### Required types expression examples
-
-#### Example expression using "and" operator
-
-Specifies that the selection MUST include `a` and `b`, **and** one of `c` **or** `d`.
+The decoded `authorization_remediation` contents in this example are:
 
     {
-      "and": [
-        { "allOf": ["a", "b"] },
-        { "oneOf": ["c", "d"] }
-      ]
+        "authorization_details": [{
+               "type": "payment_initiation",
+               "instructed_amount": {
+                  "currency": "EUR",
+                  "amount": "100.00"
+               },
+               "creditor_account": {
+                  "iban": "DE02120300000000202051"
+               }
+           }
+       ]
     }
 
-#### Example expression using "or" operator
+# RAR objects in JWT access tokens
 
-Specifies that the selection MUST include **either** `c` **and** `d`, **or** one of `a` or `b`.
+Pursuant with RAR {{RFC9396}} section 9, authorization servers MUST provide approved RAR objects to resource servers for enforcement. The authorization server MAY add the `authorization_details` attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.
 
-    {
-      "or": [
-        { "allOf": ["c", "d"] },
-        { "oneOf": ["a", "b"] }
-      ]
-    }
+There may however be cases, where due to various considerations such as token size or information privacy, including approved RAR objects in JWT access tokens would be advised against.
 
-## OPTIONAL actionable authorization_details in response body
-
-The resource server MAY include, in addition to or instead of the `authorization_details_types_required` attribute, actionable authorization details objects capable of satisfying the resource's requirements.
-
-Note:
-
-* Resource servers SHOULD provide `authorization_details` objects intended to be submitted to the authorization server that issued the access token used for the current (failing) request. This simplifies client and end-user interaction, by continuing with the same authorization server previously used.
-
-HTTP response body definition:
-
-"authorization_details":
-: OPTIONAL. Array of authorization details objects, matching the format specified in RAR {{RFC9396}} for the `authorization_details` request parameter.
-
-"authorization_hint":
-: RECOMMENDED. An opaque string generated by the resource server that enables the client to select an existing access token associated with equivalent authorization details without understanding the semantics of the authorization details object. Clients MUST treat this value as opaque. The value SHOULD be stable only within the context of the same resource server, client, subject, and authorization server. The value MUST NOT reveal sensitive information. The resource server SHALL NOT return this attribute when tokens resulting from the provided `authorization_details` are single-use only.
-
-Clients MAY use the provided `authorization_details` in a subsequent OAuth request to obtain an access token satisfying the resource's requirements.
-
-Example resource server response with OPTIONAL `authorization_details`:
-
-    HTTP/1.1 403 Forbidden
-    WWW-Authenticate: Bearer error="insufficient_authorization_details"
-    Content-Type: application/json
-    Cache-Control: no-store
-
-    {
-      "authorization_details_types_required": {
-        "oneOf": ["payment_initiation"]
-      },
-      "authorization_details": [{
-        "type": "payment_initiation",
-        "instructed_amount": {
-          "currency": "EUR",
-          "amount": "100.00"
-        },
-        "creditor_account": {
-          "iban": "DE02120300000000202051"
-        }
-      }],
-      "authorization_hint": "Yb7q3AC5d"
-    }
-
-# Handling large RAR objects when issuing access tokens
-
-RAR {{RFC9396}} section 9 instructs that authorization servers MUST provide approved RAR objects to resource servers for enforcement. The authorization server MAY add the `authorization_details` attribute to access tokens in JSON Web Token (JWT) format or to token introspection responses.
-
-Including large RAR objects in JWT access tokens may cause interoperability loss due to token sizes exceeding header size restrictions.
-
-Authorization servers SHOULD support a configurable **maximum approved RAR objects size threshold**. The size calculation SHOULD be based on the UTF-8 encoded JSON serialization
-of the approved `authorization_details` value before JWT signing or encryption. If the size exceeds this threshold, JWT access tokens SHOULD NOT include the `authorization_details` attribute; instead, the authorization server MUST ensure that the resource server can obtain the approved authorization details by another
-means, such as token introspection {{RFC7662}}.
+It is RECOMMENDED that when an authorization server issues JWT access tokens, it should consider the size, sensitivity, and privacy implications of including the authorization_details attribute. Where appropriate, the authorization server SHOULD omit this attribute from JWT tokens and instead provide the approved RAR objects to resource servers via the token introspection endpoint. This endpoint SHOULD use appropriate client authentication methods to prevent unauthorized access, in case of token leakage.
 
 # Processing Rules
 
 ## Client Processing Rules
 
-* When receiving an `insufficient_authorization_details` error, if the response body contains an `authorization_hint` attribute that matches a valid token in the client's possession, the client SHOULD retry the failing request using the matching token.
-* If the response body contains an `authorization_details` attribute, the client MAY include it in a subsequent OAuth request to obtain a token, which it MAY then use to retry the failing endpoint.
-* Otherwise, the client SHOULD use the `authorization_details_types_required` attribute, if provided in the response body:
-    * Use the response body to understand which authorization details types satisfy the resource's requirements.
-    * If the authorization server metadata contains `authorization_details_types_supported`, the client MAY use it to determine whether the authorization server supports one or more types referenced by `authorization_details_types_required`.
-    * Fetch authorization server's `authorization_details_types_metadata_endpoint` to obtain authorization details types metadata and schemas.
-    * Use the embedded `schema` value or retrieve the JSON Schema document from `schema_uri`.
-* Construct authorization details conforming to the schema and include them in a subsequent OAuth request to obtain an access token with which the client MAY retry calling the failing endpoint.
+* When receiving an `insufficient_authorization` error, if the `authorization_remediation` parameter contains an `authorization_reference` attribute that matches a valid token in the client's possession, the client MAY retry the failing request using the matching token.
+* If the `authorization_remediation` parameter contains an `authorization_details` attribute, the client MAY include it in a subsequent OAuth request to obtain a token for retrying the failing endpoint.
+* If the authorization server used so far by the client does not support the required authorization details types, the client MAY use Protected Resource Metadata {{RFC9728}} to discover additional `authorization_servers` supported by the resource, and attempt remediation through them.
 
 ## Resource Server Processing Rules
 
-* Verify access tokens against required authorization details.
-* When a resource server receives a JWT access token that does not contain an `authorization_details` claim, and authorization details are required for the requested resource, the resource server SHOULD attempt to obtain the authorization details using token introspection {{RFC7662}}, if introspection is available.
-* If authorization details are missing or insufficient, the resource server SHALL return HTTP 403 with WWW-Authenticate: Bearer error="insufficient_authorization_details".
-* It is RECOMMENDED to also provide an HTTP body with the `authorization_details_types_required` attribute, specifying the required authorization details types to satisfy the resource's requirement. This attribute applies to ALL supported authorization servers.
-* Resource server MAY also provide in the HTTP body, OPTIONAL actionable `authorization_details` objects, intended to be submitted to the authorization server that issued the current access token, which MAY be used directly for remediation in a subsequent OAuth request.
+* Verify access token validity.
+* Verify required authorization details are provided, by JWT token contents or through token introspection {{RFC7662}}.
+* If authorization details are missing or insufficient, return HTTP 401 with WWW-Authenticate: Bearer error="insufficient_authorization" including the `authorization_remediation` parameter which provides actionable `authorization_details` objects constructed from the failing request's input.
 
 # Security Considerations {#security-considerations}
 
 ## Cacheability and Intermediaries
 
-HTTP 403 responses with response bodies may be cached or replayed in unexpected contexts.
+HTTP 401 responses with response bodies may be cached or replayed in unexpected contexts.
 Resource servers SHOULD mitigate by including the `Cache-Control: no-store` response header.
 
 ## Confidentiality of resource server provided authorization_details
@@ -423,7 +292,7 @@ Alternatively, `authorization_details` MAY refer to specific end-user resources 
 
 | Error Code | Error Usage Location | Change Controller | Specification Document |
 |------------|----------------------|-------------------|------------------------|
-| insufficient_authorization_details | Resource access error response | IETF | RFC XXXX, Section X |
+| insufficient_authorization | Resource access error response | IETF | RFC XXXX, Section X |
 
 ## OAuth Authorization Server Metadata Registry
 
@@ -786,134 +655,6 @@ This section provides non-normative examples of how this specification may be us
         }
     }
 
-## Resource Server authorization_details_types_required Response Examples
-
-### Example Resource server authorization_details_types_required response from payments resource
-
-    HTTP/1.1 403 Forbidden
-    WWW-Authenticate: Bearer error="insufficient_authorization_details"
-    Content-Type: application/json
-    Cache-Control: no-store
-
-    {
-        "authorization_details_types_required": {
-            "oneOf": ["payment_initiation", "payment_approval",
-                      "beneficiary_designation"]
-        }
-    }
-
-
-### Example Resource server authorization_details_types_required response from the Norwegian Health Sector (HelseID)
-
-    HTTP/1.1 403 Forbidden
-    WWW-Authenticate: Bearer error="insufficient_authorization_details"
-    Content-Type: application/json
-    Cache-Control: no-store
-
-    {
-        "authorization_details_types_required": {
-            "allOf": ["helseid_authorization",
-                      "nhn:tillitsrammeverk:parameters"]
-        }
-    }
-
-## Payment initiation with RAR error signaling
-
-### Client initiates API request
-
-Client uses access token obtained at login to call payment initiation API
-
-    POST /payments HTTP/1.1
-    Host: resource.example.com
-    Content-Type: application/json
-    Authorization: Bearer eyj... (access token from login)
-
-    {
-        "type": "payment_initiation",
-        "locations": [
-            "https://resource.example.com/payments"
-        ],
-        "instructed_amount": {
-            "currency": "EUR",
-            "amount": "123.50"
-        },
-        "creditor_name": "Merchant A",
-        "creditor_account": {
-            "bic": "ABCIDEFFXXX",
-            "iban": "DE02100100109307118603"
-        }
-    }
-
-### Resource server signals insufficient_authorization_details with actionable RAR object
-
-Resource server requires payment approval and responds with:
-
-    HTTP/1.1 403 Forbidden
-    WWW-Authenticate: Bearer error="insufficient_authorization_details"
-    Content-Type: application/json
-    Cache-Control: no-store
-
-    {
-        "authorization_details": [{
-          "type": "payment_initiation",
-          "locations": [
-              "https://resource.example.com/payments"
-          ],
-          "instructed_amount": {
-              "currency": "EUR",
-              "amount": "123.50"
-          },
-          "creditor_name": "Merchant A",
-          "creditor_account": {
-              "bic": "ABCIDEFFXXX",
-              "iban": "DE02100100109307118603"
-          },
-          "interaction_id": "f81d4fae-7dec-11d0-a765-00a0c91e6bf6",
-          "risk_profile": "B-71"
-        }
-      ]
-    }
-
-Note: the resource server has added the ephemeral attributes `interaction_id` and `risk_profile`.
-
-### Client initiates OAuth flow using the provided authorization_details object
-
-After user approves the request, client obtains an access token representing the approved payment
-
-### Client re-attempts API request
-
-    POST /payments HTTP/1.1
-    Host: resource.example.com
-    Content-Type: application/json
-    Authorization: Bearer eyj... (payment approval access token)
-
-    {
-        "type": "payment_initiation",
-        "locations": [
-            "https://resource.example.com/payments"
-        ],
-        "instructed_amount": {
-            "currency": "EUR",
-            "amount": "123.50"
-        },
-        "creditor_name": "Merchant A",
-        "creditor_account": {
-            "bic": "ABCIDEFFXXX",
-            "iban": "DE02100100109307118603"
-        }
-    }
-
-### Resource server authorizes the request
-
-    HTTP/1.1 201 Accepted
-    Content-Type: application/json
-    Cache-Control: no-store
-
-    {
-        "paymentId": "a81bc81b-dead-4e5d-abff-90865d1e13b1",
-        "status": "accepted"
-    }
-
 # Document History
 
 -04
@@ -923,7 +664,7 @@ After user approves the request, client obtains an access token representing the
 
 -03
 
-* Added authorization_hint to guide client on token selection and updated client processing rules accordingly
+* Added authorization_reference to guide client on token selection and updated client processing rules accordingly
 * Added security consideration on confidentiality of RS-provided authorization_details
 * Added authorization server considerations for handling large RAR objects in JWT access tokens
 
