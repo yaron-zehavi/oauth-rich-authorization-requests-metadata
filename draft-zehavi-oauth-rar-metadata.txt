@@ -231,10 +231,9 @@ Table of Contents
    This document defines:
 
    *  The bearer authentication error code insufficient_authorization
-      for use in the WWW-Authenticate header field as defined by
-      [RFC6750].  Resource servers SHOULD return
-      insufficient_authorization to signal that access is denied due to
-      missing or insufficient authorization details.  The
+      for use in the WWW-Authenticate header.  Resource servers SHOULD
+      return insufficient_authorization to signal that access is denied
+      due to missing or insufficient authorization details.  The
       insufficient_authorization error is intended whenever the
       authorization details associated with the token do not satisfy the
       resource's requirements.  The insufficient_authorization error
