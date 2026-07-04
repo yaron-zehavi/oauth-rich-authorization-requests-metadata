@@ -280,14 +280,9 @@ It is RECOMMENDED that when an authorization server issues JWT access tokens, it
 
 # Security Considerations {#security-considerations}
 
-## Cacheability and Intermediaries
-
-HTTP 401 responses with response bodies may be cached or replayed in unexpected contexts.
-Resource servers SHOULD mitigate by including the `Cache-Control: no-store` response header.
-
 ## Confidentiality of resource server provided authorization_details
 
-Resource server providing actionable `authorization_details` SHOULD NOT include sensitive data in those objects. This is consistent with RAR {{RFC9396}} `authorization_details` OAuth request parameter, representing **request** semantics.
+Resource servers when providing actionable `authorization_details` SHOULD NOT include sensitive data in those objects. This is consistent with RAR {{RFC9396}} `authorization_details` OAuth request parameter, representing **request** semantics.
 
 Confidentiality-preserving `authorization_details` types SHOULD NOT include sensitive data. Instead, the end-user SHOULD provide such information when interacting with the authorization server.
 
@@ -663,6 +658,16 @@ This section provides non-normative examples of how this specification may be us
     }
 
 # Document History
+
+-05
+
+* Removed required authorization details types.
+* Changed from HTTP 403 to 401.
+* Moved resource servers response from body to WWW-Authenticate header.
+* Renamed authorization_hint to authorization_reference and clarified its usage.
+* Clarified authorization server broader considerations on omitting RAR from JWT access tokens.
+* Clarified document's interoperability with any OAuth rfc and any grant that supports RAR.
+
 
 -04
 
