@@ -82,8 +82,7 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  Protocol Overview
-   4.  Resource Server guided remediation of failures due to
-           insufficient authorization_details
+   4.  Remediation of failures due to insufficient authorization
    5.  Authorization Details Types Metadata Endpoint
      5.1.  Authorization Details Types Metadata Endpoint Response
    6.  RAR objects in JWT access tokens
@@ -227,8 +226,7 @@ Table of Contents
    *  (I) Resource server validates access token and returns successful
       response.
 
-4.  Resource Server guided remediation of failures due to insufficient
-    authorization_details
+4.  Remediation of failures due to insufficient authorization
 
    This document defines:
 
