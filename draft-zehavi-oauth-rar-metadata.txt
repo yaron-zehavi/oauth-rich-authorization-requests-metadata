@@ -23,9 +23,9 @@ Abstract
 
    This document addresses this interoperability challenge, allowing
    clients to dynamically discover metadata instead of relying on out-
-   of-band agreements.  It also standardizes failure signaling and
-   interoperable remediation when insufficient authorization details are
-   the cause of failure.
+   of-band agreements, as well as standardizes failure signaling
+   including interoperable remediation when insufficient authorization
+   details are the cause of failure.
 
 About This Document
 
@@ -437,6 +437,9 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
       use Protected Resource Metadata [RFC9728] to discover additional
       authorization_servers supported by the resource, and attempt
       remediation through them.
+
+   *  Clients MAY ignore authorization_reference if they do not support
+      token reuse or caching.
 
 7.2.  Resource Server Processing Rules
 
