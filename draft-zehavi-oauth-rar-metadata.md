@@ -51,10 +51,10 @@ normative:
 
 OAuth 2.0 Rich Authorization Requests (RAR) {{RFC9396}} standardizes the exchange and processing of authorization details but does not define metadata for describing authorization details types.
 
-In addition, currently no interoperable guidance is offered to clients, guiding the remediation of failures returned by resource servers, due to insufficient authorization details.
+In addition, no interoperable guidance is offered to clients, to remediate failures by resource servers due to insufficient authorization details.
 
-This document addresses this practical interoperability challenge regarding authorization details type metadata, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements.
-It also standardizes error signaling and interoperable remediation when insufficient authorization details are the cause of failures.
+This document addresses this interoperability challenge, allowing clients to dynamically discover metadata instead of relying on out-of-band agreements.
+It also standardizes failure signaling and interoperable remediation when insufficient authorization details are the cause of failure.
 
 --- middle
 
@@ -69,7 +69,7 @@ This document defines:
 * A new authorization server endpoint: `authorization_details_types_metadata_endpoint`, providing authorization details type metadata, including documentation and JSON Schema definitions {{JSON.Schema}}.
 * A new normative OAuth 2.0 WWW-Authenticate Error Code, for resource servers to indicate `insufficient_authorization` as the cause of the error.
 * A new OAuth 2.0 WWW-Authenticate response parameter, `authorization_remediation`, which contains actionable authorization details objects, to be used directly for remediation in a follow-up OAuth request.
-* RECOMMENDED handling of large RAR {{RFC9396}} authorization details objects when issuing JWT access tokens, to avoid failures due to token sizes exceeding header size restrictions.
+* Authorization server considerations for when RAR authorization details objects better be omitted from JWT access tokens, provided instead through token instrospection.
 
 Providing clients with actionable authorization details objects enables:
 
@@ -135,53 +135,7 @@ Figure: Client remediates using actionable authorization details objects provide
 - (H) The client makes an API request with the (RAR) access token.
 - (I) Resource server validates access token and returns successful response.
 
-# Authorization Details Types Metadata Endpoint
-
-The following authorization server metadata {{RFC8414}} parameter is introduced to indicate the server's support for Authorization Details Types Metadata:
-
-"authorization_details_types_metadata_endpoint":
-:    OPTIONAL.  The URL of the Authorization Details Types Metadata endpoint.
-
-## Authorization Details Types Metadata Endpoint Response
-
-The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with Content-Type `application/json` and a JSON object whose members are authorization details type identifiers.
-
-Each member value is an object describing a single authorization details type.
-
-    {
-      "type": {
-        "version": "...",
-        "description": "...",
-        "documentation_uri": "...",
-        "schema": { },
-        "schema_uri": "...",
-        "examples": [ ]
-      }
-    }
-
-Attribute definition:
-
-"version":
-: OPTIONAL. String identifying the version of the authorization details type definition. The value is informational and does not imply semantic version negotiation.
-
-"description":
-: OPTIONAL. String containing a description of the authorization details type. Clients MUST NOT rely on this value for authorization or validation decisions.
-
-"documentation_uri":
-: OPTIONAL. URI referencing external documentation describing the authorization details type.
-
-"schema":
-: The `schema` attribute contains a JSON Schema document {{JSON.Schema}} that describes a single authorization details object. The schema MUST validate exactly one authorization details object and MUST restrict the `type` attribute to the corresponding authorization details type identifier. This attribute is REQUIRED unless `schema_uri` is specified. If present, `schema_uri` MUST NOT be included.
-
-"schema_uri":
-: The `schema_uri` attribute is an absolute URI, as defined by RFC 3986 {{RFC3986}}, referencing a JSON Schema document describing a single authorization details object. The referenced schema MUST satisfy the same requirements as the `schema` attribute. This attribute is REQUIRED unless `schema` is specified. If this attribute is present, `schema` MUST NOT be present.
-
-"examples":
-: OPTIONAL. An array of example authorization details objects. Examples are non-normative.
-
-See Examples {{metadata-examples}} for non-normative response example.
-/
-# Resource Server Error Signaling of insufficient authorization_details
+# Resource Server guided remediation of failures due to insufficient authorization_details
 
 This document defines:
 
@@ -248,6 +202,52 @@ The decoded `authorization_remediation` contents in this example are:
            }
        ]
     }
+
+# Authorization Details Types Metadata Endpoint
+
+The following authorization server metadata {{RFC8414}} parameter is introduced to indicate the server's support for Authorization Details Types Metadata:
+
+"authorization_details_types_metadata_endpoint":
+:    OPTIONAL.  The URL of the Authorization Details Types Metadata endpoint.
+
+## Authorization Details Types Metadata Endpoint Response
+
+The Authorization Details Types Metadata endpoint is called with HTTP GET and responds with Content-Type `application/json` and a JSON object whose members are authorization details type identifiers.
+
+Each member value is an object describing a single authorization details type.
+
+    {
+      "type": {
+        "version": "...",
+        "description": "...",
+        "documentation_uri": "...",
+        "schema": { },
+        "schema_uri": "...",
+        "examples": [ ]
+      }
+    }
+
+Attribute definition:
+
+"version":
+: OPTIONAL. String identifying the version of the authorization details type definition. The value is informational and does not imply semantic version negotiation.
+
+"description":
+: OPTIONAL. String containing a description of the authorization details type. Clients MUST NOT rely on this value for authorization or validation decisions.
+
+"documentation_uri":
+: OPTIONAL. URI referencing external documentation describing the authorization details type.
+
+"schema":
+: The `schema` attribute contains a JSON Schema document {{JSON.Schema}} that describes a single authorization details object. The schema MUST validate exactly one authorization details object and MUST restrict the `type` attribute to the corresponding authorization details type identifier. This attribute is REQUIRED unless `schema_uri` is specified. If present, `schema_uri` MUST NOT be included.
+
+"schema_uri":
+: The `schema_uri` attribute is an absolute URI, as defined by RFC 3986 {{RFC3986}}, referencing a JSON Schema document describing a single authorization details object. The referenced schema MUST satisfy the same requirements as the `schema` attribute. This attribute is REQUIRED unless `schema` is specified. If this attribute is present, `schema` MUST NOT be present.
+
+"examples":
+: OPTIONAL. An array of example authorization details objects. Examples are non-normative.
+
+See Examples {{metadata-examples}} for non-normative response example.
 
 # RAR objects in JWT access tokens
 
