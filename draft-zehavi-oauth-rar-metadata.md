@@ -357,7 +357,7 @@ Clients that do not implement token caching MAY safely ignore `authorization_ref
 If the resource server consistently returns the same `authorization_reference` and rejects tokens obtained via the associated `authorization_details`, the client may enter an infinite loop. To prevent this:
 
 - Clients MUST implement a maximum retry count (RECOMMENDED: 1 retry with a cached token, then 1 fresh authorization attempt, then fail).
-- If a freshly obtained token (from a new authorization flow using the RS-provided `authorization_details`) is immediately rejected by the same RS with the same `authorization_reference`, the client MUST stop and report the error.
+- If a freshly obtained token (from a new authorization flow using the resource server provided `authorization_details`) is immediately rejected by the same resource server with the same `authorization_reference`, the client MUST stop and report the error.
 
 ### No cross-resource-server portability
 
