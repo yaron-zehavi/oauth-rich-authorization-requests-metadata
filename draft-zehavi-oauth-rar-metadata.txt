@@ -89,13 +89,13 @@ Table of Contents
      7.1.  Client Processing Rules
        7.1.1.  Step 1 - Parse the remediation response
        7.1.2.  Step 2 - Attempt token reuse via
-               authorization_reference *(if present)*
+               authorization_reference (if present)
        7.1.3.  Step 3 - Obtain a new token via OAuth + RAR
        7.1.4.  Step 4 - Handle continued failure
        7.1.5.  Additional guidance
      7.2.  Resource Server Processing Rules
        7.2.1.  Step 1 - Validate the access token
-       7.2.2.  Step 2 - Verify authorization details *(if present)*
+       7.2.2.  Step 2 - Verify authorization details (if present)
        7.2.3.  Step 3 - If authorization details are missing or
                insufficient
      7.3.  Limitations and Considerations for authorization_reference
@@ -457,8 +457,8 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
    *  authorization_reference (OPTIONAL): an opaque string for token-bag
       lookup.
 
-7.1.2.  Step 2 - Attempt token reuse via authorization_reference *(if
-        present)*
+7.1.2.  Step 2 - Attempt token reuse via authorization_reference (if
+        present)
 
    1.  If the authorization_remediation contains an
        authorization_reference attribute, the client SHOULD search its
@@ -543,7 +543,7 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
    insufficient authorization details, return the appropriate existing
    error code (e.g., invalid_token).
 
-7.2.2.  Step 2 - Verify authorization details *(if present)*
+7.2.2.  Step 2 - Verify authorization details (if present)
 
    Determine whether the token carries sufficient authorization details
    for the requested operation.  Authorization details MAY be obtained
