@@ -290,7 +290,7 @@ The client decodes the base64url-encoded `authorization_remediation` JSON object
 
 ### Step 3 - Obtain a new token via OAuth + RAR
 
-The client proceeds to this step if: (a) no `authorization_reference` was present, (b) no matching token was found in the token bag, (c) a matched token was rejected by the RS (Step 2, item 4), or (d) the client elects to skip the token-bag lookup and use `authorization_details` directly.
+The client proceeds to this step if: (a) no `authorization_reference` was present, (b) no matching token in client's possession was found, (c) a matched token was rejected by the resource server (Step 2, item 4), or (d) the client elects to skip an existing token lookup and use `authorization_details` directly.
 
 1. The client uses the `authorization_details` from the `authorization_remediation` response in a new OAuth authorization request per {{RFC9396}}. The client MAY use any grant type or extension that supports RAR (including PAR {{RFC9126}}, JAR {{RFC9101}}, etc.).
 2. Upon successful token issuance, if the triggering RS response included an `authorization_reference`, the client SHOULD store the newly obtained token associated with that reference value and the RS origin in its in-session token bag. This token-to-reference association enables future lookups in Step 2 when the same `authorization_reference` is encountered again.
