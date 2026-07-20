@@ -369,7 +369,7 @@ The `authorization_reference` mechanism is analogous to how clients select token
 
 | Traditional (scope-based) | RAR + authorization\_reference |
 |---|---|
-| RS returns `insufficient_scope` with required `scope` value | RS returns `insufficient_authorization` with `authorization_remediation` |
+| Resource server returns `insufficient_scope` with required `scope` value | Resource server returns `insufficient_authorization` with `authorization_remediation` |
 | Client checks if it has a token with matching scope | Client checks if it has a token with matching `authorization_reference` |
 | Simple string comparison on scope values | Simple string comparison on reference values |
 | If not found, request new token with required scope | If not found, request new token with provided `authorization_details` |
