@@ -311,7 +311,7 @@ If after obtaining a new token and retrying, the resource server still returns `
 
 ## Resource Server Processing Rules
 
-When a resource server receives a request with a bearer token:
+When a resource server receives a request with an OAuth token:
 
 ### Step 1 - Validate the access token
 
