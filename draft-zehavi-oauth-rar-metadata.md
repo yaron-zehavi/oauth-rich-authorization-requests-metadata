@@ -34,7 +34,11 @@ normative:
   RFC6750:
   RFC7662:
   RFC8414:
+  RFC9068:
+  RFC9101:
+  RFC9126:
   RFC9396:
+  RFC9470:
   RFC9728:
   IANA.oauth-parameters:
   JSON.Schema:
@@ -267,16 +271,110 @@ It is RECOMMENDED that when an authorization server issues JWT access tokens, it
 
 ## Client Processing Rules
 
-* When receiving an `insufficient_authorization` error, if the `authorization_remediation` parameter contains an `authorization_reference` attribute that matches a valid token in the client's possession, the client MAY retry the failing request using the matching token.
-* If the `authorization_remediation` parameter contains an `authorization_details` attribute, the client MAY include it in a subsequent OAuth request to obtain a token for retrying the failing endpoint.
-* If the authorization server used so far by the client does not support the required authorization details types, the client MAY use Protected Resource Metadata {{RFC9728}} to discover additional `authorization_servers` supported by the resource, and attempt remediation through them.
-* Clients MAY ignore authorization_reference if they do not support token reuse or caching.
+When a client receives an HTTP 401 response with WWW-Authenticate error code `insufficient_authorization` and an `authorization_remediation` parameter, it SHOULD process it as follows:
+
+### Step 1 - Parse the remediation response
+
+The client decodes the base64url-encoded `authorization_remediation` JSON object and extracts:
+
+- `authorization_details` (REQUIRED): the actionable RAR objects.
+- `authorization_reference` (OPTIONAL): an opaque string for token-bag lookup.
+
+
+### Step 2 - Attempt token reuse via** `authorization_reference` **(if present)**
+
+1. If the `authorization_remediation` contains an `authorization_reference` attribute, the client SHOULD search its **in-session tokens** for a token previously associated with that reference value **and** the same resource server origin.
+2. Matching is a simple string comparison — the client MUST NOT attempt to compute, parse, or derive meaning from the reference value.
+3. If a matching, non-expired token is found, the client MAY retry the failing request with that token. If the retry also fails with `insufficient_authorization`, the client MUST NOT retry again with the same token for the same reference and SHOULD proceed to Step 3.
+4. If no matching token is found, the client proceeds to Step 3.
+
+### Step 3 - Obtain a new token via OAuth + RAR
+
+The client proceeds to this step if: (a) no `authorization_reference` was present, (b) no matching token in client's possession was found, (c) a matched token was rejected by the resource server (Step 2, item 4), or (d) the client elects to skip an existing token lookup and use `authorization_details` directly.
+
+1. The client uses the `authorization_details` from the `authorization_remediation` response in a new OAuth authorization request per {{RFC9396}}. The client MAY use any grant type or extension that supports RAR (including PAR {{RFC9126}}, JAR {{RFC9101}}, etc.).
+2. Upon successful token issuance, if the triggering resource server response included an `authorization_reference`, the client SHOULD persist the newly obtained token associated with that reference value and the resource server origin in its in-session token storage. This token-to-reference association enables future lookups in Step 2 when the same `authorization_reference` is encountered again.
+3. The client retries the failing request with the newly obtained token.
+
+### Step 4 - Handle continued failure
+
+If after obtaining a new token and retrying, the resource server still returns `insufficient_authorization`:
+
+- If the new response contains a **different** `authorization_reference`, the client MAY attempt remediation again (subject to implementation-defined retry limits).
+- If the new response contains the **same** `authorization_reference`, the client MUST NOT loop — it SHOULD treat the failure as non-remediable and report an error to the user or calling application.
+
+### Additional guidance
+
+- Clients MAY ignore `authorization_reference` entirely if they do not implement token caching or reuse. In that case, each `insufficient_authorization` response triggers a fresh authorization request using the provided `authorization_details`.
+- If the client's current authorization server does not support the required authorization details types (as indicated by its metadata), the client MAY use Protected Resource Metadata {{RFC9728}} to discover alternative authorization servers for the resource.
+- The token storage MUST be scoped per end-user session. Concurrent users operating through the same client instance MUST maintain separate token storage instances.
 
 ## Resource Server Processing Rules
 
-* Verify access token validity.
-* Verify required authorization details are provided, by JWT token contents or through token introspection {{RFC7662}}.
-* If authorization details are missing or insufficient, return HTTP 401 with WWW-Authenticate: Bearer error="insufficient_authorization" including the `authorization_remediation` parameter which provides actionable `authorization_details` objects constructed from the failing request's input.
+When a resource server receives a request with an OAuth token:
+
+### Step 1 - Validate the access token
+
+Verify token validity following {{RFC6750}} or {{RFC9068}} if JWT profiled. If the token is invalid for reasons other than insufficient authorization details, return the appropriate existing error code (e.g., `invalid_token`).
+
+### Step 2 - Verify authorization details **(if present)**
+
+Determine whether the token carries sufficient authorization details for the requested operation. Authorization details MAY be obtained from the JWT access token payload or via token introspection {{RFC7662}}.
+
+### Step 3 - If authorization details are missing or insufficient
+
+The resource server responds with an error per the bearer token error framework {{RFC6750}} Section 3. The specific error code depends on the nature of the failure:
+- If the token is valid but lacks sufficient **scope**, the resource server returns `insufficient_scope` per {{RFC6750}} Section 3.1.
+- If the token is valid but lacks sufficient **authentication context** (e.g., ACR/AMR level), the resource server returns `insufficient_user_authentication` per {{RFC9470}}.
+- If the token is valid but lacks sufficient **authorization details**, the RS returns `insufficient_authorization` per Section 4 of this document, with an `authorization_remediation` parameter as defined in Section 4.1.
+The `authorization_remediation` parameter carries the actionable `authorization_details` and optional `authorization_reference` as specified in Section 4. The resource server constructs these per the rules defined below.
+
+## Limitations and Considerations for **`authorization_reference`**
+
+Implementers should be aware of the following limitations:
+
+### Token reuse is opportunistic, not guaranteed
+
+A matching `authorization_reference` with client's existing tokens does NOT guarantee the token will be accepted by the resource server. The token may have been issued under conditions that no longer apply:
+
+- The resource owner may have revoked consent since the token was issued.
+- Contextual risk may have changed (e.g., geolocation, device posture), causing the resource server to require stronger authorization ceremonies.
+- The authorization server may have issued the token with a subset of the requested authorization details (per {{RFC9396}} Section 7).
+
+Clients MUST handle the case where a reused token is rejected despite matching the `authorization_reference` (see Section 7.1, Step 2, item 4).
+
+### `authorization_reference` does not replace `authorization_details`
+
+The `authorization_reference` is an optimization for token selection. It is NOT a substitute for `authorization_details`:
+
+- `authorization_details` is REQUIRED in every `authorization_remediation` response and is what the client uses when initiating a new authorization request.
+- `authorization_reference` is RECOMMENDED and enables the client to avoid unnecessary authorization flows when it already possesses a suitable token.
+
+Clients that do not implement token caching MAY safely ignore `authorization_reference` with no loss of interoperability.
+
+### Loop prevention
+
+If the resource server consistently returns the same `authorization_reference` and rejects tokens obtained via the associated `authorization_details`, the client may enter an infinite loop. To prevent this:
+
+- Clients MUST implement a maximum retry count (RECOMMENDED: 1 retry with a cached token, then 1 fresh authorization attempt, then fail).
+- If a freshly obtained token (from a new authorization flow using the resource server provided `authorization_details`) is immediately rejected by the same resource server with the same `authorization_reference`, the client MUST stop and report the error.
+
+### No cross-resource-server portability
+
+The `authorization_reference` value is scoped to the producing resource server. It MUST NOT be used for token selection when interacting with a different resource server, even if the two servers enforce similar authorization details types.
+
+### Analogy to scope-based token selection
+
+The `authorization_reference` mechanism is analogous to how clients select tokens based on OAuth scopes in traditional deployments. Just as a client maintains a mapping of `{scope → token}` and selects the appropriate token for each resource server call, this mechanism extends that pattern to RAR:
+
+| Traditional (scope-based) | RAR + authorization\_reference |
+|---|---|
+| Resource server returns `insufficient_scope` with required `scope` value | Resource server returns `insufficient_authorization` with `authorization_remediation` |
+| Client checks if it has a token with matching scope | Client checks if it has a token with matching `authorization_reference` |
+| Simple string comparison on scope values | Simple string comparison on reference values |
+| If not found, request new token with required scope | If not found, request new token with provided `authorization_details` |
+
+The key advantage: clients need not understand, parse, or compare complex JSON `authorization_details` objects — the resource server has already reduced the comparison to an opaque string.
 
 # Security Considerations {#security-considerations}
 
