@@ -283,7 +283,7 @@ The client decodes the base64url-encoded `authorization_remediation` JSON object
 
 ### Step 2 - Attempt token reuse via** `authorization_reference` **(if present)**
 
-1. If the `authorization_remediation` contains an `authorization_reference` attribute, the client SHOULD search its **in-session token bag** for a token previously associated with that reference value **and** the same resource server origin.
+1. If the `authorization_remediation` contains an `authorization_reference` attribute, the client SHOULD search its **in-session tokens** for a token previously associated with that reference value **and** the same resource server origin.
 2. Matching is a simple string comparison — the client MUST NOT attempt to compute, parse, or derive meaning from the reference value.
 3. If a matching, non-expired token is found, the client MAY retry the failing request with that token. If the retry also fails with `insufficient_authorization`, the client MUST NOT retry again with the same token for the same reference and SHOULD proceed to Step 3.
 4. If no matching token is found, the client proceeds to Step 3.
