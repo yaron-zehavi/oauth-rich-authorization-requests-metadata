@@ -335,7 +335,7 @@ Implementers should be aware of the following limitations:
 
 ### Token reuse is opportunistic, not guaranteed
 
-A matching `authorization_reference` in the client's token bag does NOT guarantee the token will be accepted by the resource server. The token may have been issued under conditions that no longer apply:
+A matching `authorization_reference` with client's existing tokens does NOT guarantee the token will be accepted by the resource server. The token may have been issued under conditions that no longer apply:
 
 - The resource owner may have revoked consent since the token was issued.
 - Contextual risk may have changed (e.g., geolocation, device posture), causing the RS to require stronger authorization ceremonies.
