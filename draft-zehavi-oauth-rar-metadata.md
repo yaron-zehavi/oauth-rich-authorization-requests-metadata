@@ -327,7 +327,7 @@ The resource server responds with an error per the bearer token error framework 
 - If the token is valid but lacks sufficient **scope**, the RS returns `insufficient_scope` per {{RFC6750}} Section 3.1.
 - If the token is valid but lacks sufficient **authentication context** (e.g., ACR/AMR level), the resource server returns `insufficient_user_authentication` per {{RFC9470}}.
 - If the token is valid but lacks sufficient **authorization details**, the RS returns `insufficient_authorization` per Section 4 of this document, with an `authorization_remediation` parameter as defined in Section 4.1.
-The `authorization_remediation` parameter carries the actionable `authorization_details` and optional `authorization_reference` as specified in Section 4. The RS constructs these per the rules defined below.
+The `authorization_remediation` parameter carries the actionable `authorization_details` and optional `authorization_reference` as specified in Section 4. The resource server constructs these per the rules defined below.
 
 ## Limitations and Considerations for **`authorization_reference`**
 
