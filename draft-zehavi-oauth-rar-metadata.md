@@ -374,7 +374,7 @@ The `authorization_reference` mechanism is analogous to how clients select token
 | Simple string comparison on scope values | Simple string comparison on reference values |
 | If not found, request new token with required scope | If not found, request new token with provided `authorization_details` |
 
-The key advantage: clients need not understand, parse, or compare complex JSON `authorization_details` objects — the RS has already reduced the comparison to an opaque string.
+The key advantage: clients need not understand, parse, or compare complex JSON `authorization_details` objects — the resource server has already reduced the comparison to an opaque string.
 
 # Security Considerations {#security-considerations}
 
