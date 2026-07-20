@@ -146,7 +146,7 @@ Table of Contents
       cause of the error.
 
    *  A new OAuth 2.0 WWW-Authenticate response parameter,
-      authorization_remediation, which contains actionable authorization
+      authorization_remediation, providing actionable authorization
       details objects, to be used directly for remediation in a follow-
       up OAuth request.
 
@@ -255,7 +255,7 @@ Table of Contents
       base64url-encoded JSON object guiding the client on remediating
       the error.  Its attributes are:
 
-      -  authorization_details: REQUIRED.  Array of actionable
+      -  authorization_details: RECOMMENDED.  Array of actionable
          authorization details objects, matching the format specified in
          RAR [RFC9396] for the authorization_details request parameter,
          built using the failed resource request.  Their inclusion in
@@ -297,6 +297,11 @@ Table of Contents
    *  The provided authorization_details are intended to be
       interoperable with all OAuth specifications and usable in any
       grant flow supporting RAR.
+
+   *  Deployments where resource servers have out-of-band agreements
+      with clients to provide other types of payloads for authorization
+      failure remediation, MAY define and use different attributes of
+      authorization_remediation as they see fit.
 
    Example HTTP response from a direct debit resource:
 
@@ -448,7 +453,7 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
    The client decodes the base64url-encoded authorization_remediation
    JSON object and extracts:
 
-   *  authorization_details (REQUIRED): the actionable RAR objects.
+   *  authorization_details (RECOMMENDED): the actionable RAR objects.
 
    *  authorization_reference (OPTIONAL): an opaque string for token-bag
       lookup.
@@ -592,9 +597,10 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
    The authorization_reference is an optimization for token selection.
    It is NOT a substitute for authorization_details:
 
-   *  authorization_details is REQUIRED in every
-      authorization_remediation response and is what the client uses
-      when initiating a new authorization request.
+   *  authorization_details is RECOMMENDED in every
+      authorization_remediation response providing actionable RAR
+      objects and is what the client uses when initiating a new
+      authorization request.
 
    *  authorization_reference is RECOMMENDED and enables the client to
       avoid unnecessary authorization flows when it already possesses a
@@ -1197,7 +1203,8 @@ Acknowledgments
 
    The authors would like to thank the following individuals who
    contributed ideas, feedback, and wording that helped shape the final
-   specification: Rune Grimstad.
+   specification: Rune Grimstad, Justin Richer, Jeff Lombardo, Judith
+   Kahrer, Pieter Kasselman.
 
 Author's Address
 
