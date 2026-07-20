@@ -338,7 +338,7 @@ Implementers should be aware of the following limitations:
 A matching `authorization_reference` with client's existing tokens does NOT guarantee the token will be accepted by the resource server. The token may have been issued under conditions that no longer apply:
 
 - The resource owner may have revoked consent since the token was issued.
-- Contextual risk may have changed (e.g., geolocation, device posture), causing the RS to require stronger authorization ceremonies.
+- Contextual risk may have changed (e.g., geolocation, device posture), causing the resource server to require stronger authorization ceremonies.
 - The authorization server may have issued the token with a subset of the requested authorization details (per {{RFC9396}} Section 7).
 
 Clients MUST handle the case where a reused token is rejected despite matching the `authorization_reference` (see Section 7.1, Step 2, item 4).
