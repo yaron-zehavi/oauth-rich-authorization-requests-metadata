@@ -359,7 +359,7 @@ If the resource server consistently returns the same `authorization_reference` a
 - Clients MUST implement a maximum retry count (RECOMMENDED: 1 retry with a cached token, then 1 fresh authorization attempt, then fail).
 - If a freshly obtained token (from a new authorization flow using the RS-provided `authorization_details`) is immediately rejected by the same RS with the same `authorization_reference`, the client MUST stop and report the error.
 
-### No cross-RS portability
+### No cross-resource-server portability
 
 The `authorization_reference` value is scoped to the producing resource server. It MUST NOT be used for token selection when interacting with a different resource server, even if the two servers enforce similar authorization details types.
 
