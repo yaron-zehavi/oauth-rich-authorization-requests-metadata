@@ -282,7 +282,7 @@ The client decodes the base64url-encoded `authorization_remediation` JSON object
 - `authorization_reference` (OPTIONAL): an opaque string for token-bag lookup.
 
 
-### Step 2 - Attempt token reuse via** `authorization_reference` **(if present)**
+### Step 2 - Attempt token reuse via `authorization_reference` **(if present)**
 
 1. If the `authorization_remediation` contains an `authorization_reference` attribute, the client SHOULD search its **in-session tokens** for a token previously associated with that reference value **and** the same resource server origin.
 2. Matching is a simple string comparison — the client MUST NOT attempt to compute, parse, or derive meaning from the reference value.
@@ -330,7 +330,7 @@ The resource server responds with an error per the bearer token error framework 
 - If the token is valid but lacks sufficient **authorization details**, the RS returns `insufficient_authorization` per Section 4 of this document, with an `authorization_remediation` parameter as defined in Section 4.1.
 The `authorization_remediation` parameter carries the actionable `authorization_details` and optional `authorization_reference` as specified in Section 4. The resource server constructs these per the rules defined below.
 
-## Limitations and Considerations for **`authorization_reference`**
+## Limitations and Considerations for `authorization_reference`
 
 Implementers should be aware of the following limitations:
 
@@ -375,7 +375,7 @@ The `authorization_reference` mechanism is analogous to how clients select token
 | Simple string comparison on scope values | Simple string comparison on reference values |
 | If not found, request new token with required scope | If not found, request new token with provided `authorization_details` |
 
-The key advantage: clients need not understand, parse, or compare complex JSON `authorization_details` objects — the resource server has already reduced the comparison to an opaque string.
+The key advantage: clients do not need to understand, parse, or compare complex JSON `authorization_details` objects — the resource server has already reduced the comparison to an opaque string.
 
 # Security Considerations {#security-considerations}
 
