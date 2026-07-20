@@ -365,7 +365,7 @@ The `authorization_reference` value is scoped to the producing resource server. 
 
 ### Analogy to scope-based token selection
 
-The `authorization_reference` mechanism is analogous to how clients select tokens based on OAuth scopes in traditional deployments. Just as a client maintains a mapping of `{scope → token}` and selects the appropriate token for each RS call, this mechanism extends that pattern to RAR:
+The `authorization_reference` mechanism is analogous to how clients select tokens based on OAuth scopes in traditional deployments. Just as a client maintains a mapping of `{scope → token}` and selects the appropriate token for each resource server call, this mechanism extends that pattern to RAR:
 
 | Traditional (scope-based) | RAR + authorization\_reference |
 |---|---|
