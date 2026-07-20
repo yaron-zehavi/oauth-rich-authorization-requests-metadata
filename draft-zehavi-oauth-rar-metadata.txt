@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                             4 July 2026
-Expires: 5 January 2027
+Intended status: Standards Track                            20 July 2026
+Expires: 21 January 2027
 
 
               OAuth 2.0 RAR Metadata and Error Remediation
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 January 2027.
+   This Internet-Draft will expire on 21 January 2027.
 
 Copyright Notice
 
@@ -87,7 +87,25 @@ Table of Contents
    6.  RAR objects in JWT access tokens
    7.  Processing Rules
      7.1.  Client Processing Rules
+       7.1.1.  Step 1 - Parse the remediation response
+       7.1.2.  Step 2 - Attempt token reuse via**
+               authorization_reference *(if present)*
+       7.1.3.  Step 3 - Obtain a new token via OAuth + RAR
+       7.1.4.  Step 4 - Handle continued failure
+       7.1.5.  Additional guidance
      7.2.  Resource Server Processing Rules
+       7.2.1.  Step 1 - Validate the access token
+       7.2.2.  Step 2 - Verify authorization details *(if present)*
+       7.2.3.  Step 3 - If authorization details are missing or
+               insufficient
+     7.3.  Limitations and Considerations for
+           *authorization_reference*
+       7.3.1.  Token reuse is opportunistic, not guaranteed
+       7.3.2.  authorization_reference does not replace
+               authorization_details
+       7.3.3.  Loop prevention
+       7.3.4.  No cross-resource-server portability
+       7.3.5.  Analogy to scope-based token selection
    8.  Security Considerations
      8.1.  Confidentiality of resource server provided
            authorization_details
@@ -421,39 +439,228 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
 
 7.1.  Client Processing Rules
 
-   *  When receiving an insufficient_authorization error, if the
-      authorization_remediation parameter contains an
-      authorization_reference attribute that matches a valid token in
-      the client's possession, the client MAY retry the failing request
-      using the matching token.
+   When a client receives an HTTP 401 response with WWW-Authenticate
+   error code insufficient_authorization and an
+   authorization_remediation parameter, it SHOULD process it as follows:
 
-   *  If the authorization_remediation parameter contains an
-      authorization_details attribute, the client MAY include it in a
-      subsequent OAuth request to obtain a token for retrying the
-      failing endpoint.
+7.1.1.  Step 1 - Parse the remediation response
 
-   *  If the authorization server used so far by the client does not
-      support the required authorization details types, the client MAY
-      use Protected Resource Metadata [RFC9728] to discover additional
-      authorization_servers supported by the resource, and attempt
-      remediation through them.
+   The client decodes the base64url-encoded authorization_remediation
+   JSON object and extracts:
 
-   *  Clients MAY ignore authorization_reference if they do not support
-      token reuse or caching.
+   *  authorization_details (REQUIRED): the actionable RAR objects.
+
+   *  authorization_reference (OPTIONAL): an opaque string for token-bag
+      lookup.
+
+7.1.2.  Step 2 - Attempt token reuse via** authorization_reference *(if
+        present)*
+
+   1.  If the authorization_remediation contains an
+       authorization_reference attribute, the client SHOULD search its
+       *in-session tokens* for a token previously associated with that
+       reference value *and* the same resource server origin.
+
+   2.  Matching is a simple string comparison — the client MUST NOT
+       attempt to compute, parse, or derive meaning from the reference
+       value.
+
+   3.  If a matching, non-expired token is found, the client MAY retry
+       the failing request with that token.  If the retry also fails
+       with insufficient_authorization, the client MUST NOT retry again
+       with the same token for the same reference and SHOULD proceed to
+       Step 3.
+
+   4.  If no matching token is found, the client proceeds to Step 3.
+
+7.1.3.  Step 3 - Obtain a new token via OAuth + RAR
+
+   The client proceeds to this step if: (a) no authorization_reference
+   was present, (b) no matching token in client's possession was found,
+   (c) a matched token was rejected by the resource server (Step 2, item
+   4), or (d) the client elects to skip an existing token lookup and use
+   authorization_details directly.
+
+   1.  The client uses the authorization_details from the
+       authorization_remediation response in a new OAuth authorization
+       request per [RFC9396].  The client MAY use any grant type or
+       extension that supports RAR (including PAR [RFC9126], JAR
+       [RFC9101], etc.).
+
+   2.  Upon successful token issuance, if the triggering resource server
+       response included an authorization_reference, the client SHOULD
+       persist the newly obtained token associated with that reference
+       value and the resource server origin in its in-session token
+       storage.  This token-to-reference association enables future
+       lookups in Step 2 when the same authorization_reference is
+       encountered again.
+
+   3.  The client retries the failing request with the newly obtained
+       token.
+
+7.1.4.  Step 4 - Handle continued failure
+
+   If after obtaining a new token and retrying, the resource server
+   still returns insufficient_authorization:
+
+   *  If the new response contains a *different*
+      authorization_reference, the client MAY attempt remediation again
+      (subject to implementation-defined retry limits).
+
+   *  If the new response contains the *same* authorization_reference,
+      the client MUST NOT loop — it SHOULD treat the failure as non-
+      remediable and report an error to the user or calling application.
+
+7.1.5.  Additional guidance
+
+   *  Clients MAY ignore authorization_reference entirely if they do not
+      implement token caching or reuse.  In that case, each
+      insufficient_authorization response triggers a fresh authorization
+      request using the provided authorization_details.
+
+   *  If the client's current authorization server does not support the
+      required authorization details types (as indicated by its
+      metadata), the client MAY use Protected Resource Metadata
+      [RFC9728] to discover alternative authorization servers for the
+      resource.
+
+   *  The token storage MUST be scoped per end-user session.  Concurrent
+      users operating through the same client instance MUST maintain
+      separate token storage instances.
 
 7.2.  Resource Server Processing Rules
 
-   *  Verify access token validity.
+   When a resource server receives a request with an OAuth token:
 
-   *  Verify required authorization details are provided, by JWT token
-      contents or through token introspection [RFC7662].
+7.2.1.  Step 1 - Validate the access token
 
-   *  If authorization details are missing or insufficient, return HTTP
-      401 with WWW-Authenticate: Bearer
-      error="insufficient_authorization" including the
-      authorization_remediation parameter which provides actionable
-      authorization_details objects constructed from the failing
-      request's input.
+   Verify token validity following [RFC6750] or [RFC9068] if JWT
+   profiled.  If the token is invalid for reasons other than
+   insufficient authorization details, return the appropriate existing
+   error code (e.g., invalid_token).
+
+7.2.2.  Step 2 - Verify authorization details *(if present)*
+
+   Determine whether the token carries sufficient authorization details
+   for the requested operation.  Authorization details MAY be obtained
+   from the JWT access token payload or via token introspection
+   [RFC7662].
+
+7.2.3.  Step 3 - If authorization details are missing or insufficient
+
+   The resource server responds with an error per the bearer token error
+   framework [RFC6750] Section 3.  The specific error code depends on
+   the nature of the failure: - If the token is valid but lacks
+   sufficient *scope*, the resource server returns insufficient_scope
+   per [RFC6750] Section 3.1. - If the token is valid but lacks
+   sufficient *authentication context* (e.g., ACR/AMR level), the
+   resource server returns insufficient_user_authentication per
+   [RFC9470]. - If the token is valid but lacks sufficient
+   *authorization details*, the RS returns insufficient_authorization
+   per Section 4 of this document, with an authorization_remediation
+   parameter as defined in Section 4.1.  The authorization_remediation
+   parameter carries the actionable authorization_details and optional
+   authorization_reference as specified in Section 4.  The resource
+   server constructs these per the rules defined below.
+
+7.3.  Limitations and Considerations for *authorization_reference*
+
+   Implementers should be aware of the following limitations:
+
+7.3.1.  Token reuse is opportunistic, not guaranteed
+
+   A matching authorization_reference with client's existing tokens does
+   NOT guarantee the token will be accepted by the resource server.  The
+   token may have been issued under conditions that no longer apply:
+
+   *  The resource owner may have revoked consent since the token was
+      issued.
+
+   *  Contextual risk may have changed (e.g., geolocation, device
+      posture), causing the resource server to require stronger
+      authorization ceremonies.
+
+   *  The authorization server may have issued the token with a subset
+      of the requested authorization details (per [RFC9396] Section 7).
+
+   Clients MUST handle the case where a reused token is rejected despite
+   matching the authorization_reference (see Section 7.1, Step 2, item
+   4).
+
+7.3.2.  authorization_reference does not replace authorization_details
+
+   The authorization_reference is an optimization for token selection.
+   It is NOT a substitute for authorization_details:
+
+   *  authorization_details is REQUIRED in every
+      authorization_remediation response and is what the client uses
+      when initiating a new authorization request.
+
+   *  authorization_reference is RECOMMENDED and enables the client to
+      avoid unnecessary authorization flows when it already possesses a
+      suitable token.
+
+   Clients that do not implement token caching MAY safely ignore
+   authorization_reference with no loss of interoperability.
+
+7.3.3.  Loop prevention
+
+   If the resource server consistently returns the same
+   authorization_reference and rejects tokens obtained via the
+   associated authorization_details, the client may enter an infinite
+   loop.  To prevent this:
+
+   *  Clients MUST implement a maximum retry count (RECOMMENDED: 1 retry
+      with a cached token, then 1 fresh authorization attempt, then
+      fail).
+
+   *  If a freshly obtained token (from a new authorization flow using
+      the resource server provided authorization_details) is immediately
+      rejected by the same resource server with the same
+      authorization_reference, the client MUST stop and report the
+      error.
+
+7.3.4.  No cross-resource-server portability
+
+   The authorization_reference value is scoped to the producing resource
+   server.  It MUST NOT be used for token selection when interacting
+   with a different resource server, even if the two servers enforce
+   similar authorization details types.
+
+7.3.5.  Analogy to scope-based token selection
+
+   The authorization_reference mechanism is analogous to how clients
+   select tokens based on OAuth scopes in traditional deployments.  Just
+   as a client maintains a mapping of {scope → token} and selects the
+   appropriate token for each resource server call, this mechanism
+   extends that pattern to RAR:
+
+       +=========================+================================+
+       | Traditional (scope-     | RAR + authorization_reference  |
+       | based)                  |                                |
+       +=========================+================================+
+       | Resource server returns | Resource server returns        |
+       | insufficient_scope with | insufficient_authorization     |
+       | required scope value    | with authorization_remediation |
+       +-------------------------+--------------------------------+
+       | Client checks if it has | Client checks if it has a      |
+       | a token with matching   | token with matching            |
+       | scope                   | authorization_reference        |
+       +-------------------------+--------------------------------+
+       | Simple string           | Simple string comparison on    |
+       | comparison on scope     | reference values               |
+       | values                  |                                |
+       +-------------------------+--------------------------------+
+       | If not found, request   | If not found, request new      |
+       | new token with required | token with provided            |
+       | scope                   | authorization_details          |
+       +-------------------------+--------------------------------+
+
+                                 Table 1
+
+   The key advantage: clients need not understand, parse, or compare
+   complex JSON authorization_details objects — the resource server has
+   already reduced the comparison to an opaque string.
 
 8.  Security Considerations
 
@@ -487,7 +694,7 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
    |                            |response|            |               |
    +----------------------------+--------+------------+---------------+
 
-                                 Table 1
+                                 Table 2
 
 9.2.  OAuth Authorization Server Metadata Registry
 
@@ -506,7 +713,7 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
    |                                             |endpoint     |          |             |
    +---------------------------------------------+-------------+----------+-------------+
 
-                                  Table 2
+                                  Table 3
 
 10.  Normative References
 
@@ -548,10 +755,29 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
               DOI 10.17487/RFC8414, June 2018,
               <https://www.rfc-editor.org/rfc/rfc8414>.
 
+   [RFC9068]  Bertocci, V., "JSON Web Token (JWT) Profile for OAuth 2.0
+              Access Tokens", RFC 9068, DOI 10.17487/RFC9068, October
+              2021, <https://www.rfc-editor.org/rfc/rfc9068>.
+
+   [RFC9101]  Sakimura, N., Bradley, J., and M. Jones, "The OAuth 2.0
+              Authorization Framework: JWT-Secured Authorization Request
+              (JAR)", RFC 9101, DOI 10.17487/RFC9101, August 2021,
+              <https://www.rfc-editor.org/rfc/rfc9101>.
+
+   [RFC9126]  Lodderstedt, T., Campbell, B., Sakimura, N., Tonge, D.,
+              and F. Skokan, "OAuth 2.0 Pushed Authorization Requests",
+              RFC 9126, DOI 10.17487/RFC9126, September 2021,
+              <https://www.rfc-editor.org/rfc/rfc9126>.
+
    [RFC9396]  Lodderstedt, T., Richer, J., and B. Campbell, "OAuth 2.0
               Rich Authorization Requests", RFC 9396,
               DOI 10.17487/RFC9396, May 2023,
               <https://www.rfc-editor.org/rfc/rfc9396>.
+
+   [RFC9470]  Bertocci, V. and B. Campbell, "OAuth 2.0 Step Up
+              Authentication Challenge Protocol", RFC 9470,
+              DOI 10.17487/RFC9470, September 2023,
+              <https://www.rfc-editor.org/rfc/rfc9470>.
 
    [RFC9728]  Jones, M.B., Hunt, P., and A. Parecki, "OAuth 2.0
               Protected Resource Metadata", RFC 9728,

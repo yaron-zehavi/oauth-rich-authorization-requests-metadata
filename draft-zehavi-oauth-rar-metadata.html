@@ -25,7 +25,7 @@
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.10.1
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
@@ -1052,7 +1052,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Zehavi</td>
-<td class="center">Expires 5 January 2027</td>
+<td class="center">Expires 21 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg {
 <dd class="internet-draft">draft-zehavi-oauth-rar-metadata-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-04" class="published">4 July 2026</time>
+<time datetime="2026-07-20" class="published">20 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-05">5 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-21">21 January 2027</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1122,7 +1122,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1174,9 +1174,57 @@ svg {
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-client-processing-rules" class="internal xref">Client Processing Rules</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.1">
+                    <p id="section-toc.1-1.7.2.1.2.1.1"><a href="#section-7.1.1" class="auto internal xref">7.1.1</a>.  <a href="#name-step-1-parse-the-remediatio" class="internal xref">Step 1 - Parse the remediation response</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.2">
+                    <p id="section-toc.1-1.7.2.1.2.2.1"><a href="#section-7.1.2" class="auto internal xref">7.1.2</a>.  <a href="#name-step-2-attempt-token-reuse-" class="internal xref">Step 2 - Attempt token reuse via** <code>authorization_reference</code> <strong>(if present)</strong></a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.3">
+                    <p id="section-toc.1-1.7.2.1.2.3.1"><a href="#section-7.1.3" class="auto internal xref">7.1.3</a>.  <a href="#name-step-3-obtain-a-new-token-v" class="internal xref">Step 3 - Obtain a new token via OAuth + RAR</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.4">
+                    <p id="section-toc.1-1.7.2.1.2.4.1"><a href="#section-7.1.4" class="auto internal xref">7.1.4</a>.  <a href="#name-step-4-handle-continued-fai" class="internal xref">Step 4 - Handle continued failure</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1.2.5">
+                    <p id="section-toc.1-1.7.2.1.2.5.1"><a href="#section-7.1.5" class="auto internal xref">7.1.5</a>.  <a href="#name-additional-guidance" class="internal xref">Additional guidance</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
                 <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-resource-server-processing-" class="internal xref">Resource Server Processing Rules</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.1">
+                    <p id="section-toc.1-1.7.2.2.2.1.1"><a href="#section-7.2.1" class="auto internal xref">7.2.1</a>.  <a href="#name-step-1-validate-the-access-" class="internal xref">Step 1 - Validate the access token</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.2">
+                    <p id="section-toc.1-1.7.2.2.2.2.1"><a href="#section-7.2.2" class="auto internal xref">7.2.2</a>.  <a href="#name-step-2-verify-authorization" class="internal xref">Step 2 - Verify authorization details <strong>(if present)</strong></a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.3">
+                    <p id="section-toc.1-1.7.2.2.2.3.1"><a href="#section-7.2.3" class="auto internal xref">7.2.3</a>.  <a href="#name-step-3-if-authorization-det" class="internal xref">Step 3 - If authorization details are missing or insufficient</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-limitations-and-considerati" class="internal xref">Limitations and Considerations for <strong><code>authorization_reference</code></strong></a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3.2.1">
+                    <p id="section-toc.1-1.7.2.3.2.1.1"><a href="#section-7.3.1" class="auto internal xref">7.3.1</a>.  <a href="#name-token-reuse-is-opportunisti" class="internal xref">Token reuse is opportunistic, not guaranteed</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3.2.2">
+                    <p id="section-toc.1-1.7.2.3.2.2.1"><a href="#section-7.3.2" class="auto internal xref">7.3.2</a>.  <a href="#name-authorization_reference-doe" class="internal xref"><code>authorization_reference</code> does not replace <code>authorization_details</code></a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3.2.3">
+                    <p id="section-toc.1-1.7.2.3.2.3.1"><a href="#section-7.3.3" class="auto internal xref">7.3.3</a>.  <a href="#name-loop-prevention" class="internal xref">Loop prevention</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3.2.4">
+                    <p id="section-toc.1-1.7.2.3.2.4.1"><a href="#section-7.3.4" class="auto internal xref">7.3.4</a>.  <a href="#name-no-cross-resource-server-po" class="internal xref">No cross-resource-server portability</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3.2.5">
+                    <p id="section-toc.1-1.7.2.3.2.5.1"><a href="#section-7.3.5" class="auto internal xref">7.3.5</a>.  <a href="#name-analogy-to-scope-based-toke" class="internal xref">Analogy to scope-based token selection</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -1551,20 +1599,97 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
         <h3 id="name-client-processing-rules">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-client-processing-rules" class="section-name selfRef">Client Processing Rules</a>
         </h3>
+<p id="section-7.1-1">When a client receives an HTTP 401 response with WWW-Authenticate error code <code>insufficient_authorization</code> and an <code>authorization_remediation</code> parameter, it <span class="bcp14">SHOULD</span> process it as follows:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<div id="step-1-parse-the-remediation-response">
+<section id="section-7.1.1">
+          <h4 id="name-step-1-parse-the-remediatio">
+<a href="#section-7.1.1" class="section-number selfRef">7.1.1. </a><a href="#name-step-1-parse-the-remediatio" class="section-name selfRef">Step 1 - Parse the remediation response</a>
+          </h4>
+<p id="section-7.1.1-1">The client decodes the base64url-encoded <code>authorization_remediation</code> JSON object and extracts:<a href="#section-7.1.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.1-1.1">
-            <p id="section-7.1-1.1.1">When receiving an <code>insufficient_authorization</code> error, if the <code>authorization_remediation</code> parameter contains an <code>authorization_reference</code> attribute that matches a valid token in the client's possession, the client <span class="bcp14">MAY</span> retry the failing request using the matching token.<a href="#section-7.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-7.1.1-2.1">
+              <p id="section-7.1.1-2.1.1"><code>authorization_details</code> (<span class="bcp14">REQUIRED</span>): the actionable RAR objects.<a href="#section-7.1.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.1-1.2">
-            <p id="section-7.1-1.2.1">If the <code>authorization_remediation</code> parameter contains an <code>authorization_details</code> attribute, the client <span class="bcp14">MAY</span> include it in a subsequent OAuth request to obtain a token for retrying the failing endpoint.<a href="#section-7.1-1.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-7.1.1-2.2">
+              <p id="section-7.1.1-2.2.1"><code>authorization_reference</code> (<span class="bcp14">OPTIONAL</span>): an opaque string for token-bag lookup.<a href="#section-7.1.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.1-1.3">
-            <p id="section-7.1-1.3.1">If the authorization server used so far by the client does not support the required authorization details types, the client <span class="bcp14">MAY</span> use Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> to discover additional <code>authorization_servers</code> supported by the resource, and attempt remediation through them.<a href="#section-7.1-1.3.1" class="pilcrow">¶</a></p>
+          </ul>
+</section>
+</div>
+<div id="step-2-attempt-token-reuse-via-authorizationreference-if-present">
+<section id="section-7.1.2">
+          <h4 id="name-step-2-attempt-token-reuse-">
+<a href="#section-7.1.2" class="section-number selfRef">7.1.2. </a><a href="#name-step-2-attempt-token-reuse-" class="section-name selfRef">Step 2 - Attempt token reuse via** <code>authorization_reference</code> <strong>(if present)</strong></a>
+          </h4>
+<ol start="1" type="1" class="normal type-1" id="section-7.1.2-1">
+<li id="section-7.1.2-1.1">
+              <p id="section-7.1.2-1.1.1">If the <code>authorization_remediation</code> contains an <code>authorization_reference</code> attribute, the client <span class="bcp14">SHOULD</span> search its <strong>in-session tokens</strong> for a token previously associated with that reference value <strong>and</strong> the same resource server origin.<a href="#section-7.1.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.1-1.4">
-            <p id="section-7.1-1.4.1">Clients <span class="bcp14">MAY</span> ignore authorization_reference if they do not support token reuse or caching.<a href="#section-7.1-1.4.1" class="pilcrow">¶</a></p>
+            <li id="section-7.1.2-1.2">
+              <p id="section-7.1.2-1.2.1">Matching is a simple string comparison — the client <span class="bcp14">MUST NOT</span> attempt to compute, parse, or derive meaning from the reference value.<a href="#section-7.1.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
+            <li id="section-7.1.2-1.3">
+              <p id="section-7.1.2-1.3.1">If a matching, non-expired token is found, the client <span class="bcp14">MAY</span> retry the failing request with that token. If the retry also fails with <code>insufficient_authorization</code>, the client <span class="bcp14">MUST NOT</span> retry again with the same token for the same reference and <span class="bcp14">SHOULD</span> proceed to Step 3.<a href="#section-7.1.2-1.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.1.2-1.4">
+              <p id="section-7.1.2-1.4.1">If no matching token is found, the client proceeds to Step 3.<a href="#section-7.1.2-1.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+</section>
+</div>
+<div id="step-3-obtain-a-new-token-via-oauth-rar">
+<section id="section-7.1.3">
+          <h4 id="name-step-3-obtain-a-new-token-v">
+<a href="#section-7.1.3" class="section-number selfRef">7.1.3. </a><a href="#name-step-3-obtain-a-new-token-v" class="section-name selfRef">Step 3 - Obtain a new token via OAuth + RAR</a>
+          </h4>
+<p id="section-7.1.3-1">The client proceeds to this step if: (a) no <code>authorization_reference</code> was present, (b) no matching token in client's possession was found, (c) a matched token was rejected by the resource server (Step 2, item 4), or (d) the client elects to skip an existing token lookup and use <code>authorization_details</code> directly.<a href="#section-7.1.3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7.1.3-2">
+<li id="section-7.1.3-2.1">
+              <p id="section-7.1.3-2.1.1">The client uses the <code>authorization_details</code> from the <code>authorization_remediation</code> response in a new OAuth authorization request per <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>. The client <span class="bcp14">MAY</span> use any grant type or extension that supports RAR (including PAR <span>[<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>, JAR <span>[<a href="#RFC9101" class="cite xref">RFC9101</a>]</span>, etc.).<a href="#section-7.1.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.1.3-2.2">
+              <p id="section-7.1.3-2.2.1">Upon successful token issuance, if the triggering resource server response included an <code>authorization_reference</code>, the client <span class="bcp14">SHOULD</span> persist the newly obtained token associated with that reference value and the resource server origin in its in-session token storage. This token-to-reference association enables future lookups in Step 2 when the same <code>authorization_reference</code> is encountered again.<a href="#section-7.1.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.1.3-2.3">
+              <p id="section-7.1.3-2.3.1">The client retries the failing request with the newly obtained token.<a href="#section-7.1.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+</section>
+</div>
+<div id="step-4-handle-continued-failure">
+<section id="section-7.1.4">
+          <h4 id="name-step-4-handle-continued-fai">
+<a href="#section-7.1.4" class="section-number selfRef">7.1.4. </a><a href="#name-step-4-handle-continued-fai" class="section-name selfRef">Step 4 - Handle continued failure</a>
+          </h4>
+<p id="section-7.1.4-1">If after obtaining a new token and retrying, the resource server still returns <code>insufficient_authorization</code>:<a href="#section-7.1.4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.1.4-2.1">
+              <p id="section-7.1.4-2.1.1">If the new response contains a <strong>different</strong> <code>authorization_reference</code>, the client <span class="bcp14">MAY</span> attempt remediation again (subject to implementation-defined retry limits).<a href="#section-7.1.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-7.1.4-2.2">
+              <p id="section-7.1.4-2.2.1">If the new response contains the <strong>same</strong> <code>authorization_reference</code>, the client <span class="bcp14">MUST NOT</span> loop — it <span class="bcp14">SHOULD</span> treat the failure as non-remediable and report an error to the user or calling application.<a href="#section-7.1.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
+<div id="additional-guidance">
+<section id="section-7.1.5">
+          <h4 id="name-additional-guidance">
+<a href="#section-7.1.5" class="section-number selfRef">7.1.5. </a><a href="#name-additional-guidance" class="section-name selfRef">Additional guidance</a>
+          </h4>
+<ul class="normal">
+<li class="normal" id="section-7.1.5-1.1">
+              <p id="section-7.1.5-1.1.1">Clients <span class="bcp14">MAY</span> ignore <code>authorization_reference</code> entirely if they do not implement token caching or reuse. In that case, each <code>insufficient_authorization</code> response triggers a fresh authorization request using the provided <code>authorization_details</code>.<a href="#section-7.1.5-1.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-7.1.5-1.2">
+              <p id="section-7.1.5-1.2.1">If the client's current authorization server does not support the required authorization details types (as indicated by its metadata), the client <span class="bcp14">MAY</span> use Protected Resource Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> to discover alternative authorization servers for the resource.<a href="#section-7.1.5-1.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-7.1.5-1.3">
+              <p id="section-7.1.5-1.3.1">The token storage <span class="bcp14">MUST</span> be scoped per end-user session. Concurrent users operating through the same client instance <span class="bcp14">MUST</span> maintain separate token storage instances.<a href="#section-7.1.5-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
 </section>
 </div>
 <div id="resource-server-processing-rules">
@@ -1572,17 +1697,143 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
         <h3 id="name-resource-server-processing-">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-resource-server-processing-" class="section-name selfRef">Resource Server Processing Rules</a>
         </h3>
+<p id="section-7.2-1">When a resource server receives a request with an OAuth token:<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<div id="step-1-validate-the-access-token">
+<section id="section-7.2.1">
+          <h4 id="name-step-1-validate-the-access-">
+<a href="#section-7.2.1" class="section-number selfRef">7.2.1. </a><a href="#name-step-1-validate-the-access-" class="section-name selfRef">Step 1 - Validate the access token</a>
+          </h4>
+<p id="section-7.2.1-1">Verify token validity following <span>[<a href="#RFC6750" class="cite xref">RFC6750</a>]</span> or <span>[<a href="#RFC9068" class="cite xref">RFC9068</a>]</span> if JWT profiled. If the token is invalid for reasons other than insufficient authorization details, return the appropriate existing error code (e.g., <code>invalid_token</code>).<a href="#section-7.2.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="step-2-verify-authorization-details-if-present">
+<section id="section-7.2.2">
+          <h4 id="name-step-2-verify-authorization">
+<a href="#section-7.2.2" class="section-number selfRef">7.2.2. </a><a href="#name-step-2-verify-authorization" class="section-name selfRef">Step 2 - Verify authorization details <strong>(if present)</strong></a>
+          </h4>
+<p id="section-7.2.2-1">Determine whether the token carries sufficient authorization details for the requested operation. Authorization details <span class="bcp14">MAY</span> be obtained from the JWT access token payload or via token introspection <span>[<a href="#RFC7662" class="cite xref">RFC7662</a>]</span>.<a href="#section-7.2.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="step-3-if-authorization-details-are-missing-or-insufficient">
+<section id="section-7.2.3">
+          <h4 id="name-step-3-if-authorization-det">
+<a href="#section-7.2.3" class="section-number selfRef">7.2.3. </a><a href="#name-step-3-if-authorization-det" class="section-name selfRef">Step 3 - If authorization details are missing or insufficient</a>
+          </h4>
+<p id="section-7.2.3-1">The resource server responds with an error per the bearer token error framework <span>[<a href="#RFC6750" class="cite xref">RFC6750</a>]</span> Section 3. The specific error code depends on the nature of the failure:
+- If the token is valid but lacks sufficient <strong>scope</strong>, the resource server returns <code>insufficient_scope</code> per <span>[<a href="#RFC6750" class="cite xref">RFC6750</a>]</span> Section 3.1.
+- If the token is valid but lacks sufficient <strong>authentication context</strong> (e.g., ACR/AMR level), the resource server returns <code>insufficient_user_authentication</code> per <span>[<a href="#RFC9470" class="cite xref">RFC9470</a>]</span>.
+- If the token is valid but lacks sufficient <strong>authorization details</strong>, the RS returns <code>insufficient_authorization</code> per Section 4 of this document, with an <code>authorization_remediation</code> parameter as defined in Section 4.1.
+The <code>authorization_remediation</code> parameter carries the actionable <code>authorization_details</code> and optional <code>authorization_reference</code> as specified in Section 4. The resource server constructs these per the rules defined below.<a href="#section-7.2.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="limitations-and-considerations-for-authorizationreference">
+<section id="section-7.3">
+        <h3 id="name-limitations-and-considerati">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-limitations-and-considerati" class="section-name selfRef">Limitations and Considerations for <strong><code>authorization_reference</code></strong></a>
+        </h3>
+<p id="section-7.3-1">Implementers should be aware of the following limitations:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<div id="token-reuse-is-opportunistic-not-guaranteed">
+<section id="section-7.3.1">
+          <h4 id="name-token-reuse-is-opportunisti">
+<a href="#section-7.3.1" class="section-number selfRef">7.3.1. </a><a href="#name-token-reuse-is-opportunisti" class="section-name selfRef">Token reuse is opportunistic, not guaranteed</a>
+          </h4>
+<p id="section-7.3.1-1">A matching <code>authorization_reference</code> with client's existing tokens does NOT guarantee the token will be accepted by the resource server. The token may have been issued under conditions that no longer apply:<a href="#section-7.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.2-1.1">
-            <p id="section-7.2-1.1.1">Verify access token validity.<a href="#section-7.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-7.3.1-2.1">
+              <p id="section-7.3.1-2.1.1">The resource owner may have revoked consent since the token was issued.<a href="#section-7.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.2-1.2">
-            <p id="section-7.2-1.2.1">Verify required authorization details are provided, by JWT token contents or through token introspection <span>[<a href="#RFC7662" class="cite xref">RFC7662</a>]</span>.<a href="#section-7.2-1.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-7.3.1-2.2">
+              <p id="section-7.3.1-2.2.1">Contextual risk may have changed (e.g., geolocation, device posture), causing the resource server to require stronger authorization ceremonies.<a href="#section-7.3.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-7.2-1.3">
-            <p id="section-7.2-1.3.1">If authorization details are missing or insufficient, return HTTP 401 with WWW-Authenticate: Bearer error="insufficient_authorization" including the <code>authorization_remediation</code> parameter which provides actionable <code>authorization_details</code> objects constructed from the failing request's input.<a href="#section-7.2-1.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-7.3.1-2.3">
+              <p id="section-7.3.1-2.3.1">The authorization server may have issued the token with a subset of the requested authorization details (per <span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span> Section 7).<a href="#section-7.3.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
+          </ul>
+<p id="section-7.3.1-3">Clients <span class="bcp14">MUST</span> handle the case where a reused token is rejected despite matching the <code>authorization_reference</code> (see Section 7.1, Step 2, item 4).<a href="#section-7.3.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authorizationreference-does-not-replace-authorizationdetails">
+<section id="section-7.3.2">
+          <h4 id="name-authorization_reference-doe">
+<a href="#section-7.3.2" class="section-number selfRef">7.3.2. </a><a href="#name-authorization_reference-doe" class="section-name selfRef"><code>authorization_reference</code> does not replace <code>authorization_details</code></a>
+          </h4>
+<p id="section-7.3.2-1">The <code>authorization_reference</code> is an optimization for token selection. It is NOT a substitute for <code>authorization_details</code>:<a href="#section-7.3.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.3.2-2.1">
+              <p id="section-7.3.2-2.1.1"><code>authorization_details</code> is <span class="bcp14">REQUIRED</span> in every <code>authorization_remediation</code> response and is what the client uses when initiating a new authorization request.<a href="#section-7.3.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-7.3.2-2.2">
+              <p id="section-7.3.2-2.2.1"><code>authorization_reference</code> is <span class="bcp14">RECOMMENDED</span> and enables the client to avoid unnecessary authorization flows when it already possesses a suitable token.<a href="#section-7.3.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-7.3.2-3">Clients that do not implement token caching <span class="bcp14">MAY</span> safely ignore <code>authorization_reference</code> with no loss of interoperability.<a href="#section-7.3.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="loop-prevention">
+<section id="section-7.3.3">
+          <h4 id="name-loop-prevention">
+<a href="#section-7.3.3" class="section-number selfRef">7.3.3. </a><a href="#name-loop-prevention" class="section-name selfRef">Loop prevention</a>
+          </h4>
+<p id="section-7.3.3-1">If the resource server consistently returns the same <code>authorization_reference</code> and rejects tokens obtained via the associated <code>authorization_details</code>, the client may enter an infinite loop. To prevent this:<a href="#section-7.3.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.3.3-2.1">
+              <p id="section-7.3.3-2.1.1">Clients <span class="bcp14">MUST</span> implement a maximum retry count (<span class="bcp14">RECOMMENDED</span>: 1 retry with a cached token, then 1 fresh authorization attempt, then fail).<a href="#section-7.3.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-7.3.3-2.2">
+              <p id="section-7.3.3-2.2.1">If a freshly obtained token (from a new authorization flow using the resource server provided <code>authorization_details</code>) is immediately rejected by the same resource server with the same <code>authorization_reference</code>, the client <span class="bcp14">MUST</span> stop and report the error.<a href="#section-7.3.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
+<div id="no-cross-resource-server-portability">
+<section id="section-7.3.4">
+          <h4 id="name-no-cross-resource-server-po">
+<a href="#section-7.3.4" class="section-number selfRef">7.3.4. </a><a href="#name-no-cross-resource-server-po" class="section-name selfRef">No cross-resource-server portability</a>
+          </h4>
+<p id="section-7.3.4-1">The <code>authorization_reference</code> value is scoped to the producing resource server. It <span class="bcp14">MUST NOT</span> be used for token selection when interacting with a different resource server, even if the two servers enforce similar authorization details types.<a href="#section-7.3.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="analogy-to-scope-based-token-selection">
+<section id="section-7.3.5">
+          <h4 id="name-analogy-to-scope-based-toke">
+<a href="#section-7.3.5" class="section-number selfRef">7.3.5. </a><a href="#name-analogy-to-scope-based-toke" class="section-name selfRef">Analogy to scope-based token selection</a>
+          </h4>
+<p id="section-7.3.5-1">The <code>authorization_reference</code> mechanism is analogous to how clients select tokens based on OAuth scopes in traditional deployments. Just as a client maintains a mapping of <code>{scope → token}</code> and selects the appropriate token for each resource server call, this mechanism extends that pattern to RAR:<a href="#section-7.3.5-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+            <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">Traditional (scope-based)</th>
+                <th class="text-left" rowspan="1" colspan="1">RAR + authorization_reference</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Resource server returns <code>insufficient_scope</code> with required <code>scope</code> value</td>
+                <td class="text-left" rowspan="1" colspan="1">Resource server returns <code>insufficient_authorization</code> with <code>authorization_remediation</code>
+</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Client checks if it has a token with matching scope</td>
+                <td class="text-left" rowspan="1" colspan="1">Client checks if it has a token with matching <code>authorization_reference</code>
+</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">Simple string comparison on scope values</td>
+                <td class="text-left" rowspan="1" colspan="1">Simple string comparison on reference values</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">If not found, request new token with required scope</td>
+                <td class="text-left" rowspan="1" colspan="1">If not found, request new token with provided <code>authorization_details</code>
+</td>
+              </tr>
+            </tbody>
+          </table>
+<p id="section-7.3.5-3">The key advantage: clients need not understand, parse, or compare complex JSON <code>authorization_details</code> objects — the resource server has already reduced the comparison to an opaque string.<a href="#section-7.3.5-3" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
@@ -1614,8 +1865,8 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
         <h3 id="name-oauth-20-www-authenticate-e">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-oauth-20-www-authenticate-e" class="section-name selfRef">OAuth 2.0 WWW-Authenticate Error Code Registry</a>
         </h3>
-<table class="center" id="table-1">
-          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Error Code</th>
@@ -1641,8 +1892,8 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-oauth-authorization-server-" class="section-name selfRef">OAuth Authorization Server Metadata Registry</a>
         </h3>
 <p id="section-9.2-1">This specification registers the following authorization server metadata parameter in the OAuth Authorization Server Metadata registry:<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<table class="center" id="table-2">
-          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<table class="center" id="table-3">
+          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
 <thead>
             <tr>
               <th class="text-left" rowspan="1" colspan="1">Metadata Name</th>
@@ -1702,9 +1953,25 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
       <dd>
 <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8414">https://www.rfc-editor.org/rfc/rfc8414</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC9068">[RFC9068]</dt>
+      <dd>
+<span class="refAuthor">Bertocci, V.</span>, <span class="refTitle">"JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens"</span>, <span class="seriesInfo">RFC 9068</span>, <span class="seriesInfo">DOI 10.17487/RFC9068</span>, <time datetime="2021-10" class="refDate">October 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9068">https://www.rfc-editor.org/rfc/rfc9068</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9101">[RFC9101]</dt>
+      <dd>
+<span class="refAuthor">Sakimura, N.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">M. Jones</span>, <span class="refTitle">"The OAuth 2.0 Authorization Framework: JWT-Secured Authorization Request (JAR)"</span>, <span class="seriesInfo">RFC 9101</span>, <span class="seriesInfo">DOI 10.17487/RFC9101</span>, <time datetime="2021-08" class="refDate">August 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9101">https://www.rfc-editor.org/rfc/rfc9101</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9126">[RFC9126]</dt>
+      <dd>
+<span class="refAuthor">Lodderstedt, T.</span>, <span class="refAuthor">Campbell, B.</span>, <span class="refAuthor">Sakimura, N.</span>, <span class="refAuthor">Tonge, D.</span>, and <span class="refAuthor">F. Skokan</span>, <span class="refTitle">"OAuth 2.0 Pushed Authorization Requests"</span>, <span class="seriesInfo">RFC 9126</span>, <span class="seriesInfo">DOI 10.17487/RFC9126</span>, <time datetime="2021-09" class="refDate">September 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9126">https://www.rfc-editor.org/rfc/rfc9126</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC9396">[RFC9396]</dt>
       <dd>
 <span class="refAuthor">Lodderstedt, T.</span>, <span class="refAuthor">Richer, J.</span>, and <span class="refAuthor">B. Campbell</span>, <span class="refTitle">"OAuth 2.0 Rich Authorization Requests"</span>, <span class="seriesInfo">RFC 9396</span>, <span class="seriesInfo">DOI 10.17487/RFC9396</span>, <time datetime="2023-05" class="refDate">May 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9396">https://www.rfc-editor.org/rfc/rfc9396</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9470">[RFC9470]</dt>
+      <dd>
+<span class="refAuthor">Bertocci, V.</span> and <span class="refAuthor">B. Campbell</span>, <span class="refTitle">"OAuth 2.0 Step Up Authentication Challenge Protocol"</span>, <span class="seriesInfo">RFC 9470</span>, <span class="seriesInfo">DOI 10.17487/RFC9470</span>, <time datetime="2023-09" class="refDate">September 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9470">https://www.rfc-editor.org/rfc/rfc9470</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9728">[RFC9728]</dt>
     <dd>
