@@ -282,7 +282,7 @@ The client decodes the base64url-encoded `authorization_remediation` JSON object
 - `authorization_reference` (OPTIONAL): an opaque string for token-bag lookup.
 
 
-### Step 2 - Attempt token reuse via `authorization_reference` **(if present)**
+### Step 2 - Attempt token reuse via `authorization_reference` (if present)
 
 1. If the `authorization_remediation` contains an `authorization_reference` attribute, the client SHOULD search its **in-session tokens** for a token previously associated with that reference value **and** the same resource server origin.
 2. Matching is a simple string comparison — the client MUST NOT attempt to compute, parse, or derive meaning from the reference value.
@@ -318,7 +318,7 @@ When a resource server receives a request with an OAuth token:
 
 Verify token validity following {{RFC6750}} or {{RFC9068}} if JWT profiled. If the token is invalid for reasons other than insufficient authorization details, return the appropriate existing error code (e.g., `invalid_token`).
 
-### Step 2 - Verify authorization details **(if present)**
+### Step 2 - Verify authorization details (if present)
 
 Determine whether the token carries sufficient authorization details for the requested operation. Authorization details MAY be obtained from the JWT access token payload or via token introspection {{RFC7662}}.
 
