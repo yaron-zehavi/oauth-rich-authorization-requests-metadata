@@ -307,7 +307,7 @@ If after obtaining a new token and retrying, the resource server still returns `
 
 - Clients MAY ignore `authorization_reference` entirely if they do not implement token caching or reuse. In that case, each `insufficient_authorization` response triggers a fresh authorization request using the provided `authorization_details`.
 - If the client's current authorization server does not support the required authorization details types (as indicated by its metadata), the client MAY use Protected Resource Metadata {{RFC9728}} to discover alternative authorization servers for the resource.
-- The token bag MUST be scoped per end-user session. Concurrent users operating through the same client instance MUST maintain separate token bags.
+- The token storage MUST be scoped per end-user session. Concurrent users operating through the same client instance MUST maintain separate token storage instances.
 
 ## Resource Server Processing Rules
 
