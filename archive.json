@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-05T04:08:08.685387+00:00",
+  "timestamp": "2026-07-21T03:27:37.190725+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -256,15 +256,15 @@
       "id": "I_kwDOQ1ZTTM8AAAABHVaWng",
       "title": "Resource server should not respond using body, use www-authenticate only",
       "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/10",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaron-zehavi",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
-      "body": "consider by reference when size of response element exceeds threshold",
+      "body": "consider by reference when size of response element exceeds threshold?\nJeff Lombardo commented header sizes will probably need to support larger size in future.",
       "createdAt": "2026-07-01T15:59:43Z",
-      "updatedAt": "2026-07-01T15:59:43Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-19T18:18:58Z",
+      "closedAt": "2026-07-19T18:18:58Z",
       "comments": []
     },
     {
@@ -330,6 +330,22 @@
       "updatedAt": "2026-07-04T11:58:11Z",
       "closedAt": "2026-07-04T11:58:11Z",
       "comments": []
+    },
+    {
+      "number": 16,
+      "id": "I_kwDOQ1ZTTM8AAAABJeJg1w",
+      "title": "Signal non-remediable failures",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/16",
+      "state": "OPEN",
+      "author": "yaron-zehavi",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Following Karl McGuinness proposal, suggest adding:\nremediable=[true|false]\n\nSo authorization_remediation becomes optional, and if it's not provided RS should provide remediable:\n\n- true means there is a way to remediate which I don't want to reveal\n- false means non-remediable",
+      "createdAt": "2026-07-20T15:42:28Z",
+      "updatedAt": "2026-07-20T15:42:28Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -384,6 +400,164 @@
           "body": "Thanks @runegri this is highly appreciated!\nAbout the error signaling + `authorization_details_required`, have you seen I've added to the resource metadata response (https://www.ietf.org/archive/id/draft-zehavi-oauth-rar-metadata-01.html#name-oauth-20-protected-resource) the attribute `authorization_details_types_supported`, which is equivalent to your proposed error signaling?\n\nIf you did, what is the benefit you see in signaling directly via the error response?\nIs it to skip a required HTTP call to resource metadata? Or to focus the client exactly on the required type?",
           "createdAt": "2026-02-08T19:50:15Z",
           "updatedAt": "2026-02-08T19:50:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDOQ1ZTTM7zgJSc",
+      "title": "Processing rules details",
+      "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/pull/15",
+      "state": "MERGED",
+      "author": "identitymonk",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This Pull Request proposes new sections for the processing rules of `authorization_reference`, hopes it would help bringing clarity",
+      "createdAt": "2026-07-19T08:44:02Z",
+      "updatedAt": "2026-07-20T15:43:44Z",
+      "baseRepository": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
+      "baseRefName": "main",
+      "baseRefOid": "fd7a48cef0ace32ee9d857e4b1005fadda6b42fa",
+      "headRepository": "identitymonk/oauth-rich-authorization-requests-metadata",
+      "headRefName": "processing-rule-details",
+      "headRefOid": "394dd6ca64363e2cc24cbc4b9f7e5e3e93bdf7b3",
+      "closedAt": "2026-07-20T15:43:44Z",
+      "mergedAt": "2026-07-20T15:43:44Z",
+      "mergedBy": "yaron-zehavi",
+      "mergeCommit": {
+        "oid": "fce62a463fac73096b53027c798d4c03fab31a51"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQ1ZTTM8AAAABGgJxyQ",
+          "commit": {
+            "abbreviatedOid": "176362c"
+          },
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "I like the proposed changes very much!\nYou've expressed in clear language the implicit assumptions the draft made, and then some more.",
+          "createdAt": "2026-07-19T19:16:36Z",
+          "updatedAt": "2026-07-19T19:36:59Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\n1. If the `authorization_remediation` contains an `authorization_reference` attribute, the client SHOULD search its **in-session tokens** for a token previously associated with that reference value **and** the same resource server origin.\n```",
+              "createdAt": "2026-07-19T19:16:36Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "token bag is too informal imo",
+              "createdAt": "2026-07-19T19:16:53Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 39,
+              "body": "```suggestion\nThe client proceeds to this step if: (a) no `authorization_reference` was present, (b) no matching token in client's possession was found, (c) a matched token was rejected by the resource server (Step 2, item 4), or (d) the client elects to skip an existing token lookup and use `authorization_details` directly.\n```",
+              "createdAt": "2026-07-19T19:18:28Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 42,
+              "body": "```suggestion\n2. Upon successful token issuance, if the triggering resource server response included an `authorization_reference`, the client SHOULD persist the newly obtained token associated with that reference value and the resource server origin in its in-session token storage. This token-to-reference association enables future lookups in Step 2 when the same `authorization_reference` is encountered again.\n```",
+              "createdAt": "2026-07-19T19:23:53Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 56,
+              "body": "```suggestion\n- The token storage MUST be scoped per end-user session. Concurrent users operating through the same client instance MUST maintain separate token storage instances.\n```",
+              "createdAt": "2026-07-19T19:26:41Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 63,
+              "body": "```suggestion\nWhen a resource server receives a request with an OAuth token:\n```",
+              "createdAt": "2026-07-19T19:28:00Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 63,
+              "body": "Could also be DPoP",
+              "createdAt": "2026-07-19T19:28:09Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 79,
+              "body": "```suggestion\nThe `authorization_remediation` parameter carries the actionable `authorization_details` and optional `authorization_reference` as specified in Section 4. The resource server constructs these per the rules defined below.\n```",
+              "createdAt": "2026-07-19T19:29:06Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 77,
+              "body": "```suggestion\n- If the token is valid but lacks sufficient **authentication context** (e.g., ACR/AMR level), the resource server returns `insufficient_user_authentication` per {{RFC9470}}.\n```",
+              "createdAt": "2026-07-19T19:29:17Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 109,
+              "body": "```suggestion\n- If a freshly obtained token (from a new authorization flow using the resource server provided `authorization_details`) is immediately rejected by the same resource server with the same `authorization_reference`, the client MUST stop and report the error.\n```",
+              "createdAt": "2026-07-19T19:29:53Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 111,
+              "body": "```suggestion\n### No cross-resource-server portability\n```",
+              "createdAt": "2026-07-19T19:30:20Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 121,
+              "body": "```suggestion\n| Resource server returns `insufficient_scope` with required `scope` value | Resource server returns `insufficient_authorization` with `authorization_remediation` |\n```",
+              "createdAt": "2026-07-19T19:30:57Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 126,
+              "body": "```suggestion\nThe key advantage: clients need not understand, parse, or compare complex JSON `authorization_details` objects \u2014 the resource server has already reduced the comparison to an opaque string.\n```",
+              "createdAt": "2026-07-19T19:31:10Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 76,
+              "body": "```suggestion\n- If the token is valid but lacks sufficient **scope**, the resource server returns `insufficient_scope` per {{RFC6750}} Section 3.1.\n```",
+              "createdAt": "2026-07-19T19:32:02Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 87,
+              "body": "```suggestion\nA matching `authorization_reference` with client's existing tokens does NOT guarantee the token will be accepted by the resource server. The token may have been issued under conditions that no longer apply:\n```",
+              "createdAt": "2026-07-19T19:32:46Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 90,
+              "body": "```suggestion\n- Contextual risk may have changed (e.g., geolocation, device posture), causing the resource server to require stronger authorization ceremonies.\n```",
+              "createdAt": "2026-07-19T19:33:07Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            },
+            {
+              "originalPosition": 117,
+              "body": "```suggestion\nThe `authorization_reference` mechanism is analogous to how clients select tokens based on OAuth scopes in traditional deployments. Just as a client maintains a mapping of `{scope \u2192 token}` and selects the appropriate token for each resource server call, this mechanism extends that pattern to RAR:\n```",
+              "createdAt": "2026-07-19T19:34:08Z",
+              "updatedAt": "2026-07-19T19:36:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQ1ZTTM8AAAABGlFH7A",
+          "commit": {
+            "abbreviatedOid": "394dd6c"
+          },
+          "author": "yaron-zehavi",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-20T15:43:20Z",
+          "updatedAt": "2026-07-20T15:43:20Z",
           "comments": []
         }
       ]
