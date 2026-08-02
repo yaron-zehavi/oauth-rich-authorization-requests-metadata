@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-30T02:54:27.382732+00:00",
+  "timestamp": "2026-08-02T03:36:11.974858+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -343,9 +343,17 @@
       "labels": [],
       "body": "Following Karl McGuinness proposal, suggest adding:\nremediable=[true|false]\n\nSo authorization_remediation becomes optional, and if it's not provided RS should provide remediable:\n\n- true means there is a way to remediate which I don't want to reveal\n- false means non-remediable",
       "createdAt": "2026-07-20T15:42:28Z",
-      "updatedAt": "2026-07-20T15:42:28Z",
+      "updatedAt": "2026-07-31T15:08:26Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "nickgamb",
+          "authorAssociation": "NONE",
+          "body": "A third case doesn't fit the boolean cleanly: **remediable, but not by the caller.**\n\nWhen the resource belongs to someone other than the party operating the client \u2014 an agent acting for one person against another person's resources \u2014 the failure is remediable, since the owner can approve, but the client's own AS has no standing to grant it. `remediable: true` sends the client to its own AS, where it fails. `remediable: false` is inaccurate, since a path exists.\n\nTwo optional members on `authorization_remediation` cover it without changing anything for the same-principal case:\n\n```\nauthorization_server  \u2014 whose policy governs this resource\nticket                \u2014 handle to a negotiation already opened\n```\n\nA client that doesn't recognize them behaves exactly as today. A client that does knows not to submit the details to its own AS, and where to take the handle instead.\n\nThe handle matters independently of who decides: a template has nowhere to hold *\"the owner has been asked and hasn't answered yet.\"* UMA 2.0's permission ticket and `request_submitted` are the existing art here, and the two compose \u2014 `authorization_details` describes the shape of the authority, the ticket carries the negotiation.\n\nWorking implementation, emitting your remediation object unchanged plus those two members, over `WWW-Authenticate` and also over a JSON-RPC error where there is no status line \u2014 the latter as evidence the payload is transport-portable:\n\n- Branch: https://github.com/nickgamb/uma4agents/tree/mcp-alignment\n- The specific proposal, with the compatibility notes: https://github.com/nickgamb/uma4agents/blob/mcp-alignment/docs/ext-auth-third-party-authorization.md#relationship-to-rar-metadata--sep-2643\n- Side-by-side of the two flows: https://github.com/nickgamb/uma4agents/blob/mcp-alignment/docs/rar-at-a-glance.svg\n\nHappy to open a PR with text if that's useful.",
+          "createdAt": "2026-07-31T15:08:25Z",
+          "updatedAt": "2026-07-31T15:08:25Z"
+        }
+      ]
     },
     {
       "number": 17,
