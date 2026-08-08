@@ -768,6 +768,11 @@ This section provides non-normative examples of how this specification may be us
 
 # Document History
 
+-06
+
+* Expanded processing rules to be more explicit, using Jeff Lombardo's feedback.
+* Explained how potential reuse of existing tokens is possible despite authorization_reference mismatches.
+
 -05
 
 * Removed required authorization details types.
