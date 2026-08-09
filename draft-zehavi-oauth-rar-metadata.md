@@ -274,11 +274,11 @@ It is RECOMMENDED that when an authorization server issues JWT access tokens, it
 
 **General**:
 
-Client MAY attempt calling resource server, either on first attempt or as a remediation step, using any valid tokens which were obtained following a remediation challenge from that resource server origin that included authorization_reference, hence such tokens are not limited for single-use.
+Client MAY attempt calling resource server, either on first attempt or as a remediation step, using any valid tokens which were obtained following a remediation challenge from same resource server origin, which included an authorization_reference, as such tokens are not limited for single-use.
 
-This instruction aims to guide clients towards reusing existing tokens whose authority permits requested resource calls, although their authorization_reference values may differ than values obtained from a remediation challenge. For example, a recurring direct debit token permitting up to 100$ can authorize a 80$ debit, although the remediation challenges returned when attempting 80$ or 100$ debits with insufficient authority, will differ in their authorization_details and authorization_reference values.
+Existing tokens whose authority is inclusive may permit resource calls requiring lower authority, despite their authorization_reference value differs from value obtained in other remediation challenges. For example, a recurring direct debit token permitting up to 100$ can authorize a 80$ debit, although the remediation challenges returned when attempting 80$ or 100$ debits with insufficient authority, will differ in their authorization_details and authorization_reference values.
 
-But attempting the 80$ debit with an existing token permitting 100$ debits will succeed.
+Therefore attempting a 80$ debit with an existing token permitting 100$ debits may succeed.
 
 **Handling an HTTP 401 failure response**:
 
