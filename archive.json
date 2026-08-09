@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-02T03:36:11.974858+00:00",
+  "timestamp": "2026-08-09T02:14:17.708651+00:00",
   "repo": "yaron-zehavi/oauth-rich-authorization-requests-metadata",
   "labels": [
     {
@@ -360,15 +360,15 @@
       "id": "I_kwDOQ1ZTTM8AAAABKfi5vw",
       "title": "authorization_reference value and usability in case RAR authorizes a range of resource requests",
       "url": "https://github.com/yaron-zehavi/oauth-rich-authorization-requests-metadata/issues/17",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "yaron-zehavi",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "During IETF 126 OAuth session Nick Watson raised a good point about the usability of authorization_reference, in cases when the authority is not a discrete value but can allow a **range of resource requests**, such as:\n\n- File system path like /var/* applies to /var/log and /var/tmp\n- Max debit amount of 100 EUR applies to any debit <= 100 EUR\n\nTherefore what is the value of authorization_reference as a handle helping clients to locate tokens, if different resource requests such as debit of 80 or 100 EUR, generate different RAR remediation objects with discrete unrelated authorization_reference values?\n\nAsking the client to semantically understand request RARs to determine if authority for a 80 EUR payment is provided by a token created after being challenged for a 100 EUR payment is undesirable. This defeats the purpose of authorization_reference as a means to simplify token selection for clients.\n\nOne proposal to consider would be to advise the client to try existing tokens obtained for the same resource, provided tokens are not single-use (which client knows becuase had they been single-use an authorization_reference would not be provided).\n\nConsider the following client processing rules:\n\n\"_Client MAY attempt calling resource server, either on first attempt or as a remediation step, using any valid tokens which were obtained following a remediation challenge from that resource server origin._\"\n\nThe language can be even made more specific to limit retries to the same specific resource **endpoint**.\n\nThis proposal ensures logic for determining if token's approved RAR carries sufficient authority remains at the resource server, while providing clients an \"easy\" path to attempt remediation before requesting new OAuth grants.\nThe underlying assumption is that there will be a small number of **in-session tokens for same-user and same resource** such that this proposal will not introduce latency.",
       "createdAt": "2026-07-28T13:33:12Z",
-      "updatedAt": "2026-07-28T13:33:12Z",
-      "closedAt": null,
+      "updatedAt": "2026-08-08T20:16:51Z",
+      "closedAt": "2026-08-08T20:16:51Z",
       "comments": []
     }
   ],
