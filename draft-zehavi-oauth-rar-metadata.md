@@ -3,7 +3,7 @@ title: "OAuth 2.0 RAR Metadata and Error Remediation"
 abbrev: "OAuth 2.0 RAR Metadata and Error Remediation"
 category: std
 
-docname: draft-zehavi-oauth-rar-metadata-latest
+docname: draft-ietf-oauth-rar-metadata-remediation-latest
 submissiontype: IETF
 number:
 date:
@@ -20,8 +20,8 @@ venue:
   type: "Working Group"
   mail: "oauth@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/oauth/"
-  github: "yaron-zehavi/oauth-rich-authorization-requests-metadata"
-  latest: "https://yaron-zehavi.github.io/oauth-rich-authorization-requests-metadata/draft-zehavi-oauth-rar-metadata.html"
+  github: "oauth-wg/draft-ietf-oauth-rar-metadata-remediation"
+  latest: "https://drafts.oauth.net/draft-ietf-oauth-rar-metadata-remediation/draft-ietf-oauth-rar-metadata.html"
 
 author:
  -
