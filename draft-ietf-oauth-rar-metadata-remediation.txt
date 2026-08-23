@@ -4,12 +4,12 @@
 
 Web Authorization Protocol                                     Y. Zehavi
 Internet-Draft                             Raiffeisen Bank International
-Intended status: Standards Track                           9 August 2026
-Expires: 10 February 2027
+Intended status: Standards Track                          23 August 2026
+Expires: 24 February 2027
 
 
               OAuth 2.0 RAR Metadata and Error Remediation
-                 draft-zehavi-oauth-rar-metadata-latest
+            draft-ietf-oauth-rar-metadata-remediation-latest
 
 Abstract
 
@@ -31,11 +31,11 @@ About This Document
 
    This note is to be removed before publishing as an RFC.
 
-   The latest revision of this draft can be found at https://yaron-
-   zehavi.github.io/oauth-rich-authorization-requests-metadata/draft-
-   zehavi-oauth-rar-metadata.html.  Status information for this document
-   may be found at https://datatracker.ietf.org/doc/draft-zehavi-oauth-
-   rar-metadata/.
+   The latest revision of this draft can be found at
+   https://drafts.oauth.net/draft-ietf-oauth-rar-metadata-remediation/
+   draft-ietf-oauth-rar-metadata.html.  Status information for this
+   document may be found at https://datatracker.ietf.org/doc/draft-ietf-
+   oauth-rar-metadata-remediation/.
 
    Discussion of this document takes place on the Web Authorization
    Protocol Working Group mailing list (mailto:oauth@ietf.org), which is
@@ -43,8 +43,8 @@ About This Document
    Subscribe at https://www.ietf.org/mailman/listinfo/oauth/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/yaron-zehavi/oauth-rich-authorization-requests-
-   metadata.
+   https://github.com/oauth-wg/draft-ietf-oauth-rar-metadata-
+   remediation.
 
 Status of This Memo
 
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 February 2027.
+   This Internet-Draft will expire on 24 February 2027.
 
 Copyright Notice
 
@@ -745,7 +745,8 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
 10.  Normative References
 
    [IANA.oauth-parameters]
-              "*** BROKEN REFERENCE ***".
+              IANA, "OAuth Parameters",
+              <https://www.iana.org/assignments/oauth-parameters>.
 
    [JSON.Schema]
               Wright, Ed, A., Andrews, Ed, H., Hutton, Ed, B., and G.
@@ -753,29 +754,62 @@ authorization_remediation=eyJhdXRob3JpemF0aW9uX2RldGFpbHMiOlt7InR5cGUiOiJkaX...
               Documents", June 2022,
               <https://json-schema.org/draft/2020-12/json-schema-core>.
 
-   [RFC2119]  "*** BROKEN REFERENCE ***".
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC3986]  "*** BROKEN REFERENCE ***".
+   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66,
+              RFC 3986, DOI 10.17487/RFC3986, January 2005,
+              <https://www.rfc-editor.org/rfc/rfc3986>.
 
-   [RFC6750]  "*** BROKEN REFERENCE ***".
+   [RFC6750]  Jones, M. and D. Hardt, "The OAuth 2.0 Authorization
+              Framework: Bearer Token Usage", RFC 6750,
+              DOI 10.17487/RFC6750, October 2012,
+              <https://www.rfc-editor.org/rfc/rfc6750>.
 
-   [RFC7662]  "*** BROKEN REFERENCE ***".
+   [RFC7662]  Richer, J., Ed., "OAuth 2.0 Token Introspection",
+              RFC 7662, DOI 10.17487/RFC7662, October 2015,
+              <https://www.rfc-editor.org/rfc/rfc7662>.
 
-   [RFC8174]  "*** BROKEN REFERENCE ***".
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [RFC8414]  "*** BROKEN REFERENCE ***".
+   [RFC8414]  Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
+              Authorization Server Metadata", RFC 8414,
+              DOI 10.17487/RFC8414, June 2018,
+              <https://www.rfc-editor.org/rfc/rfc8414>.
 
-   [RFC9068]  "*** BROKEN REFERENCE ***".
+   [RFC9068]  Bertocci, V., "JSON Web Token (JWT) Profile for OAuth 2.0
+              Access Tokens", RFC 9068, DOI 10.17487/RFC9068, October
+              2021, <https://www.rfc-editor.org/rfc/rfc9068>.
 
-   [RFC9101]  "*** BROKEN REFERENCE ***".
+   [RFC9101]  Sakimura, N., Bradley, J., and M. Jones, "The OAuth 2.0
+              Authorization Framework: JWT-Secured Authorization Request
+              (JAR)", RFC 9101, DOI 10.17487/RFC9101, August 2021,
+              <https://www.rfc-editor.org/rfc/rfc9101>.
 
-   [RFC9126]  "*** BROKEN REFERENCE ***".
+   [RFC9126]  Lodderstedt, T., Campbell, B., Sakimura, N., Tonge, D.,
+              and F. Skokan, "OAuth 2.0 Pushed Authorization Requests",
+              RFC 9126, DOI 10.17487/RFC9126, September 2021,
+              <https://www.rfc-editor.org/rfc/rfc9126>.
 
-   [RFC9396]  "*** BROKEN REFERENCE ***".
+   [RFC9396]  Lodderstedt, T., Richer, J., and B. Campbell, "OAuth 2.0
+              Rich Authorization Requests", RFC 9396,
+              DOI 10.17487/RFC9396, May 2023,
+              <https://www.rfc-editor.org/rfc/rfc9396>.
 
-   [RFC9470]  "*** BROKEN REFERENCE ***".
+   [RFC9470]  Bertocci, V. and B. Campbell, "OAuth 2.0 Step Up
+              Authentication Challenge Protocol", RFC 9470,
+              DOI 10.17487/RFC9470, September 2023,
+              <https://www.rfc-editor.org/rfc/rfc9470>.
 
-   [RFC9728]  "*** BROKEN REFERENCE ***".
+   [RFC9728]  Jones, M.B., Hunt, P., and A. Parecki, "OAuth 2.0
+              Protected Resource Metadata", RFC 9728,
+              DOI 10.17487/RFC9728, April 2025,
+              <https://www.rfc-editor.org/rfc/rfc9728>.
 
 Appendix A.  Examples
 
